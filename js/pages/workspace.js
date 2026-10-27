@@ -226,15 +226,74 @@
 	function fieldEl(labelText, control, opts) {
 		opts = opts || {};
 		var f = el('div', { class: 'nw-field' });
-		var id = control.id || ('nw-f-' + (++fieldSeq));
-		control.id = id;
+		// Composite controls (directory picker, file picker row) hand back
+		// {node, focusEl}; the label must point at the real focusable control,
+		// never at a wrapper div (WCAG 1.3.1 + click-to-focus).
+		var node = control && control.node ? control.node : control;
+		var focus = control && control.focusEl ? control.focusEl : node;
+		var id = (focus && focus.id) || ('nw-f-' + (++fieldSeq));
+		if (focus && !focus.id) { focus.id = id; }
 		var lbl = el('label', { 'for': id, text: labelText });
 		f.appendChild(lbl);
-		f.appendChild(control);
+		f.appendChild(node);
 		if (opts.hint) {
 			f.appendChild(el('p', { class: 'nw-field__hint', text: opts.hint }));
 		}
 		return f;
+	}
+
+	/**
+	 * Progressive disclosure — DESIGN-SYSTEM §12.5: create dialogs keep
+	 * ≤2 primary fields; everything else lives under one calm-band
+	 * "More options". The kernel auto-opens this details when an invalid
+	 * control hides inside, so validation never strands.
+	 */
+	function moreDetails(labelText, children) {
+		return el('details', { class: 'nw-details' }, [
+			el('summary', { class: 'nw-details__summary', text: labelText || t('More options') }),
+			el('div', { class: 'nw-details__body' }, children)
+		]);
+	}
+
+	/**
+	 * Forgiving duration input → minutes. Accepted:
+	 *   "1:30" (h:mm) · "1,5"/"1.5" (decimal hours) · "2h"/"2 h" ·
+	 *   "90 min"/"90min" · bare "90" (minutes, back-compat).
+	 * Returns minutes > 0 or null. Never floats: integer math only.
+	 */
+	function parseDuration(str) {
+		var s = String(str === null || str === undefined ? '' : str).trim().toLowerCase();
+		if (s === '') { return null; }
+		var m;
+		if ((m = s.match(/^(\d{1,4})\s*:\s*(\d{1,2})$/))) {
+			var mm = parseInt(m[2], 10);
+			if (mm > 59) { return null; }
+			return parseInt(m[1], 10) * 60 + mm;
+		}
+		if ((m = s.match(/^(\d{1,4})\s*h(?:\s*(\d{1,2})\s*(?:min|m)?)?$/))) {
+			var hm = m[2] ? parseInt(m[2], 10) : 0;
+			if (hm > 59) { return null; }
+			return parseInt(m[1], 10) * 60 + hm;
+		}
+		if ((m = s.match(/^(\d{1,5})\s*(?:min|m)$/))) {
+			return parseInt(m[1], 10);
+		}
+		if ((m = s.match(/^(\d{1,4})[.,](\d{1,2})\s*h?$/))) {
+			// decimal hours — quarter precision rounding
+			var cents = Math.round((parseInt(m[1], 10) * 100 + parseInt(m[2].length === 1 ? m[2] + '0' : m[2], 10)) * 60 / 100);
+			return cents > 0 ? cents : null;
+		}
+		if ((m = s.match(/^(\d{1,5})$/))) {
+			return parseInt(m[1], 10); // bare = minutes (previous behaviour)
+		}
+		return null;
+	}
+
+	function fmtDurationHuman(minutes) {
+		var h = Math.floor(minutes / 60), m = minutes % 60;
+		if (h === 0) { return m + ' min'; }
+		if (m === 0) { return h + ' h'; }
+		return h + ':' + String(m).padStart(2, '0') + ' h';
 	}
 
 	function inputEl(name, opts) {
@@ -317,12 +376,12 @@
 				onChange: function (ids) { hidden.value = ids.join(','); }
 			});
 			if (opts.selected) { picker.setSelected(opts.selected); }
-			return { node: wrap, value: function () { return hidden.value.split(',').filter(Boolean); } };
+			return { node: wrap, focusEl: input, value: function () { return hidden.value.split(',').filter(Boolean); } };
 		}
 		var plain = inputEl(name, { value: opts.value || '', required: !!opts.required });
 		wrap.appendChild(plain); wrap.appendChild(hidden);
 		hidden.disabled = true;
-		return { node: wrap, value: function () { return plain.value.trim() ? [plain.value.trim()] : []; } };
+		return { node: wrap, focusEl: plain, value: function () { return plain.value.trim() ? [plain.value.trim()] : []; } };
 	}
 
 	function memberSelect(name, members, value, opts) {
@@ -486,14 +545,16 @@
 			var body = el('div', {}, [
 				fieldEl(t('Project name'), inputEl('name', { required: true })),
 				fieldEl(t('Funder'), inputEl('funder_name', { required: true })),
-				fieldEl(t('Reference number'), inputEl('funder_ref')),
-				fieldEl(t('Funding period start'), inputEl('bew_start', { type: 'date' })),
-				fieldEl(t('Funding period end'), inputEl('bew_end', { type: 'date' })),
-				fieldEl(t('Nebenbestimmungen template'), selectEl('template_key', tplOpts, 'anbest-p')),
-				fieldEl(t('Financing mode'), selectEl('financing_mode', [
-					['ausgaben', t('Expenditure-based funding')],
-					['festbetrag', t('Flat-rate funding')]
-				], 'ausgaben'))
+				moreDetails(t('More options'), [
+					fieldEl(t('Reference number'), inputEl('funder_ref')),
+					fieldEl(t('Funding period start'), inputEl('bew_start', { type: 'date' })),
+					fieldEl(t('Funding period end'), inputEl('bew_end', { type: 'date' })),
+					fieldEl(t('Nebenbestimmungen template'), selectEl('template_key', tplOpts, 'anbest-p')),
+					fieldEl(t('Financing mode'), selectEl('financing_mode', [
+						['ausgaben', t('Expenditure-based funding')],
+						['festbetrag', t('Flat-rate funding')]
+					], 'ausgaben'))
+				])
 			]);
 			NW.openDialog({
 				title: t('New funded project'),
@@ -528,10 +589,22 @@
 			}
 			var lastAp = null;
 			try { lastAp = window.localStorage.getItem('nw-last-ap-' + pid); } catch (e) {}
+			// Forgiving duration: "1:30", "1,5", "2h" or "90" — live echo so
+			// the user always sees the parsed result before saving.
+			var durEcho = el('p', { class: 'nw-field__hint', 'aria-live': 'polite' });
+			var durIn = inputEl('minutes', { inputmode: 'decimal', placeholder: '1:30', required: true });
+			durIn.addEventListener('input', function () {
+				var v = parseDuration(durIn.value);
+				durEcho.textContent = durIn.value.trim() === '' ? t('e.g. 1:30, 1,5 h or 90')
+					: (v === null ? t('Not a duration — try 1:30 or 1,5 h or 90') : '→ ' + fmtDurationHuman(v));
+				if (v !== null) { NW.clearFieldError(durIn); }
+			});
+			var durField = fieldEl(t('Duration'), durIn, { hint: t('e.g. 1:30, 1,5 h or 90') });
+			durField.appendChild(durEcho);
 			var fields = [
 				fieldEl(t('Work package'), selectEl('ap_id', apOptions(aps), lastAp, { required: true })),
 				fieldEl(t('Date'), inputEl('entry_date', { type: 'date', value: NW.todayYmd(), required: true })),
-				fieldEl(t('Minutes'), inputEl('minutes', { type: 'number', min: '1', step: '1', inputmode: 'numeric', required: true })),
+				durField,
 				fieldEl(t('Short note'), inputEl('note'))
 			];
 			if (caps.can_finance && members.length) {
@@ -542,10 +615,15 @@
 				body: el('div', {}, fields),
 				submitLabel: t('Book'),
 				onSubmit: function (fd) {
+					var minutes = parseDuration(fd.get('minutes'));
+					if (minutes === null) {
+						NW.markFieldError(durIn, t('Not a duration — try 1:30 or 1,5 h or 90'));
+						return Promise.reject({ fields: { minutes: t('Invalid duration.') }, message: t('Invalid duration.') });
+					}
 					var body = {
 						ap_id: parseInt(fd.get('ap_id'), 10),
 						entry_date: fd.get('entry_date'),
-						minutes: parseInt(fd.get('minutes'), 10),
+						minutes: minutes,
 						note: fd.get('note') || ''
 					};
 					var uid = fd.get('uid');
@@ -592,22 +670,49 @@
 			});
 			var totalIn = moneyEl('total_minor', existing ? existing.total_minor : null);
 			var editor = splitEditor(positions, aps, existing ? existing.splits : null, totalIn);
+
+			// Attachment: pick from Files (no raw-id typing) or type the id
+			// under More options. The picker resolves the path server-side.
+			var fileIdIn = inputEl('file_id', {
+				inputmode: 'numeric', value: existing && existing.file_id ? existing.file_id : ''
+			});
+			var filePickBtn = null;
+			if (window.OC && OC.dialogs && typeof OC.dialogs.filepicker === 'function') {
+				filePickBtn = el('button', { type: 'button', class: 'nw-btn nw-btn--secondary', text: t('Choose from Files…') });
+				filePickBtn.addEventListener('click', function () {
+					OC.dialogs.filepicker(t('Pick the receipt file'), function (path) {
+						if (!path) { return; }
+						NW.api('/projects/' + pid + '/files/resolve?path=' + encodeURIComponent(path))
+							.then(function (res) {
+								fileIdIn.value = String(res.file_id);
+								NW.toast('success', t('Attached %s.', [res.name || path]));
+							})
+							.catch(function () { NW.toast('warn', t('Could not resolve that file — enter the file id manually.')); });
+					}, false, null, true);
+				});
+			}
+			var fileRow = el('div', { class: 'nw-file-row' },
+				[fileIdIn, filePickBtn].filter(Boolean));
+			var fileCtl = { node: fileRow, focusEl: fileIdIn };
+
+			// §12.5: 3 primary fields (Vendor / Invoice date / Total) + splits.
+			// Everything else folds into one More-options band.
 			var children = [
 				isEdit ? null : fieldEl(t('Kind'), kindSel),
 				fieldEl(t('Vendor'), inputEl('vendor', { required: true, value: existing ? existing.vendor : '' })),
-				fieldEl(t('Invoice number'), inputEl('invoice_no', { value: existing ? existing.invoice_no : '' })),
 				fieldEl(t('Invoice date'), inputEl('invoice_date', { type: 'date', required: true, value: existing ? existing.invoice_date : '' })),
-				fieldEl(t('Payment date'), inputEl('payment_date', { type: 'date', value: existing ? existing.payment_date : '' })),
-				fieldEl(t('Currency'), currencyIn),
-				fxField,
 				fieldEl(t('Total (EUR)'), totalIn),
-				fieldEl(t('Tax (EUR)'), moneyEl('tax_minor', existing ? existing.tax_minor : 0)),
-				salaryField,
-				fieldEl(t('Purpose'), textareaEl('purpose', { value: existing ? existing.purpose : '' })),
-				fieldEl(t('Attachment file id'), inputEl('file_id', {
-					inputmode: 'numeric', value: existing && existing.file_id ? existing.file_id : ''
-				}), { hint: t('Nextcloud file id of the scanned receipt — leave empty to flag a missing attachment.') }),
-				fieldEl(t('External reference'), inputEl('external_ref'), { hint: t('Import dedupe key — optional.') }),
+				moreDetails(t('More options'), [
+					salaryField,
+					fieldEl(t('Invoice number'), inputEl('invoice_no', { value: existing ? existing.invoice_no : '' })),
+					fieldEl(t('Payment date'), inputEl('payment_date', { type: 'date', value: existing ? existing.payment_date : '' })),
+					fieldEl(t('Currency'), currencyIn),
+					fxField,
+					fieldEl(t('Tax (EUR)'), moneyEl('tax_minor', existing ? existing.tax_minor : 0)),
+					fieldEl(t('Purpose'), textareaEl('purpose', { value: existing ? existing.purpose : '' })),
+					fieldEl(t('Attachment'), fileCtl, { hint: t('Pick the scanned receipt from Files — or paste a file id. Empty flags a missing attachment.') }),
+					fieldEl(t('External reference'), inputEl('external_ref'), { hint: t('Import dedupe key — optional.') })
+				]),
 				el('fieldset', { class: 'nw-fieldset' }, [
 					el('legend', { class: 'nw-fieldset__legend', text: t('Splits by position') }),
 					editor.node
@@ -867,7 +972,12 @@
 			if (p.state === 'draft') {
 				host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'note' }, [
 					el('p', { class: 'nw-callout__title', text: t('Draft project') }),
-					el('p', { class: 'nw-callout__text', text: t('Set up the financing plan first, then activate the project — after that, times and receipts can be booked.') })
+					el('p', { class: 'nw-callout__text', text: t('Set up the financing plan first, then activate the project — after that, times and receipts can be booked.') }),
+					el('p', {}, [el('a', {
+						class: 'nw-btn nw-btn--secondary nw-btn--small',
+						href: location.pathname + '?project=' + pid + '&view=finplan',
+						text: t('Open the financing plan')
+					})])
 				]));
 			}
 
@@ -903,6 +1013,39 @@
 			host.appendChild(card(t('Deadlines'), { children: [
 				renderDeadlineList(p.deadlines || [])
 			]}));
+
+			// "What needs attention" — the readiness endpoint already knows
+			// every audit gap; surface it here so dashboard answers that
+			// question first, not only on the export page.
+			var attnRegion = el('div');
+			host.insertBefore(attnRegion, host.children[1] || null);
+			NW.api('/projects/' + pid + '/readiness').then(function (r) {
+				if (!r) { return; }
+				var blockers = (r.checks || []).filter(function (c) { return c.severity === 'blocker'; });
+				var warnings = (r.checks || []).filter(function (c) { return c.severity === 'warning'; });
+				if (!blockers.length && !warnings.length) { return; }
+				var list = el('ul', { class: 'nw-readiness-list' });
+				blockers.concat(warnings).slice(0, 4).forEach(function (c) {
+					list.appendChild(el('li', { class: 'nw-readiness-item' }, [
+						NW.badge(c.severity === 'blocker' ? 'danger' : 'warn',
+							c.severity === 'blocker' ? t('Blocker') : t('Warning')),
+						el('span', { text: ' ' + c.id + ' (' + c.count + ')' })
+					]));
+				});
+				attnRegion.appendChild(el('div', {
+					class: 'nw-callout ' + (blockers.length ? 'nw-callout--danger' : 'nw-callout--warning'), role: 'alert'
+				}, [
+					el('p', { class: 'nw-callout__title', text: blockers.length
+						? t('%s things block the audit', [String(blockers.length)])
+						: t('%s things need attention', [String(warnings.length)]) }),
+					list,
+					el('p', {}, [el('a', {
+						class: 'nw-btn nw-btn--secondary nw-btn--small',
+						href: location.pathname + '?project=' + pid + '&view=nachweis',
+						text: t('Open the checklist')
+					})])
+				]));
+			}).catch(function () { /* readiness is advisory — dashboard still works */ });
 		}).catch(function (e) {
 			host.innerHTML = '';
 			host.appendChild(emptyState(t('Could not load the project'), e.message || t('Something went wrong.')));
@@ -1166,9 +1309,11 @@
 		var body = el('div', {}, [
 			fieldEl(t('Code'), inputEl('code', { required: true, placeholder: 'AP1' })),
 			fieldEl(t('Title'), inputEl('title', { required: true })),
-			fieldEl(t('Owner'), memberSelect('owner_uid', members, null, { blank: t('— none —') })),
-			fieldEl(t('Start'), inputEl('start_date', { type: 'date' })),
-			fieldEl(t('End'), inputEl('end_date', { type: 'date' }))
+			moreDetails(t('More options'), [
+				fieldEl(t('Owner'), memberSelect('owner_uid', members, null, { blank: t('— none —') })),
+				fieldEl(t('Start'), inputEl('start_date', { type: 'date' })),
+				fieldEl(t('End'), inputEl('end_date', { type: 'date' }))
+			])
 		]);
 		NW.openDialog({
 			title: t('New work package'),
@@ -1243,6 +1388,10 @@
 						el('div', { class: 'nw-filter-field' }, [
 							el('label', { class: 'nw-filter-field__label', 'for': 'nw-time-to', text: t('To') }),
 							toIn
+						]),
+						el('div', { class: 'nw-filter-field nw-filter-field--actions' }, [
+							el('button', { type: 'submit', class: 'nw-btn nw-btn--primary nw-btn--small', text: t('Apply') }),
+							el('button', { type: 'button', class: 'nw-btn nw-btn--ghost nw-btn--small', 'data-filter-clear': '1', text: t('Clear') })
 						])
 					])
 				])
@@ -1437,9 +1586,56 @@
 		host.appendChild(loading());
 		NW.api('/projects/' + pid + '/receipts').then(function (receipts) {
 			host.innerHTML = '';
-			host.appendChild(card(t('Receipts'), { children: [
-				tableEl([t('Vendor'), t('Invoice no.'), t('Invoice date'), t('Payment date'), t('Total'), t('Kind'), t('Flags'), ''],
-					(receipts || []).map(function (r) {
+			// Recipe B quick pills — the list gets filterable the moment it
+			// can exceed a screen (vendor text + flag semantics).
+			var state = { flag: 'all', q: '' };
+			var pillBar = el('div', { class: 'nw-quick-filters' });
+			pillBar.appendChild(el('span', { class: 'nw-quick-filters__label', text: t('Show') + ':' }));
+			var pills = el('div', { class: 'nw-filter-bar', role: 'group', 'aria-label': t('Filter receipts') });
+			pillBar.appendChild(pills);
+			var qIn = inputEl('rq', { type: 'search', placeholder: t('Vendor or invoice no…') });
+			qIn.setAttribute('aria-label', t('Filter receipts'));
+			pillBar.appendChild(qIn);
+			var listCard = el('div');
+			var count = el('span', { class: 'nw-list-head__count' });
+			host.appendChild(pillBar);
+			host.appendChild(listCard);
+
+			var FLAG_PILLS = [
+				['all', t('All')], ['flagged', t('Needs attention')],
+				['duplicate', t('Duplicates')], ['no_attachment', t('No attachment')], ['salary', t('Salary')]
+			];
+
+			function matches(r) {
+				if (state.q !== '') {
+					var hay = ((r.vendor || '') + ' ' + (r.invoice_no || '')).toLowerCase();
+					if (hay.indexOf(state.q.toLowerCase()) === -1) { return false; }
+				}
+				switch (state.flag) {
+					case 'flagged': return !!r.dup_flag || !r.file_id;
+					case 'duplicate': return !!r.dup_flag;
+					case 'no_attachment': return !r.file_id;
+					case 'salary': return r.kind === 'salary';
+					default: return true;
+				}
+			}
+
+			function paint() {
+				pills.innerHTML = '';
+				FLAG_PILLS.forEach(function (f) {
+					var b = el('button', {
+						type: 'button', class: 'nw-filter',
+						'aria-pressed': state.flag === f[0] ? 'true' : 'false', text: f[1]
+					});
+					b.addEventListener('click', function () { state.flag = f[0]; paint(); });
+					pills.appendChild(b);
+				});
+				var shown = (receipts || []).filter(matches);
+				listCard.innerHTML = '';
+				listCard.appendChild(card(t('Receipts'), { children: [
+					el('div', { class: 'nw-list-head' }, [count]),
+					tableEl([t('Vendor'), t('Invoice no.'), t('Invoice date'), t('Payment date'), t('Total'), t('Kind'), t('Flags'), ''],
+					shown.map(function (r) {
 						var flags = el('span', { class: 'nw-actions-inline' }, [stateBadge(r.state, t(r.state))]);
 						if (r.dup_flag) { flags.appendChild(NW.badge('warn', t('duplicate'))); }
 						if (!r.file_id) { flags.appendChild(NW.badge('danger', t('no attachment'))); }
@@ -1476,8 +1672,16 @@
 							flags,
 							act
 						];
-					}), { empty: t('No receipts filed yet.') })
+					}), { empty: (receipts || []).length ? t('No receipts match the filter.') : t('No receipts filed yet.') })
 			]}));
+			count.textContent = (receipts || []).length === shown.length
+				? t('%s receipts', [String(shown.length)])
+				: t('%s of %s receipts', [String(shown.length), String((receipts || []).length)]);
+			}
+			qIn.addEventListener('input', NW.debounce(function () {
+				state.q = qIn.value.trim(); paint();
+			}, 200));
+			paint();
 		}).catch(function (e) {
 			host.innerHTML = '';
 			NW.handleError(e);
@@ -1485,9 +1689,23 @@
 	}
 
 	function openEinvoiceDialog() {
+		var fileIn = inputEl('file_id', { inputmode: 'numeric', required: true });
+		var pickBtn = null;
+		if (window.OC && OC.dialogs && typeof OC.dialogs.filepicker === 'function') {
+			pickBtn = el('button', { type: 'button', class: 'nw-btn nw-btn--secondary', text: t('Choose from Files…') });
+			pickBtn.addEventListener('click', function () {
+				OC.dialogs.filepicker(t('Pick the e-invoice'), function (path) {
+					if (!path) { return; }
+					NW.api('/projects/' + pid + '/files/resolve?path=' + encodeURIComponent(path))
+						.then(function (res) { fileIn.value = String(res.file_id); })
+						.catch(function () { NW.toast('warn', t('Could not resolve that file — enter the file id manually.')); });
+				}, false, null, true);
+			});
+		}
 		var body = el('div', {}, [
-			fieldEl(t('Invoice file id'), inputEl('file_id', { inputmode: 'numeric', required: true }), {
-				hint: t('Nextcloud file id of the ZUGFeRD/XRechnung XML.')
+			fieldEl(t('Invoice file'), { node: el('div', { class: 'nw-file-row' },
+				[fileIn, pickBtn].filter(Boolean)), focusEl: fileIn }, {
+				hint: t('Pick the ZUGFeRD/XRechnung file — or paste its file id.')
 			})
 		]);
 		NW.openDialog({
@@ -1524,7 +1742,13 @@
 		loadAps().then(function (aps) {
 			if (!(aps || []).length) {
 				host.innerHTML = '';
-				host.appendChild(emptyState(t('No work packages'), t('Work reports live inside work packages — create one first.')));
+				host.appendChild(emptyState(t('No work packages'),
+				t('Work reports live inside work packages — create one first.'),
+				el('a', {
+					class: 'nw-btn nw-btn--primary',
+					href: location.pathname + '?project=' + pid + '&view=workpackages',
+					text: t('Open work packages')
+				})));
 				return;
 			}
 			return Promise.all(aps.map(function (ap) {
@@ -1665,7 +1889,7 @@
 			// Prüfungsbereit checklist (NH-04): every audit gap as a visible
 			// task before the export runs — never a dead-end report.
 			if (readiness) {
-				var sevBadge = { blocker: 'warn', warning: 'warn', info: 'neutral' };
+				var sevBadge = { blocker: 'danger', warning: 'warn', info: 'neutral' };
 				var sevLabel = { blocker: 'Blocker', warning: 'Warning', info: 'Info' };
 				var items = [];
 				(readiness.checks || []).forEach(function (c) {
@@ -1877,10 +2101,12 @@
 				], 'final')),
 				fieldEl(t('Period from'), inputEl('period_from', { type: 'date', required: true, value: p.bew_start || '' })),
 				fieldEl(t('Period to'), inputEl('period_to', { type: 'date', required: true, value: p.bew_end || '' })),
-				fieldEl(t('Supersedes report'), inputEl('supersedes_id', { inputmode: 'numeric' }), {
-					hint: t('Only for corrections — the id of the report this version replaces.')
-				}),
-				fieldEl(t('Reason for new version'), inputEl('reason')),
+				moreDetails(t('Correct an earlier report'), [
+					fieldEl(t('Supersedes report'), inputEl('supersedes_id', { inputmode: 'numeric' }), {
+						hint: t('Only for corrections — the id of the report this version replaces.')
+					}),
+					fieldEl(t('Reason for new version'), inputEl('reason'))
+				]),
 				el('div', { class: 'nw-btn-row' }, []),
 				previewRegion
 			]);
@@ -2257,15 +2483,30 @@
 	}
 
 	function openClaimDialog() {
+		// Only the fields the chosen kind needs stay visible — no
+		// "recovery only"/"interest only" hints to mentally parse.
+		var kindSel = selectEl('kind', [['recovery', t('Recovery')], ['interest', t('Interest on unused funds')]], 'recovery');
+		var amountF = fieldEl(t('Amount (EUR)'), moneyEl('amount_minor'));
+		var principalF = fieldEl(t('Principal (EUR)'), moneyEl('principal_minor'));
+		var rateF = fieldEl(t('Rate (basis points)'), inputEl('rate_bp', { type: 'number', min: '0' }));
+		var periodF = el('div', { class: 'nw-field-pair' }, [
+			fieldEl(t('Period from'), inputEl('period_from', { type: 'date' })),
+			fieldEl(t('Period to'), inputEl('period_to', { type: 'date' }))
+		]);
+		function paintKind() {
+			var interest = kindSel.value === 'interest';
+			amountF.hidden = interest;
+			principalF.hidden = !interest;
+			rateF.hidden = !interest;
+			periodF.hidden = !interest;
+		}
+		kindSel.addEventListener('change', paintKind);
+		paintKind();
 		var body = el('div', {}, [
-			fieldEl(t('Kind'), selectEl('kind', [['recovery', t('Recovery')], ['interest', t('Interest on unused funds')]], 'recovery')),
+			fieldEl(t('Kind'), kindSel),
 			fieldEl(t('Title'), inputEl('title', { required: true })),
 			fieldEl(t('Date'), inputEl('occurred_date', { type: 'date', required: true, value: NW.todayYmd() })),
-			fieldEl(t('Amount (EUR) — recovery only'), moneyEl('amount_minor')),
-			fieldEl(t('Principal (EUR) — interest only'), moneyEl('principal_minor')),
-			fieldEl(t('Rate (basis points) — interest only'), inputEl('rate_bp', { type: 'number', min: '0' })),
-			fieldEl(t('Period from'), inputEl('period_from', { type: 'date' })),
-			fieldEl(t('Period to'), inputEl('period_to', { type: 'date' })),
+			amountF, principalF, rateF, periodF,
 			fieldEl(t('Note'), inputEl('note'))
 		]);
 		NW.openDialog({
@@ -2509,7 +2750,7 @@
 		NW.openDialog({
 			title: t('Add member'),
 			body: el('div', {}, [
-				fieldEl(t('User'), uid.node, {
+				fieldEl(t('User'), uid, {
 					hint: role.isAppAdmin ? t('Search by name — pick from results.') : t('Enter the exact Nextcloud user id.')
 				}),
 				fieldEl(t('Role'), selectEl('role', MEMBER_ROLES.map(function (r) { return [r[0], t(r[1])]; }), 'member'))
@@ -2545,7 +2786,7 @@
 		NW.openDialog({
 			title: t('Grant auditor access'),
 			body: el('div', {}, [
-				fieldEl(t('Auditor account'), uid.node, {
+				fieldEl(t('Auditor account'), uid, {
 					hint: t('Optional — an external auditor without an NC account reads via the grant token.')
 				}),
 				fieldEl(t('Name'), inputEl('name', { required: true })),
@@ -2604,7 +2845,6 @@
 			var kind = blk[0];
 			var fileIn = inputEl('csv_file', { type: 'file' });
 			fileIn.setAttribute('accept', '.csv,text/csv');
-			var nameIn = inputEl('filename', { value: 'import.csv' });
 			var presetSel = selectEl('preset', presets, 'generic');
 			var paste = textareaEl('csv', { rows: '8', placeholder: 'date,ap_code,minutes,note\n2026-01-15,AP1,90,Setup' });
 			var result = el('div', { 'aria-live': 'polite' });
@@ -2644,13 +2884,12 @@
 					NW.toast('warn', t('Choose a CSV file or paste its contents.'));
 					return;
 				}
-				send(paste.value, nameIn.value);
+				send(paste.value, 'pasted.csv');
 			});
 			host.appendChild(card(blk[1], { children: [
 				el('p', { class: 'nw-muted', text: blk[2] }),
 				fieldEl(t('Preset'), presetSel),
 				fieldEl(t('CSV file'), fileIn),
-				fieldEl(t('Filename'), nameIn),
 				fieldEl(t('…or paste CSV'), paste),
 				el('div', { class: 'nw-btn-row' }, [submit]),
 				result

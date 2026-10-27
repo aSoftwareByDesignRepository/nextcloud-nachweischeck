@@ -137,6 +137,33 @@ class ReceiptApiController extends NwApiController
 	 * E-Rechnung inbound parse (Pro): reads the Files node, returns a
 	 * prefilled draft. Parse failure → empty draft, never a crash.
 	 */
+	/**
+	 * Resolve a user-Files path (picked via OC.dialogs.filepicker) to a
+	 * file id — kills raw-id typing for receipt attachments. Any project
+	 * member may resolve nodes they themselves can see in Files; the
+	 * returned id is still validated against visibility at create time.
+	 */
+	#[NoAdminRequired]
+	public function resolveFile(int $projectId): JSONResponse
+	{
+		$uid = $this->uid();
+		$this->perm->requireView($projectId, $uid);
+		$path = trim((string)($this->params()['path'] ?? ''));
+		if ($path === '') {
+			throw new ValidationException(['path' => 'A path is required.']);
+		}
+		$node = null;
+		try {
+			$node = $this->rootFolder->getUserFolder($uid)->get($path);
+		} catch (\OCP\Files\NotFoundException) {
+			$node = null;
+		}
+		if ($node === null || !($node instanceof \OCP\Files\File)) {
+			throw new NotFoundException();
+		}
+		return $this->ok(['file_id' => $node->getId(), 'name' => $node->getName()]);
+	}
+
 	#[NoAdminRequired]
 	public function parseEinvoice(int $projectId): JSONResponse
 	{

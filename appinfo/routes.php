@@ -51,6 +51,7 @@ return [
 		['name' => 'receiptApi#replaceSplits', 'url' => '/api/v1/projects/{projectId}/receipts/{id}/splits', 'verb' => 'PUT', 'requirements' => ['projectId' => '\d+', 'id' => '\d+']],
 		['name' => 'receiptApi#delete', 'url' => '/api/v1/projects/{projectId}/receipts/{id}', 'verb' => 'DELETE', 'requirements' => ['projectId' => '\d+', 'id' => '\d+']],
 		['name' => 'receiptApi#parseEinvoice', 'url' => '/api/v1/projects/{projectId}/receipts/parse-einvoice', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+']],
+		['name' => 'receiptApi#resolveFile', 'url' => '/api/v1/projects/{projectId}/files/resolve', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
 
 		// Deviations
 		['name' => 'deviationApi#index', 'url' => '/api/v1/projects/{projectId}/deviations', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],

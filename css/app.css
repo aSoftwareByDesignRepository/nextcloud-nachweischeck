@@ -708,3 +708,93 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	}
 }
 /* === support-us:nw end === */
+
+/* Progressive disclosure — DESIGN-SYSTEM §12.5 "More options" calm band.
+   dialog bodies keep ≤2 primary fields; the kernel auto-opens this
+   details when an invalid control hides inside. */
+.nw-details {
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--nw-border, var(--color-border));
+	border-radius: var(--nw-radius-md, 12px);
+	background: color-mix(in srgb, var(--color-main-background) 96%, var(--color-main-text) 4%);
+	overflow: hidden;
+	min-width: 0;
+}
+.nw-details__summary {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-3, 0.75rem);
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 48px;
+	padding: var(--nw-space-3, 0.75rem) var(--nw-space-4, 1rem);
+	cursor: pointer;
+	font-weight: 600;
+	font-size: var(--nw-fs-base, 1rem);
+	line-height: var(--nw-line-tight, 1.2);
+	color: var(--nw-text, var(--color-main-text));
+	list-style: none;
+	user-select: none;
+}
+.nw-details__summary::-webkit-details-marker { display: none; }
+.nw-details__summary::marker { content: ''; }
+.nw-details__summary::before {
+	content: '';
+	display: block;
+	flex: 0 0 auto;
+	width: 0.45rem;
+	height: 0.45rem;
+	margin-inline-end: 0.15rem;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(-45deg);
+	transition: transform 0.15s ease;
+}
+.nw-details[open] > .nw-details__summary {
+	border-bottom: 1px solid var(--nw-border, var(--color-border));
+}
+.nw-details[open] > .nw-details__summary::before {
+	transform: rotate(45deg);
+	margin-top: -0.15rem;
+}
+.nw-details__summary:hover {
+	background: color-mix(in srgb, var(--color-primary-element, #0082c9) 8%, transparent);
+}
+.nw-details__summary:focus-visible {
+	outline: 3px solid var(--color-primary-element, #0082c9);
+	outline-offset: -3px;
+}
+.nw-details__body {
+	display: grid;
+	gap: var(--nw-space-4, 1rem);
+	padding: var(--nw-space-4, 1rem);
+	margin: 0;
+	background: var(--nw-bg-card, var(--color-main-background));
+	min-width: 0;
+}
+
+/* Attachment row: id input + "Choose from Files…" — one line on
+   desktop, stacked full-width on phones. */
+.nw-file-row {
+	display: flex;
+	gap: var(--nw-space-2, 0.5rem);
+	align-items: center;
+	flex-wrap: wrap;
+}
+.nw-file-row .nw-input { flex: 1 1 12rem; }
+.nw-file-row .nw-btn { flex: 0 0 auto; }
+@media (max-width: 480px) {
+	.nw-file-row { flex-direction: column; align-items: stretch; }
+	.nw-file-row .nw-btn { width: 100%; }
+}
+
+/* Side-by-side short fields inside dialogs (claim period pair). */
+.nw-field-pair {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--nw-space-3, 0.75rem);
+}
+@media (max-width: 480px) {
+	.nw-field-pair { grid-template-columns: 1fr; }
+}
