@@ -1,0 +1,194 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+openapi: 3.0.3
+info:
+  title: NachweisCheck API
+  version: "1.0"
+  description: >
+    Versioned REST contract (I-02). Envelope: {success:true,data:...} or
+    {success:false,error:CODE,message,fields:{}}. NOT_FOUND collapses missing
+    and out-of-scope entities — no existence oracle. All money in integer
+    minor units (cents). Breaking changes only via a new version prefix.
+servers:
+  - url: /apps/nachweischeck/api/v1
+security:
+  - basicAuth: []
+tags: [{name: projects}, {name: finplan}, {name: workpackages}, {name: time}, {name: receipts}, {name: finance}, {name: reports}, {name: nachweis}, {name: admin}, {name: auditor}, {name: mobile}]
+paths:
+  /projects:
+    get: {tags: [projects], summary: List visible projects, responses: {'200': {description: Project list}}}
+    post: {tags: [projects], summary: Create funded project}
+  /projects/{projectId}:
+    get: {tags: [projects], summary: Project detail incl. soll_ist + work_packages + deadlines}
+    delete: {tags: [projects], summary: Delete (draft only)}
+  /projects/{projectId}/activate:
+    post: {tags: [projects], summary: Activate (requires mapped APs + active plan)}
+  /projects/{projectId}/state/{target}:
+    post: {tags: [projects], summary: Transition draft|active|closing|closed}
+  /projects/{projectId}/finplan/versions:
+    get: {tags: [finplan]}
+  /projects/{projectId}/finplan/draft:
+    post: {tags: [finplan], summary: New draft version cloned from active}
+  /projects/{projectId}/finplan/versions/{versionId}/positions:
+    get: {tags: [finplan]}
+    put: {tags: [finplan], summary: Replace positions (draft only)}
+  /projects/{projectId}/finplan/versions/{versionId}/activate:
+    post: {tags: [finplan], summary: Activate plan version — CAS via base_version, 409 on stale}
+  /projects/{projectId}/workpackages:
+    get: {tags: [workpackages]}
+    post: {tags: [workpackages]}
+  /projects/{projectId}/workpackages/{apId}/positions:
+    put: {tags: [workpackages], summary: Map AP to positions (>=1 required)}
+  /projects/{projectId}/workpackages/{apId}/close:
+    post: {tags: [workpackages]}
+  /projects/{projectId}/time-entries:
+    get: {tags: [time], parameters: [{name: from, in: query}, {name: to, in: query}]}
+    post: {tags: [time], summary: Rate resolved from dated history at insert}
+  /projects/{projectId}/time-entries/{id}:
+    put: {tags: [time]}
+    delete: {tags: [time]}
+  /projects/{id}/rates:
+    post: {tags: [finance], summary: Add dated rate (finance only)}
+  /projects/{id}/rates/{uid}:
+    get: {tags: [finance], summary: Rate history for uid (finance only)}
+  /projects/{projectId}/receipts:
+    get: {tags: [receipts]}
+    post: {tags: [receipts], summary: Splits must sum to total (GAC-2)}
+  /projects/{projectId}/receipts/{id}:
+    put: {tags: [receipts], summary: Update; dup_ack=1 confirms duplicate flag}
+    delete: {tags: [receipts]}
+  /projects/{projectId}/receipts/{id}/splits:
+    put: {tags: [receipts]}
+  /projects/{projectId}/receipts/parse-einvoice:
+    post: {tags: [receipts], summary: Pro — ZUGFeRD/XRechnung parse to draft}
+  /projects/{projectId}/deviations:
+    get: {tags: [reports]}
+    post: {tags: [reports], summary: reason_text mandatory}
+  /projects/{projectId}/payments:
+    get: {tags: [finance]}
+    post: {tags: [finance]}
+  /projects/{projectId}/payments/{id}:
+    delete: {tags: [finance]}
+  /projects/{projectId}/reallocations:
+    get: {tags: [finance]}
+    post: {tags: [finance], summary: Request Umschichtung (reason required)}
+  /projects/{projectId}/reallocations/{id}/decide:
+    post: {tags: [finance], summary: approve|reject — approve mints new plan version}
+  /projects/{projectId}/carryovers:
+    get: {tags: [finance]}
+    post: {tags: [finance]}
+  /projects/{projectId}/workpackages/{apId}/reports:
+    get: {tags: [reports]}
+  /projects/{projectId}/reports:
+    post: {tags: [reports]}
+  /projects/{projectId}/reports/{id}/state/{target}:
+    post: {tags: [reports], summary: draft|submitted|accepted}
+  /projects/{projectId}/timesheets:
+    get: {tags: [reports]}
+    post: {tags: [reports], summary: Generate Stundenzettel {period,ap_id?,uid?}}
+  /projects/{projectId}/timesheets/{id}/submit:
+    post: {tags: [reports], summary: Pro sign-off chain}
+  /projects/{projectId}/timesheets/{id}/sign:
+    post: {tags: [reports]}
+  /projects/{projectId}/timesheets/{id}/reject:
+    post: {tags: [reports]}
+  /projects/{projectId}/nachweise:
+    get: {tags: [nachweis]}
+    post: {tags: [nachweis], summary: Generate immutable Nachweis {kind,period_from,period_to,supersedes_id?,reason?}}
+  /projects/{projectId}/nachweise/preview:
+    post: {tags: [nachweis], summary: Build payload without persisting}
+  /projects/{projectId}/nachweise/{id}:
+    get: {tags: [nachweis], summary: Payload + integrity check}
+  /projects/{projectId}/nachweise/{id}/download/{section}:
+    get: {tags: [nachweis], summary: Section file or zip}
+  /projects/{projectId}/members:
+    get: {tags: [admin]}
+    post: {tags: [admin]}
+  /projects/{projectId}/members/{uid}:
+    put: {tags: [admin]}
+    delete: {tags: [admin]}
+  /projects/{projectId}/grants:
+    get: {tags: [admin]}
+    post: {tags: [admin], summary: Auditor grant {nc_uid,name,firm,valid_from,valid_to,scope?}}
+  /projects/{projectId}/grants/{grantId}/revoke:
+    post: {tags: [admin]}
+  /projects/{projectId}/grants/{grantId}/reads:
+    get: {tags: [admin]}
+  /projects/{projectId}/ics-feed:
+    get: {tags: [admin], summary: Mint/reveal ICS URL}
+  /projects/{projectId}/ics-feed/rotate:
+    post: {tags: [admin]}
+  /projects/{projectId}/import/times:
+    post: {tags: [admin], summary: CSV import {preset,csv,filename}}
+  /projects/{projectId}/import/receipts:
+    post: {tags: [admin]}
+  /templates:
+    get: {tags: [admin]}
+  /templates/install:
+    post: {tags: [admin], summary: Pro — install template pack}
+  /settings/access:
+    get: {tags: [admin]}
+    put: {tags: [admin]}
+  /settings/seats:
+    get: {tags: [admin]}
+    post: {tags: [admin]}
+  /settings/seats/{uid}:
+    delete: {tags: [admin]}
+  /settings/notify:
+    get: {tags: [admin], summary: Per-user deadline-notification opt-out}
+    put: {tags: [admin]}
+  /directory/users:
+    get: {tags: [admin], parameters: [{name: q, in: query, required: true}]}
+  /directory/groups:
+    get: {tags: [admin], parameters: [{name: q, in: query, required: true}]}
+  /auditor/projects:
+    get: {tags: [auditor]}
+  /auditor/projects/{projectId}:
+    get: {tags: [auditor]}
+  /auditor/projects/{projectId}/soll-ist:
+    get: {tags: [auditor]}
+  /auditor/projects/{projectId}/belege:
+    get: {tags: [auditor]}
+  /auditor/projects/{projectId}/nachweise:
+    get: {tags: [auditor]}
+  /mobile/status:
+    get: {tags: [mobile]}
+  /mobile/projects/{projectId}/entries:
+    get: {tags: [mobile]}
+    post: {tags: [mobile]}
+components:
+  securitySchemes:
+    basicAuth: {type: http, scheme: basic}
+
+  # ---- appended 0.3.0: V2 surfaces ----------------------------------------
+  /projects/{projectId}/cofunders:
+    get: { summary: 'List co-funders (BQ-03 multi-funder)', parameters: [ { name: projectId, in: path, required: true, schema: { type: integer } } ] }
+    post: { summary: 'Create co-funder (finance role)', parameters: [ { name: projectId, in: path, required: true, schema: { type: integer } } ] }
+  /projects/{projectId}/cofunders/{id}:
+    delete: { summary: 'Delete co-funder — refused while positions reference it (COFUNDER_IN_USE)' }
+  /projects/{projectId}/drawdowns:
+    get: { summary: 'Mittelabruf history (NH-09)' }
+    post: { summary: 'Record drawdown; external_ref idempotent' }
+  /projects/{projectId}/drawdowns/{id}/decide:
+    post: { summary: 'receive (binds payment_id) or reject — terminal states' }
+  /projects/{projectId}/forecast:
+    get: { summary: 'Liquiditätsprognose (NH-01): cash, burn rate, runway, suggested drawdown — all minor units' }
+  /projects/{projectId}/claims:
+    get: { summary: 'Zinsen/Rückforderungen (NH-06)' }
+    post: { summary: 'kind=interest computes amount server-side act/360; kind=recovery takes amount_minor' }
+  /projects/{projectId}/claims/{id}/settle:
+    post: { summary: 'Settle an open claim (one-way transition)' }
+  /projects/{projectId}/readiness:
+    get: { summary: 'Prüfungsbereit checklist (NH-04): blocker/warning/info checks, ready flag' }
+  /projects/{projectId}/export/datev:
+    get: { summary: 'DATEV-naher Belegexport CSV (NH-07), finance role, audit-logged with sha256' }
+  /projects/{projectId}/sachbericht-suggestions:
+    get: { summary: 'Sachbericht-Textbausteine from submitted/accepted work reports (NH-08)' }
+  /projects/{projectId}/antrag:
+    get: { summary: 'Antragstellung document (NH-02): format=csv|ods|pdf, finance role, audit-logged' }
+  /mobile/projects/{projectId}/positions:
+    get: { summary: 'Active-plan positions for the mobile split picker (seat-gated)' }
+  /mobile/projects/{projectId}/receipts:
+    get: { summary: 'Receipts + splits, seat-gated' }
+    post: { summary: 'Book receipt; splits must sum to total; external_ref idempotent' }
+  /mobile/projects/{projectId}/timesheets:
+    get: { summary: 'Own Stundenzettel (state mirror), seat-gated' }

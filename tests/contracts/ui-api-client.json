@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "appId": "nachweischeck",
+  "companionDir": "mobile/nachweischeck",
+  "contracts": [
+    {
+      "id": "deviation-reason-required",
+      "param": "reason_text",
+      "description": "Recording a deviation requires a non-empty Begründung (VALIDATION_FAILED, field reason_text). The companion app has no deviation surface — web only.",
+      "errorCodes": [
+        "VALIDATION_FAILED"
+      ],
+      "server": [
+        {
+          "file": "lib/Service/DeviationService.php",
+          "needles": [
+            "'reason_text'",
+            "A justification (Begründung) is required."
+          ]
+        },
+        {
+          "file": "lib/Controller/DeviationApiController.php",
+          "needles": [
+            "$in['reason_text']"
+          ]
+        }
+      ],
+      "web": [
+        {
+          "file": "js/pages/workspace.js",
+          "needles": [
+            "'/deviations'",
+            "reason_text",
+            "required: true"
+          ]
+        }
+      ],
+      "mobile": null
+    },
+    {
+      "id": "reallocation-reason-required",
+      "param": "reason_text",
+      "description": "Requesting a budget reallocation (Umschichtung) requires a non-empty Begründung (VALIDATION_FAILED, field reason_text). The companion app has no reallocation surface — web only.",
+      "errorCodes": [
+        "VALIDATION_FAILED"
+      ],
+      "server": [
+        {
+          "file": "lib/Service/ReallocationService.php",
+          "needles": [
+            "'reason_text'",
+            "A justification (Begründung) is required."
+          ]
+        },
+        {
+          "file": "lib/Controller/FinanceApiController.php",
+          "needles": [
+            "$in['reason_text']"
+          ]
+        }
+      ],
+      "web": [
+        {
+          "file": "js/pages/workspace.js",
+          "needles": [
+            "'/reallocations'",
+            "reason_text",
+            "required: true"
+          ]
+        }
+      ],
+      "mobile": null
+    },
+    {
+      "id": "receipt-splits-sum-total",
+      "param": "splits",
+      "description": "Receipt splits must sum to the receipt total (VALIDATION_FAILED, field splits). Enforced identically on web, companion POST /receipts and CSV import.",
+      "errorCodes": [
+        "VALIDATION_FAILED"
+      ],
+      "server": [
+        {
+          "file": "lib/Support/SplitValidator.php",
+          "needles": [
+            "splits"
+          ]
+        },
+        {
+          "file": "lib/Controller/ReceiptApiController.php",
+          "needles": [
+            "splits"
+          ]
+        }
+      ],
+      "web": [
+        {
+          "file": "js/pages/workspace.js",
+          "needles": [
+            "'/receipts'",
+            "splits"
+          ]
+        }
+      ],
+      "mobile": [
+        {
+          "file": "src/api/client.ts",
+          "needles": [
+            "receipts",
+            "splits"
+          ]
+        }
+      ]
+    }
+  ]
+}

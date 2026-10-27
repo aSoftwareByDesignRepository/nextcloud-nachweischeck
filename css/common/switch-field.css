@@ -1,0 +1,144 @@
+/**
+ * Accessible switch (checkbox + visual track) — design-system / AZC parity.
+ * Selectors use #content.app-nachweischeck #app-content so they beat form-controls
+ * checkbox sizing (2 IDs) and .nw-form label display:block.
+ */
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field,
+.nw-nc-admin-settings .nw-switch-field {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--nw-space-3, 0.75rem);
+	margin: var(--nw-space-3) 0;
+	position: relative;
+	list-style: none;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input,
+.nw-nc-admin-settings .nw-switch-field__input {
+	/* The native input is visually replaced by the track, so its geometry
+	   must cover the whole control — not a 1px dot at the corner. AT and
+	   geometry checks (atlas-ui-invariants label-band rule) then see the
+	   real control bounds; clip/opacity keep it invisible, pointer-events
+	   stays off so the label owns all interaction. */
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	min-width: 0;
+	min-height: 0;
+	max-width: none;
+	max-height: none;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+	opacity: 0;
+	appearance: none;
+	-webkit-appearance: none;
+	background: transparent;
+	pointer-events: none;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input:focus-visible + .nw-switch-field__label .nw-switch-field__track,
+.nw-nc-admin-settings .nw-switch-field__input:focus-visible + .nw-switch-field__label .nw-switch-field__track {
+	outline: 3px solid var(--color-primary-element);
+	outline-offset: 2px;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__label,
+.nw-nc-admin-settings .nw-switch-field__label {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-3, 0.75rem);
+	cursor: pointer;
+	margin: 0;
+	margin-bottom: 0;
+	min-height: var(--nw-touch, 44px);
+	flex: 1;
+	min-width: 0;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track,
+.nw-nc-admin-settings .nw-switch-field__track {
+	display: inline-block;
+	position: relative;
+	flex: 0 0 3rem;
+	flex-shrink: 0;
+	box-sizing: border-box;
+	width: 3rem;
+	height: 1.625rem;
+	border-radius: var(--nw-radius-pill, 999px);
+	background: var(--color-background-darker, var(--color-background-dark));
+	border: 1px solid var(--nw-border-strong, var(--color-border));
+	transition: background 0.15s ease, border-color 0.15s ease;
+	vertical-align: middle;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track::after,
+.nw-nc-admin-settings .nw-switch-field__track::after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	inset-inline-start: 2px;
+	width: 1.25rem;
+	height: 1.25rem;
+	border-radius: 50%;
+	background: var(--color-main-background);
+	box-shadow: 0 1px 2px color-mix(in srgb, var(--color-main-text) 25%, transparent);
+	transition: transform 0.15s ease;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track,
+.nw-nc-admin-settings .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track {
+	background: var(--color-primary-element);
+	border-color: var(--color-primary-element);
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track::after,
+.nw-nc-admin-settings .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track::after {
+	transform: translateX(1.375rem);
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input:disabled + .nw-switch-field__label,
+.nw-nc-admin-settings .nw-switch-field__input:disabled + .nw-switch-field__label {
+	cursor: not-allowed;
+	opacity: 0.72;
+}
+
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__text,
+.nw-nc-admin-settings .nw-switch-field__text {
+	font-size: var(--nw-fs-md, 1rem);
+	font-weight: 600;
+	color: var(--color-main-text, var(--nw-text));
+	line-height: var(--nw-line-base, 1.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track,
+	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track::after,
+	.nw-nc-admin-settings .nw-switch-field__track,
+	.nw-nc-admin-settings .nw-switch-field__track::after {
+		transition: none;
+	}
+}
+
+@media (forced-colors: active) {
+	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track,
+	.nw-nc-admin-settings .nw-switch-field__track {
+		border: 2px solid CanvasText;
+	}
+	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track,
+	.nw-nc-admin-settings .nw-switch-field__input:checked + .nw-switch-field__label .nw-switch-field__track {
+		background: Highlight;
+		border-color: Highlight;
+	}
+	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track::after,
+	.nw-nc-admin-settings .nw-switch-field__track::after {
+		background: Canvas;
+	}
+}

@@ -1,0 +1,798 @@
+/* Auto-adapted from arbeitszeitcheck/css/common/page-patterns.css for the Check-family shell. Do not invent divergent layout rules here. */
+/**
+ * Shared page layout patterns (stack, grid, filters, empty states).
+ * Shell width modifiers live here; #app-content-wrapper.nw-shell in app.css sets base padding.
+ */
+
+/* ── Shell width ───────────────────────────────────────────── */
+#app-content.nw-app #app-content-wrapper.nw-shell--wide {
+	max-width: none;
+	margin-inline: 0;
+}
+
+#app-content.nw-app #app-content-wrapper.nw-shell--constrained {
+	max-width: 72rem;
+	margin-inline: auto;
+}
+
+#app-content.nw-app #app-content-wrapper.nw-shell--minimal {
+	max-width: 40rem;
+	margin-inline: auto;
+	padding: var(--nw-space-6) var(--nw-space-5);
+}
+
+/* ── Page stack (vertical rhythm inside main) ───────────────── */
+#app-content.nw-app .nw-page-stack {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--nw-space-5);
+	width: 100%;
+	min-width: 0;
+}
+
+#app-content.nw-app .nw-page-stack > * {
+	margin: 0;
+}
+
+/* ── Two-column page grid (admin stats, side-by-side cards) ─── */
+/* Mobile-first: single column; ≥769px restores 2-col desktop grid */
+#app-content.nw-app .nw-page-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--nw-space-5);
+	width: 100%;
+	min-width: 0;
+}
+
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-page-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+/* ── Legacy .section reset inside app shell ─────────────────── */
+#app-content.nw-app #nw-main-content .section {
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+#app-content.nw-app #nw-main-content .section::before {
+	display: none;
+}
+
+/* ── Filter panel (list pages — AZC parity, fluid ProjectCheck grid) ── */
+#app-content.nw-app .nw-filter-panel {
+	border-left: 4px solid var(--color-primary-element);
+}
+
+#app-content.nw-app .nw-filter-panel__head {
+	margin-bottom: 0;
+}
+
+#app-content.nw-app .nw-filter-panel__head h2 {
+	margin: 0 0 var(--nw-space-2);
+	font-size: var(--nw-fs-lg);
+	font-weight: 600;
+	line-height: var(--nw-line-tight);
+}
+
+#app-content.nw-app .nw-filter-panel__intro {
+	margin: 0;
+	max-width: 65ch;
+	font-size: var(--nw-fs-sm);
+	line-height: var(--nw-line-base);
+	color: var(--nw-muted);
+}
+
+/*
+ * Filter body: padded stack for panel chrome. The form itself is a CSS
+ * grid (not flex column) so nested .nw-form-grid / field grids keep their
+ * columns — ID-scoped flex on __form used to flatten every child to 1 col.
+ */
+#app-content.nw-app .nw-filter-panel__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-4);
+	min-width: 0;
+}
+
+#app-content.nw-app .nw-filter-panel__form {
+	display: grid;
+	gap: var(--nw-space-4);
+	min-width: 0;
+	align-content: start;
+}
+
+/*
+ * Filter field grid — one even responsive grid for every Filters panel
+ * (Claim, Assets, Utilisation, On-site report). ProjectCheck pattern:
+ * auto-fit + minmax(…, 1fr) so columns share the full width with equal
+ * gaps — no capped tracks leaving a dead strip on the right, no empty
+ * auto-fill ghost columns. AZC subgrid keeps labels/controls on one baseline.
+ * Legacy modifiers (--fill/--record/--compact/--extended) resolve to the
+ * same grid so old markup cannot drift into a second layout.
+ * Fallback without subgrid: top-align cells (same as .nw-fieldset__grid).
+ */
+#app-content.nw-app .nw-filter-grid,
+#app-content.nw-app .nw-filter-grid--compact,
+#app-content.nw-app .nw-filter-grid--extended,
+#app-content.nw-app .nw-filter-grid--fill,
+#app-content.nw-app .nw-filter-grid--record {
+	display: grid;
+	/* Mobile-first: one field per row (<768); auto-fit from tablet up */
+	grid-template-columns: 1fr;
+	grid-auto-rows: auto minmax(44px, auto);
+	column-gap: var(--nw-space-3);
+	row-gap: var(--nw-space-3);
+	justify-content: stretch;
+	align-items: stretch;
+	width: 100%;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* ≥769px: even auto-fit columns (NC tablet+ / desktop filter panels) */
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-filter-grid,
+	#app-content.nw-app .nw-filter-grid--compact,
+	#app-content.nw-app .nw-filter-grid--extended,
+	#app-content.nw-app .nw-filter-grid--fill,
+	#app-content.nw-app .nw-filter-grid--record {
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+		column-gap: var(--nw-space-4);
+		row-gap: var(--nw-space-4);
+	}
+}
+
+/*
+ * Exact two-field toolbars (Assets Site|Name). auto-fit can still wrap under
+ * ~24rem+gutter and look like a broken stacked form — pin two equal columns
+ * from tablet up; mobile stays 1fr from base rule.
+ */
+#app-content.nw-app .nw-filter-grid--pair {
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-filter-grid--pair {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+#app-content.nw-app .nw-filter-field {
+	display: grid;
+	grid-template-rows: subgrid;
+	grid-row: span 2;
+	gap: var(--nw-space-2);
+	min-width: 0;
+	margin: 0;
+	align-self: stretch;
+}
+
+#app-content.nw-app .nw-filter-field__label {
+	display: block;
+	margin: 0;
+	padding: 0;
+	font-size: 0.8125rem;
+	font-weight: 700;
+	line-height: 1.3;
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+	min-height: 1.3em;
+}
+
+#app-content.nw-app .nw-filter-field__control {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-1);
+	min-width: 0;
+	min-height: 44px;
+	/* Top of the shared control track — never flex-end (hints would shove siblings down). */
+	justify-content: flex-start;
+}
+
+#app-content.nw-app .nw-filter-field__control > .nw-input,
+#app-content.nw-app .nw-filter-field__control > input,
+#app-content.nw-app .nw-filter-field__control > select,
+#app-content.nw-app .nw-filter-field__control > textarea {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	min-height: 44px;
+}
+
+#app-content.nw-app .nw-filter-field__control > .nw-form-row__hint {
+	margin: 0;
+	font-size: var(--nw-fs-xs, 0.75rem);
+	line-height: 1.35;
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-filter-field.has-error .nw-form-row__error {
+	display: block;
+}
+
+#app-content.nw-app .nw-filter-field.has-error input,
+#app-content.nw-app .nw-filter-field.has-error select,
+#app-content.nw-app .nw-filter-field.has-error textarea {
+	border-color: var(--color-error-text, var(--color-element-error));
+	box-shadow: 0 0 0 1px var(--color-error-text, var(--color-element-error));
+}
+
+/* Checkbox: spacer label keeps the control on the shared input row */
+#app-content.nw-app .nw-filter-field--checkbox .nw-filter-field__control {
+	min-height: 44px;
+	justify-content: flex-start;
+}
+
+#app-content.nw-app .nw-filter-field--checkbox .nw-checkbox-row {
+	min-height: 44px;
+	align-items: center;
+}
+
+#app-content.nw-app .nw-filter-field--wide,
+#app-content.nw-app .nw-filter-field--full,
+#app-content.nw-app .nw-filter-grid > .nw-choice-group {
+	grid-column: 1 / -1;
+}
+
+/* Choice groups are not label/control pairs — still occupy one logical field row */
+#app-content.nw-app .nw-filter-grid > .nw-choice-group {
+	grid-row: span 2;
+}
+
+#app-content.nw-app .nw-filter-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--nw-space-3);
+	min-height: 44px;
+	min-width: 0;
+	/* Mobile: full-width action row */
+	width: 100%;
+}
+
+#app-content.nw-app .nw-filter-actions .nw-btn,
+#app-content.nw-app .nw-filter-actions .button {
+	min-height: 44px;
+	min-width: 44px;
+	flex: 1 1 auto;
+}
+
+/* ≥769px: actions shrink to content beside filter fields */
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-filter-actions {
+		width: auto;
+	}
+
+	#app-content.nw-app .nw-filter-actions .nw-btn,
+	#app-content.nw-app .nw-filter-actions .button {
+		flex: 0 0 auto;
+	}
+}
+
+/* Action row under the field grid — even separator, never jammed against inputs */
+#app-content.nw-app .nw-filter-panel__form > .nw-filter-actions {
+	margin-top: var(--nw-space-2);
+	padding-top: var(--nw-space-4);
+	border-top: 1px solid var(--nw-border, var(--color-border));
+}
+
+#app-content.nw-app .nw-filter-grid > .nw-filter-actions {
+	grid-row: span 2;
+	align-self: end;
+	margin-top: 0;
+	padding-top: 0;
+	border-top: 0;
+}
+
+@supports not (grid-template-rows: subgrid) {
+	#app-content.nw-app .nw-filter-grid {
+		grid-auto-rows: auto;
+		align-items: start;
+	}
+
+	#app-content.nw-app .nw-filter-field {
+		display: flex;
+		flex-direction: column;
+		grid-row: auto;
+		gap: var(--nw-space-2);
+	}
+
+	#app-content.nw-app .nw-filter-grid > .nw-choice-group,
+	#app-content.nw-app .nw-filter-grid > .nw-filter-actions {
+		grid-row: auto;
+	}
+}
+
+#app-content.nw-app .nw-filter-field__control .form-input[aria-invalid='true'],
+#app-content.nw-app .nw-filter-field__control .form-select[aria-invalid='true'],
+#app-content.nw-app .nw-filter-field__control [aria-invalid='true'] {
+	border-color: var(--color-error-text, var(--color-element-error));
+	outline-color: var(--color-error-text, var(--color-element-error));
+}
+
+/* Claim / multi-section filters: calm fieldsets inside the panel body */
+#app-content.nw-app .nw-filter-panel__form .nw-fieldset {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-3);
+	background-color: transparent;
+}
+
+#app-content.nw-app .nw-filter-panel__form .nw-fieldset > .nw-fieldset__legend {
+	font-size: 0.9375rem;
+	font-weight: 700;
+	padding-bottom: var(--nw-space-2);
+	margin: 0;
+	border-bottom: 1px solid var(--nw-border);
+	color: var(--nw-text);
+}
+
+#app-content.nw-app .nw-date-range {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: var(--nw-space-2) var(--nw-space-3);
+}
+
+#app-content.nw-app .nw-date-range__part {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-1);
+	min-width: 0;
+	flex: 1 1 8rem;
+}
+
+#app-content.nw-app .nw-date-range__sublabel {
+	font-size: var(--nw-fs-xs);
+	font-weight: 500;
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-date-range__sep {
+	align-self: flex-end;
+	padding-bottom: 0.65rem;
+	color: var(--nw-muted);
+	font-size: var(--nw-fs-sm);
+}
+
+/* ── Empty / loading states ─────────────────────────────────── */
+#app-content.nw-app .nw-empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nw-space-3);
+	padding: var(--nw-space-7) var(--nw-space-5);
+	text-align: center;
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-empty-state__title {
+	margin: 0;
+	font-size: var(--nw-fs-lg);
+	font-weight: 600;
+	color: var(--nw-text);
+}
+
+#app-content.nw-app .nw-empty-state__text {
+	margin: 0;
+	max-width: 42ch;
+	font-size: var(--nw-fs-sm);
+	line-height: var(--nw-line-base);
+}
+
+/* Error variant: danger-tinted panel so a failed load never reads as empty data. */
+#app-content.nw-app .nw-empty-state--error {
+	color: var(--nw-text);
+	border: 1px solid var(--nw-border-strong, var(--color-border-maxcontrast));
+	border-left: 4px solid var(--nw-danger-fill, var(--color-element-error, var(--color-error)));
+	border-radius: var(--nw-radius-md, 12px);
+	background: var(--nw-bg-soft, var(--color-background-dark));
+	align-items: flex-start;
+	text-align: left;
+}
+
+#app-content.nw-app .nw-empty-state--error .nw-empty-state__text {
+	max-width: none;
+}
+
+#app-content.nw-app .nw-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--nw-space-3);
+	padding: var(--nw-space-6);
+	color: var(--nw-muted);
+	font-size: var(--nw-fs-sm);
+}
+
+#app-content.nw-app .nw-loading[aria-busy="true"]::before {
+	content: '';
+	width: 1.25rem;
+	height: 1.25rem;
+	border: 2px solid var(--nw-border);
+	border-top-color: var(--color-primary-element);
+	border-radius: 50%;
+	animation: dc-spin 0.8s linear infinite;
+}
+
+@keyframes dc-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#app-content.nw-app .nw-loading[aria-busy="true"]::before {
+		animation: none;
+		border-top-color: var(--nw-border);
+	}
+}
+
+/* Nextcloud personal settings panel (outside app shell) */
+#nachweischeck-personal-settings.nw-nc-settings-panel {
+	max-width: 52rem;
+}
+
+#nachweischeck-personal-settings .settings-hint {
+	max-width: 60ch;
+	line-height: var(--nw-line-base, 1.5);
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+}
+
+#nachweischeck-personal-settings .settings-subheading {
+	margin: var(--nw-space-5, 1.25rem) 0 var(--nw-space-2, 0.5rem);
+	font-size: var(--nw-fs-md, 1rem);
+	font-weight: 600;
+}
+
+#nachweischeck-personal-settings .nw-btn + .nw-btn {
+	margin-inline-start: var(--nw-space-2, 0.5rem);
+}
+
+/* Filter panel cards use dc-card header/body padding (app.css); accent bar only on .nw-filter-panel */
+
+/* ── Data tables (single convention app-wide) ─────────────────
+   Markup: .table-container > .table.table--hover
+   Legacy aliases: .table-responsive, .nw-table-wrap, .grid-table, .nachweischeck-table
+   Actions column: .nw-table-actions-col + .nw-table-actions
+   Matrix tables: .nw-table--matrix (admin notification grids)
+   Card layout on narrow screens: .nw-table--responsive + data-label on td
+   ───────────────────────────────────────────────────────────── */
+#app-content.nw-app .table-container,
+#app-content.nw-app .table-responsive,
+#app-content.nw-app .nw-table-wrap {
+	margin: 0;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+	overflow-x: auto;
+	overflow-y: visible;
+	-webkit-overflow-scrolling: touch;
+	scroll-padding-inline-end: var(--nw-space-4, 1rem);
+}
+
+#app-content.nw-app .nw-card__body > .table-container,
+#app-content.nw-app .nw-card__body > .table-responsive,
+#app-content.nw-app .nw-card__body > .nw-table-wrap {
+	margin-block: 0;
+}
+
+#app-content.nw-app .table-container .table,
+#app-content.nw-app .table-container .grid-table,
+#app-content.nw-app .table-container .nachweischeck-table,
+#app-content.nw-app .table-container .report-table,
+#app-content.nw-app .table-responsive .table,
+#app-content.nw-app .table-responsive .grid-table,
+#app-content.nw-app .nw-table-wrap .table,
+#app-content.nw-app .nw-table-wrap .grid-table {
+	margin-bottom: 0;
+	width: 100%;
+	table-layout: auto;
+}
+
+/* Desktop: fill available width; scroll horizontally only when columns need more space */
+@media (min-width: 769px) {
+	#app-content.nw-app .table-container .table:not(.nw-table--matrix),
+	#app-content.nw-app .table-container .grid-table:not(.nw-table--matrix),
+	#app-content.nw-app .table-container .nachweischeck-table:not(.nw-table--matrix),
+	#app-content.nw-app .table-responsive .table:not(.nw-table--matrix),
+	#app-content.nw-app .table-responsive .grid-table:not(.nw-table--matrix),
+	#app-content.nw-app .nw-table-wrap .table:not(.nw-table--matrix),
+	#app-content.nw-app .nw-table-wrap .grid-table:not(.nw-table--matrix) {
+		width: 100%;
+		min-width: max-content;
+	}
+}
+
+/* Legacy alias tables keep NC core's td { white-space: nowrap } — give
+   their cells an explicit wrap path so long values never clip at the
+   screen edge (WCAG 1.4.10 reflow; the farm's table_actions_fit gate). */
+#app-content.nw-app .grid-table td,
+#app-content.nw-app .nw-table td,
+.nw-pub .nw-table td {
+	white-space: normal;
+}
+
+#app-content.nw-app .table thead th,
+#app-content.nw-app .grid-table thead th,
+#app-content.nw-app .nw-table thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background-color: var(--nachweischeck-color-table-header-background, var(--color-background-dark));
+	box-shadow: 0 1px 0 var(--nachweischeck-color-table-border, var(--color-border));
+}
+
+#app-content.nw-app .table tbody tr:focus-within,
+#app-content.nw-app .grid-table tbody tr:focus-within {
+	outline: 2px solid var(--color-primary-element);
+	outline-offset: -2px;
+}
+
+#app-content.nw-app .table td.nw-table-empty,
+#app-content.nw-app .table td.nw-table-loading,
+#app-content.nw-app .grid-table td.nw-table-empty,
+#app-content.nw-app .grid-table td.nw-table-loading,
+#app-content.nw-app .table td.text-center:not(:only-child),
+#app-content.nw-app .grid-table td.text-center:not(:only-child) {
+	text-align: center;
+	color: var(--nw-muted, var(--color-text-maxcontrast));
+	font-size: var(--nw-fs-sm, 0.875rem);
+	padding: var(--nw-space-5, 1.25rem) var(--nw-space-4, 1rem);
+}
+
+#app-content.nw-app .table td .nw-empty-state,
+#app-content.nw-app .grid-table td .nw-empty-state {
+	padding: var(--nw-space-5, 1.25rem) var(--nw-space-3, 0.75rem);
+}
+
+#app-content.nw-app .table .nw-table-actions,
+#app-content.nw-app .grid-table .nw-table-actions,
+#app-content.nw-app .table .admin-holidays__row-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2, 0.5rem);
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/* Actions column: never shrink below button labels (avoid width:1% clipping) */
+#app-content.nw-app .table th.nw-table-actions-col,
+#app-content.nw-app .table th.actions-col,
+#app-content.nw-app .table td.actions-cell,
+#app-content.nw-app .table td.nw-table-actions-col,
+#app-content.nw-app .table td.admin-ot-audit__actions,
+#app-content.nw-app .table td.admin-tariff-rules__row-actions,
+#app-content.nw-app .table td.layer-card__history-actions,
+#app-content.nw-app .grid-table th.nw-table-actions-col,
+#app-content.nw-app .grid-table td.actions-cell,
+#app-content.nw-app .grid-table td.nw-table-actions-col {
+	text-align: right;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: auto;
+	min-width: max-content;
+	max-width: none;
+	overflow: visible;
+}
+
+#app-content.nw-app .table td.actions-cell,
+#app-content.nw-app .table td.nw-table-actions-col,
+#app-content.nw-app .table td.admin-ot-audit__actions,
+#app-content.nw-app .table td.admin-tariff-rules__row-actions,
+#app-content.nw-app .table td.layer-card__history-actions,
+#app-content.nw-app .grid-table td.actions-cell,
+#app-content.nw-app .grid-table td.nw-table-actions-col {
+	display: table-cell;
+}
+
+#app-content.nw-app .table td.nw-table-actions-col .btn,
+#app-content.nw-app .table td.actions-cell .btn,
+#app-content.nw-app .table .nw-table-actions .btn,
+#app-content.nw-app .grid-table td.actions-cell .btn,
+#app-content.nw-app .grid-table .nw-table-actions .btn {
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+/* Truncated text columns — do not steal space from actions */
+#app-content.nw-app .table td.description-cell,
+#app-content.nw-app .table td.reason-cell {
+	max-width: min(20rem, 30vw);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-table-meta {
+	margin: var(--nw-space-3, 0.75rem) 0 0;
+	font-size: var(--nw-fs-sm, 0.875rem);
+	color: var(--nw-muted, var(--color-text-maxcontrast));
+}
+
+/* Report preview + dynamic HTML tables */
+#app-content.nw-app .report-preview-content .table-container,
+#app-content.nw-app .report-preview-content .report-table {
+	margin-top: var(--nw-space-3, 0.75rem);
+}
+
+#app-content.nw-app .report-preview-content .report-table {
+	border-collapse: collapse;
+	font-size: var(--nw-fs-sm, 0.875rem);
+}
+
+#app-content.nw-app .report-preview-content .table-container .report-table {
+	margin-bottom: 0;
+}
+
+/* Notification matrices — not row lists; keep compact grid */
+#app-content.nw-app .nw-table--matrix {
+	font-size: var(--nw-fs-sm, 0.875rem);
+}
+
+#app-content.nw-app .nw-table--matrix th,
+#app-content.nw-app .nw-table--matrix td {
+	text-align: center;
+	vertical-align: middle;
+	padding: var(--nw-space-2, 0.5rem);
+}
+
+#app-content.nw-app .nw-table--matrix thead th {
+	position: static;
+	box-shadow: none;
+}
+
+@media (max-width: 768.98px) {
+	/* Dense list tables without card reflow: horizontal scroll */
+	#app-content.nw-app .table-container .table:not(.nw-table--matrix):not(.nw-table--responsive),
+	#app-content.nw-app .table-container .grid-table:not(.nw-table--matrix):not(.nw-table--responsive) {
+		min-width: 36rem;
+	}
+
+	#app-content.nw-app .table .nw-table-actions {
+		justify-content: flex-start;
+	}
+
+	/* Card reflow: every field + action reachable without sideways scrolling */
+	#app-content.nw-app .table-container:has(.nw-table--responsive) {
+		overflow-x: visible;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive,
+	#app-content.nw-app .table.nw-table--responsive tbody,
+	#app-content.nw-app .table.nw-table--responsive tr,
+	#app-content.nw-app .table.nw-table--responsive td {
+		display: block;
+		width: 100%;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive {
+		min-width: 0;
+		border-collapse: collapse;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody tr {
+		margin-bottom: var(--nw-space-4, 1rem);
+		padding: var(--nw-space-3, 0.75rem) var(--nw-space-4, 1rem);
+		border: 1px solid var(--nw-border, var(--color-border));
+		border-radius: var(--nw-radius-sm, 8px);
+		background: var(--nw-bg-card, var(--color-main-background));
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody tr:last-child {
+		margin-bottom: 0;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: var(--nw-space-4, 1rem);
+		padding: var(--nw-space-2, 0.5rem) 0;
+		border-bottom: 1px solid var(--nw-border, var(--color-border));
+		text-align: right;
+		max-width: none;
+		overflow: visible;
+		white-space: normal;
+		text-overflow: clip;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td:last-child {
+		border-bottom: none;
+		padding-bottom: 0;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td::before {
+		content: attr(data-label);
+		flex: 0 0 auto;
+		text-align: left;
+		font-weight: 600;
+		color: var(--nw-muted, var(--color-text-maxcontrast));
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td.description-cell,
+	#app-content.nw-app .table.nw-table--responsive tbody td.reason-cell,
+	#app-content.nw-app .table.nw-table--responsive tbody td.actions-cell,
+	#app-content.nw-app .table.nw-table--responsive tbody td.admin-ot-audit__actions,
+	#app-content.nw-app .table.nw-table--responsive tbody td.admin-tariff-rules__row-actions,
+	#app-content.nw-app .table.nw-table--responsive tbody td.layer-card__history-actions {
+		flex-direction: column;
+		align-items: stretch;
+		text-align: left;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td.actions-cell .nw-table-actions {
+		width: 100%;
+		justify-content: stretch;
+		flex-direction: column;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td.actions-cell .nw-table-actions .btn,
+	#app-content.nw-app .table.nw-table--responsive tbody td.actions-cell .btn,
+	#app-content.nw-app .table.nw-table--responsive tbody td.admin-ot-audit__actions .btn,
+	#app-content.nw-app .table.nw-table--responsive tbody td.admin-tariff-rules__row-actions .btn,
+	#app-content.nw-app .table.nw-table--responsive tbody td.layer-card__history-actions .btn {
+		width: 100%;
+		justify-content: center;
+		min-height: 44px;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td.actions-cell .btn-icon {
+		width: 46px;
+		height: 46px;
+		min-width: 46px;
+		min-height: 46px;
+		align-self: flex-end;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td[colspan] {
+		display: block;
+		justify-content: center;
+		text-align: center;
+	}
+
+	#app-content.nw-app .table.nw-table--responsive tbody td[colspan]::before {
+		content: none;
+	}
+}
+
+@media (forced-colors: active) {
+	#app-content.nw-app .table-container,
+	#app-content.nw-app .table-responsive,
+	#app-content.nw-app .nw-table-wrap {
+		border-color: CanvasText;
+	}
+
+	#app-content.nw-app .table--hover tbody tr:hover,
+	#app-content.nw-app .grid-table.table--hover tbody tr:hover {
+		background: Highlight;
+		color: HighlightText;
+	}
+}

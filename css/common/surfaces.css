@@ -1,0 +1,932 @@
+/* NachweisCheck app surfaces — tokens live in css/common/tokens.css
+ * (spacing/type scale, NC theme colors, tint + control vars).
+ * Mobile-first; ≥768px / ≥1024px widen. WCAG 2.1 AA: 44px touch targets,
+ * visible focus, forced-colors + reduced-motion variants at the bottom.
+ */
+
+/*
+ * The HTML `hidden` attribute alone loses to component display rules
+ * (DESIGN-SYSTEM §3: NC `section { display:block }` and flex utilities win).
+ * One scoped guard keeps every toggle honest.
+ */
+#app-content.nw-app [hidden] {
+	display: none !important;
+}
+
+/* ── Layout primitives ─────────────────────────────────────── */
+
+#app-content.nw-app .nw-card-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--nw-space-4);
+	margin-block: var(--nw-space-4);
+}
+
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-card-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+#app-content.nw-app .nw-panel {
+	background: var(--nw-bg-card);
+	border: 1px solid var(--nw-border);
+	border-radius: var(--nw-radius-lg);
+	padding: var(--nw-space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-3);
+	min-width: 0; /* grid overflow guard */
+}
+
+#app-content.nw-app .nw-panel--wide {
+	grid-column: 1 / -1;
+}
+
+#app-content.nw-app .nw-panel__title {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-2);
+	margin: 0;
+	font-size: var(--nw-fs-lg);
+	line-height: var(--nw-line-tight);
+}
+
+#app-content.nw-app .nw-panel__title svg {
+	width: var(--nw-icon-md);
+	height: var(--nw-icon-md);
+	stroke-width: var(--nw-icon-stroke);
+	color: var(--nw-muted);
+	flex-shrink: 0;
+}
+
+/* ── Stat strip ────────────────────────────────────────────── */
+
+#app-content.nw-app .nw-stat-row {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--nw-space-3);
+	margin-block: var(--nw-space-4);
+}
+
+@media (min-width: 769px) {
+	#app-content.nw-app .nw-stat-row {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+#app-content.nw-app a.nw-stat {
+	text-decoration: none;
+	color: inherit;
+}
+#app-content.nw-app a.nw-stat:hover,
+#app-content.nw-app a.nw-stat:focus-visible {
+	border-color: var(--color-primary, var(--color-primary-element));
+}
+
+#app-content.nw-app .nw-stat {
+	background: var(--nw-bg-card);
+	border: 1px solid var(--nw-border);
+	border-left: 4px solid var(--nw-border-strong);
+	border-radius: var(--nw-radius-md);
+	padding: var(--nw-space-3) var(--nw-space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-1);
+}
+
+#app-content.nw-app .nw-stat--warn { border-left-color: var(--color-warning, #eca700); }
+#app-content.nw-app .nw-stat--danger { border-left-color: var(--color-error, #e9322d); }
+
+#app-content.nw-app .nw-stat__value {
+	font-size: var(--nw-fs-2xl);
+	font-weight: 700;
+	line-height: var(--nw-line-tight);
+	font-variant-numeric: var(--nw-tab-num);
+}
+
+#app-content.nw-app .nw-stat__label {
+	font-size: var(--nw-fs-sm);
+	color: var(--nw-muted);
+}
+
+/* ── Badges (variants beyond the shared --neutral) ─────────── */
+
+#app-content.nw-app .nw-badge--success {
+	background: var(--nw-tint-success);
+	color: var(--color-success-text, var(--color-success));
+}
+
+#app-content.nw-app .nw-badge--warn {
+	background: var(--nw-tint-warning);
+	color: var(--color-warning-text, var(--color-warning, #8a6d00));
+}
+
+#app-content.nw-app .nw-badge--danger {
+	background: var(--nw-tint-danger);
+	color: var(--color-error-text, var(--color-error));
+}
+
+/* ── Buttons (variants beyond shared primary/secondary/danger/ghost/sm) ── */
+
+#app-content.nw-app .nw-btn--warn {
+	background: var(--nw-tint-warning);
+	color: var(--color-warning-text, var(--color-warning, #8a6d00));
+	border: 1px solid var(--nw-border-strong);
+}
+
+#app-content.nw-app .nw-btn--small {
+	min-height: 36px;
+	padding: var(--nw-space-1) var(--nw-space-3);
+	font-size: var(--nw-fs-sm);
+}
+
+#app-content.nw-app .nw-list-cards {
+	list-style: none;
+	margin: var(--nw-space-3) 0 0;
+	padding: 0;
+	border-top: 1px solid var(--nw-border);
+}
+
+#app-content.nw-app .nw-list-cards > li {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2) var(--nw-space-4);
+	padding: var(--nw-space-3) var(--nw-space-1);
+	border-bottom: 1px solid var(--nw-border);
+}
+
+#app-content.nw-app .nw-list-cards > li > :first-child {
+	flex: 1 1 16rem;
+	min-width: 0;
+}
+
+#app-content.nw-app .nw-btn-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-3);
+}
+
+/* ── Form primitives ───────────────────────────────────────── */
+
+#app-content.nw-app .nw-fieldset {
+	border: 1px solid var(--nw-border);
+	border-radius: var(--nw-radius-md);
+	padding: var(--nw-space-4);
+	margin: 0 0 var(--nw-space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-4);
+}
+
+#app-content.nw-app .nw-fieldset legend {
+	font-weight: 600;
+	/* NC core centres legends on #body-public — pin ours to the start edge */
+	text-align: start;
+	padding: 0 var(--nw-space-2);
+}
+
+/* Stacked forms: the form owns the field rhythm. Without this, sibling
+   .nw-field blocks have 0px between them while label→input inside each
+   field is larger — labels visually attach to the previous control. */
+#app-content.nw-app .nw-form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-3);
+}
+/* Column stretch would balloon lone submit buttons to full width — keep
+   actions content-sized; .nw-form-actions rows handle grouped buttons. */
+#app-content.nw-app .nw-form > .nw-btn {
+	align-self: flex-start;
+}
+
+#app-content.nw-app .nw-field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-1);
+	min-width: 0;
+	flex: 1 1 auto;
+}
+
+#app-content.nw-app .nw-field-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-3);
+}
+
+#app-content.nw-app .nw-field-row > .nw-field {
+	flex: 1 1 180px;
+	min-width: 0;
+}
+
+#app-content.nw-app .nw-label {
+	font-weight: 600;
+	font-size: var(--nw-fs-sm);
+}
+
+#app-content.nw-app .nw-input,
+#app-content.nw-app .nw-select,
+#app-content.nw-app .nw-textarea {
+	width: 100%;
+	min-height: var(--nw-touch);
+	padding: var(--nw-space-2) var(--nw-space-3);
+	border: 1px solid var(--nw-form-border);
+	border-radius: var(--nw-radius-sm);
+	background-color: var(--nw-bg-card);
+	color: var(--nw-text);
+	font-size: var(--nw-fs-md);
+	font-family: inherit;
+	box-sizing: border-box;
+}
+
+#app-content.nw-app .nw-textarea {
+	min-height: 5.5rem;
+	resize: vertical;
+}
+
+#app-content.nw-app .nw-input:focus-visible,
+#app-content.nw-app .nw-select:focus-visible,
+#app-content.nw-app .nw-textarea:focus-visible {
+	outline: var(--nw-focus);
+	outline-offset: var(--nw-focus-offset);
+	border-color: var(--nw-primary);
+}
+
+#app-content.nw-app .nw-input[aria-invalid="true"],
+#app-content.nw-app .nw-select[aria-invalid="true"],
+#app-content.nw-app .nw-textarea[aria-invalid="true"] {
+	border-color: var(--color-error);
+}
+
+#app-content.nw-app .nw-input--amount { max-width: 11rem; font-variant-numeric: var(--nw-tab-num); }
+#app-content.nw-app .nw-input--currency { max-width: 5.5rem; text-transform: uppercase; }
+
+#app-content.nw-app .nw-field__hint {
+	margin: 0;
+	font-size: var(--nw-fs-sm);
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-form-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-3);
+	margin-block-start: var(--nw-space-4);
+}
+
+/* Checkbox chips (lead-day pickers) — large touch targets, no color-only cue */
+
+#app-content.nw-app .nw-check-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-check {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-2);
+	min-height: var(--nw-touch);
+	padding: var(--nw-space-1) var(--nw-space-3);
+	border: 1px solid var(--nw-control-border);
+	border-radius: var(--nw-radius-pill);
+	cursor: pointer;
+	background: var(--nw-bg-card);
+	font-size: var(--nw-fs-md);
+	user-select: none;
+}
+
+#app-content.nw-app .nw-check input {
+	width: 1.125rem;
+	height: 1.125rem;
+	accent-color: var(--nw-primary);
+	margin: 0;
+}
+
+#app-content.nw-app .nw-check:has(input:checked) {
+	background: var(--nw-tint-info);
+	border-color: var(--nw-primary);
+	font-weight: 600;
+}
+
+#app-content.nw-app .nw-check:focus-within {
+	outline: var(--nw-focus);
+	outline-offset: var(--nw-focus-offset);
+}
+
+/* Inline add-forms (cost rows, pickers) */
+
+#app-content.nw-app .nw-inline-form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2);
+	align-items: center;
+}
+
+#app-content.nw-app .nw-inline-form .nw-input { flex: 1 1 140px; width: auto; }
+#app-content.nw-app .nw-inline-form .nw-select { width: auto; }
+
+/* ── Toolbar (search + filters above lists) ────────────────── */
+
+#app-content.nw-app .nw-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: var(--nw-space-3);
+	margin-block: var(--nw-space-4);
+}
+
+#app-content.nw-app .nw-toolbar__search { flex: 1 1 220px; }
+#app-content.nw-app .nw-toolbar__actions {
+	display: flex;
+	gap: var(--nw-space-2);
+	margin-inline-start: auto;
+}
+#app-content.nw-app .nw-toolbar__archived { align-self: center; }
+
+/* ── Tables ────────────────────────────────────────────────── */
+
+#app-content.nw-app .nw-table-wrap {
+	overflow-x: auto;
+	border: 1px solid var(--nw-border);
+	border-radius: var(--nw-radius-md);
+	background: var(--nw-bg-card);
+}
+
+#app-content.nw-app .nw-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--nw-fs-md);
+}
+
+#app-content.nw-app .nw-table th {
+	text-align: start;
+	font-weight: 600;
+	font-size: var(--nw-fs-sm);
+	color: var(--nw-muted);
+	padding: var(--nw-space-3) var(--nw-space-4);
+	border-bottom: 1px solid var(--nw-border-strong);
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-table td {
+	padding: var(--nw-space-3) var(--nw-space-4);
+	border-bottom: 1px solid var(--nw-border);
+	vertical-align: middle;
+}
+
+#app-content.nw-app .nw-table tbody tr:last-child td { border-bottom: none; }
+#app-content.nw-app .nw-table tbody tr:hover { background: var(--nw-bg-soft); }
+#app-content.nw-app .nw-table--compact td,
+#app-content.nw-app .nw-table--compact th {
+	padding: var(--nw-space-2) var(--nw-space-3);
+}
+
+#app-content.nw-app .nw-table__actions {
+	text-align: end;
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-table__actions .nw-btn { margin-inline-start: var(--nw-space-1); }
+#app-content.nw-app .nw-num { font-variant-numeric: var(--nw-tab-num); text-align: end; }
+
+/* ── Deadline list (dashboard panels) ──────────────────────── */
+
+#app-content.nw-app .nw-deadline-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#app-content.nw-app .nw-deadline-list__item + .nw-deadline-list__item {
+	border-top: 1px solid var(--nw-border);
+}
+
+#app-content.nw-app .nw-deadline-list__link {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-3);
+	padding: var(--nw-space-3) var(--nw-space-2);
+	min-height: var(--nw-touch);
+	border-radius: var(--nw-radius-sm);
+	text-decoration: none;
+	color: var(--nw-text);
+}
+
+#app-content.nw-app .nw-deadline-list__link:hover {
+	background: var(--nw-bg-soft);
+}
+
+#app-content.nw-app .nw-deadline-list__link:focus-visible {
+	outline: var(--nw-focus);
+	outline-offset: var(--nw-focus-offset);
+}
+
+#app-content.nw-app .nw-deadline-list__title {
+	font-weight: 600;
+	flex-shrink: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-deadline-list__meta {
+	font-size: var(--nw-fs-sm);
+	color: var(--nw-muted);
+	/* Long meta text must ellipsize — without min-width:0 the flex item
+	   can't shrink below content width and shoves the status badge
+	   (flex-shrink:0, margin-inline-start:auto) fully off the card. */
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-deadline-list__link .nw-badge {
+	margin-inline-start: auto;
+	flex-shrink: 0;
+}
+
+/* ── Contract hero (detail header) ─────────────────────────── */
+
+#app-content.nw-app .nw-hero {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-4);
+	align-items: flex-start;
+	justify-content: space-between;
+	background: var(--nw-bg-card);
+	border: 1px solid var(--nw-border);
+	border-radius: var(--nw-radius-lg);
+	padding: var(--nw-space-5);
+}
+
+#app-content.nw-app .nw-hero__main { min-width: 0; flex: 1 1 240px; }
+
+#app-content.nw-app .nw-hero__title {
+	margin: 0 0 var(--nw-space-1);
+	font-size: var(--nw-fs-xl);
+	line-height: var(--nw-line-tight);
+	overflow-wrap: anywhere;
+}
+
+#app-content.nw-app .nw-hero__meta {
+	margin: 0 0 var(--nw-space-2);
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-hero__badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-hero__deadline {
+	flex: 0 1 auto;
+	min-width: 200px;
+	background: var(--nw-bg-soft);
+	border: 1px solid var(--nw-border);
+	border-radius: var(--nw-radius-md);
+	padding: var(--nw-space-3) var(--nw-space-4);
+}
+
+#app-content.nw-app .nw-hero__cancel-by {
+	margin: 0;
+	font-size: var(--nw-fs-lg);
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-hero__deadline-note {
+	margin: var(--nw-space-1) 0 0;
+	font-size: var(--nw-fs-sm);
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-detail-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2);
+	margin-block: var(--nw-space-3);
+}
+
+/* ── Definition list (detail facts) ────────────────────────── */
+
+#app-content.nw-app .nw-dl {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#app-content.nw-app .nw-dl__row {
+	display: flex;
+	gap: var(--nw-space-3);
+	padding: var(--nw-space-2) 0;
+	border-bottom: 1px solid var(--nw-border);
+}
+
+#app-content.nw-app .nw-dl__row:last-child { border-bottom: none; }
+
+#app-content.nw-app .nw-dl__row dt {
+	flex: 0 0 9rem;
+	font-weight: 600;
+	color: var(--nw-muted);
+	font-size: var(--nw-fs-sm);
+	align-self: center;
+}
+
+#app-content.nw-app .nw-dl__row dd {
+	margin: 0;
+	flex: 1;
+	overflow-wrap: anywhere;
+}
+
+#app-content.nw-app .nw-cost-rollup {
+	margin: 0;
+	font-size: var(--nw-fs-lg);
+	font-weight: 700;
+	font-variant-numeric: var(--nw-tab-num);
+}
+
+/* ── Document + event lists ────────────────────────────────── */
+
+#app-content.nw-app .nw-doc-list,
+#app-content.nw-app .nw-event-list {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#app-content.nw-app .nw-doc-list { list-style: none; }
+#app-content.nw-app .nw-event-list { padding-inline-start: var(--nw-space-5); }
+
+#app-content.nw-app .nw-doc-list__item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--nw-space-2);
+	padding: var(--nw-space-2) 0;
+	border-bottom: 1px solid var(--nw-border);
+}
+
+#app-content.nw-app .nw-doc-list__item:last-child { border-bottom: none; }
+#app-content.nw-app .nw-doc-list__name {
+	font-weight: 600;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	flex: 1 1 160px;
+}
+
+#app-content.nw-app .nw-event-list__item {
+	padding: var(--nw-space-1) 0;
+	display: flex;
+	gap: var(--nw-space-3);
+	align-items: baseline;
+}
+
+#app-content.nw-app .nw-event-list__type { font-weight: 600; }
+
+/* ── Pickers (combobox + chips) ────────────────────────────── */
+
+#app-content.nw-app .nw-picker {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-picker__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-picker__chips:empty { display: none; }
+
+#app-content.nw-app .nw-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-1);
+	padding: var(--nw-space-1) var(--nw-space-2) var(--nw-space-1) var(--nw-space-3);
+	border: 1px solid var(--nw-border-strong);
+	border-radius: var(--nw-radius-pill);
+	background: var(--nw-bg-soft);
+	font-size: var(--nw-fs-sm);
+	max-width: 100%;
+}
+
+#app-content.nw-app .nw-chip__label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#app-content.nw-app .nw-chip__remove {
+	min-width: var(--nw-touch);
+	min-height: var(--nw-touch);
+	margin: calc(-1 * var(--nw-space-1)) calc(-1 * var(--nw-space-1)) calc(-1 * var(--nw-space-1)) 0;
+	border: none;
+	background: transparent;
+	color: var(--nw-muted);
+	font-size: var(--nw-fs-lg);
+	line-height: 1;
+	cursor: pointer;
+	border-radius: var(--nw-radius-pill);
+}
+
+#app-content.nw-app .nw-chip__remove:hover { color: var(--nw-danger-ink); }
+#app-content.nw-app .nw-chip__remove:focus-visible {
+	outline: var(--nw-focus);
+	outline-offset: var(--nw-focus-offset);
+}
+
+#app-content.nw-app .nw-picker__results {
+	position: absolute;
+	inset-inline: 0;
+	top: 100%;
+	z-index: 20;
+	margin: var(--nw-space-1) 0 0;
+	padding: var(--nw-space-1);
+	list-style: none;
+	background: var(--nw-bg-card);
+	border: 1px solid var(--nw-border-strong);
+	border-radius: var(--nw-radius-md);
+	box-shadow: var(--nw-shadow-md);
+	max-height: 16rem;
+	overflow-y: auto;
+}
+
+#app-content.nw-app .nw-picker__result {
+	padding: var(--nw-space-2) var(--nw-space-3);
+	min-height: var(--nw-touch);
+	display: flex;
+	align-items: center;
+	border-radius: var(--nw-radius-sm);
+	cursor: pointer;
+}
+
+#app-content.nw-app .nw-picker__result:hover,
+#app-content.nw-app .nw-picker__result:focus {
+	background: var(--nw-tint-info);
+	outline: none;
+}
+
+/* ── Callouts (reuses tint tokens; border + icon, not color-only) ── */
+
+#app-content.nw-app .nw-callout {
+	border: 1px solid var(--nw-border);
+	border-inline-start: 4px solid var(--nw-primary);
+	border-radius: var(--nw-radius-md);
+	padding: var(--nw-space-4);
+	margin-block: var(--nw-space-4);
+	background: var(--nw-tint-info);
+}
+
+#app-content.nw-app .nw-callout--warning {
+	border-inline-start-color: var(--color-warning, #eca700);
+	background: var(--nw-tint-warning);
+}
+
+#app-content.nw-app .nw-callout__title {
+	margin: 0 0 var(--nw-space-2);
+	font-size: var(--nw-fs-lg);
+}
+
+/* ── Misc text / state helpers ─────────────────────────────── */
+
+#app-content.nw-app .nw-empty {
+	padding: var(--nw-space-5);
+	text-align: center;
+	color: var(--nw-muted);
+	background: var(--nw-bg-soft);
+	border: 1px dashed var(--nw-border-strong);
+	border-radius: var(--nw-radius-md);
+	margin: 0;
+}
+
+#app-content.nw-app .nw-loading {
+	padding: var(--nw-space-5);
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-muted { color: var(--nw-muted); }
+#app-content.nw-app .nw-text--danger { color: var(--nw-danger-ink); }
+
+#app-content.nw-app .nw-link {
+	color: var(--nw-primary);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+#app-content.nw-app .nw-link:hover { text-decoration: underline; }
+#app-content.nw-app .nw-link:focus-visible {
+	outline: var(--nw-focus);
+	outline-offset: var(--nw-focus-offset);
+	border-radius: var(--nw-radius-sm);
+}
+
+#app-content.nw-app .nw-copy-row {
+	display: flex;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-copy-row .nw-input { flex: 1; }
+
+#app-content.nw-app .nw-steps {
+	margin: 0;
+	padding-inline-start: var(--nw-space-5);
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-2);
+}
+
+#app-content.nw-app .nw-import-result { margin-block-start: var(--nw-space-4); }
+
+/* ── Native dialog (party modal) ───────────────────────────── */
+
+dialog.nw-dialog {
+	border: 1px solid var(--nw-border-strong);
+	border-radius: var(--nw-radius-lg);
+	padding: var(--nw-space-5);
+	width: min(34rem, calc(100vw - 2 * var(--nw-space-4)));
+	max-height: 85dvh;
+	overflow-y: auto;
+	background: var(--nw-bg-card);
+	color: var(--nw-text);
+}
+
+dialog.nw-dialog::backdrop {
+	background: var(--nw-scrim);
+}
+
+dialog.nw-dialog form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-3);
+}
+
+.nw-dialog__title {
+	margin: 0 0 var(--nw-space-2);
+	font-size: var(--nw-fs-xl);
+}
+
+/* ── Responsive: tables scroll; hero + toolbar stack on phones ── */
+
+@media (max-width: 768.98px) {
+	/* ≤768px (Nextcloud mobile boundary): row-action buttons get the same
+	   44px touch floor as primary controls — 36px is a desktop-pointer
+	   compromise, unusable on touchscreens. */
+	.nw-btn--small { min-height: var(--nw-touch, 44px); min-width: var(--nw-touch, 44px); }
+	/* Filter chips are buttons too — same 44px floor on touch. */
+	.nw-chip--filter { min-height: var(--nw-touch, 44px); }
+
+	#app-content.nw-app .nw-hero { flex-direction: column; }
+	#app-content.nw-app .nw-hero__deadline { width: 100%; }
+	#app-content.nw-app .nw-dl__row { flex-direction: column; gap: 0; }
+	#app-content.nw-app .nw-dl__row dt { flex-basis: auto; }
+	#app-content.nw-app .nw-inline-form { flex-direction: column; align-items: stretch; }
+	#app-content.nw-app .nw-inline-form .nw-input,
+	#app-content.nw-app .nw-inline-form .nw-select { width: 100%; max-width: 100%; }
+}
+
+/* ── Forced colors + reduced motion ────────────────────────── */
+
+@media (forced-colors: active) {
+	#app-content.nw-app .nw-panel,
+	#app-content.nw-app .nw-stat,
+	#app-content.nw-app .nw-hero,
+	#app-content.nw-app .nw-check,
+	#app-content.nw-app .nw-chip,
+	#app-content.nw-app .nw-callout,
+	#app-content.nw-app .nw-picker__results {
+		border: 1px solid ButtonBorder;
+	}
+	#app-content.nw-app .nw-check:has(input:checked) {
+		outline: 2px solid Highlight;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#app-content.nw-app .nw-deadline-list__link,
+	#app-content.nw-app .nw-picker__result,
+	#app-content.nw-app .nw-chip__remove {
+		transition: none;
+	}
+}
+
+/* ── Shell additions: dialog internals + filter summary ────── */
+
+.nw-dialog__form {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	min-width: 0;
+}
+
+.nw-dialog__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--nw-space-3);
+	padding-block-end: var(--nw-space-3);
+	border-bottom: 1px solid var(--nw-border);
+}
+
+.nw-dialog__close {
+	/* 44px touch target, icon-only */
+	min-width: var(--nw-touch, 44px);
+	min-height: var(--nw-touch, 44px);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--nw-fs-xl);
+	line-height: 1;
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: var(--nw-radius-sm);
+	color: var(--nw-muted);
+	cursor: pointer;
+}
+
+.nw-dialog__close:hover {
+	background: var(--nw-bg-soft);
+	color: var(--nw-text);
+}
+
+.nw-dialog__close:focus-visible {
+	outline: 3px solid var(--color-primary-element);
+	outline-offset: -2px;
+}
+
+.nw-dialog__body {
+	padding-block: var(--nw-space-4);
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-4);
+	overflow-y: auto;
+	min-height: 0;
+}
+
+.nw-dialog__text {
+	margin: 0;
+	color: var(--nw-text);
+	line-height: var(--nw-line-base, 1.45);
+}
+
+.nw-dialog__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--nw-space-3);
+	padding-block-start: var(--nw-space-4);
+	border-top: 1px solid var(--nw-border);
+}
+
+dialog.nw-dialog--wide {
+	width: min(52rem, calc(100vw - 2 * var(--nw-space-4)));
+}
+
+/* Active-filter summary under a nw-filter-panel (§3.6b) */
+#app-content.nw-app .nw-filter-summary {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--nw-space-2);
+	padding: var(--nw-space-3) var(--nw-space-5);
+	border-top: 1px dashed var(--nw-border);
+}
+
+#app-content.nw-app .nw-filter-summary__label {
+	font-size: var(--nw-fs-sm);
+	font-weight: 600;
+	color: var(--nw-muted);
+}
+
+#app-content.nw-app .nw-chip--filter {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-1);
+	min-height: 32px;
+	padding: 0 var(--nw-space-3);
+	border: 1px solid var(--nw-form-border, var(--color-border-maxcontrast));
+	border-radius: 999px;
+	background: var(--nw-bg-soft);
+	color: var(--nw-text);
+	font-size: var(--nw-fs-sm);
+	cursor: pointer;
+}
+
+#app-content.nw-app .nw-chip--filter:hover { background: var(--nw-bg-hover, var(--color-background-hover)); }
+
+@media (max-width: 768.98px) {
+	.nw-dialog__actions { flex-direction: column-reverse; align-items: stretch; }
+	.nw-dialog__actions .nw-btn { width: 100%; }
+}

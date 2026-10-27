@@ -1,0 +1,39 @@
+{
+	"name": "software-by-design/nextcloud-nachweischeck",
+	"description": "Verwendungsnachweise for publicly funded projects in Nextcloud",
+	"type": "project",
+	"license": "AGPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Alexander Mäule",
+			"email": "info@software-by-design.de"
+		}
+	],
+	"require": {
+		"php": ">=8.2",
+		"horstoeko/zugferd": "^1.0"
+	},
+	"require-dev": {
+		"nextcloud/ocp": "^32.0 || ^33.0 || ^34.0 || ^35.0",
+		"phpunit/phpunit": "^9.6",
+		"doctrine/dbal": "^3.0",
+		"symfony/http-foundation": "^6.4",
+		"dg/bypass-finals": "^1.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"OCA\\NachweisCheck\\": "lib/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"OCA\\NachweisCheck\\Tests\\": "tests/",
+			"OCP\\": "vendor/nextcloud/ocp/OCP/",
+			"NCU\\": "vendor/nextcloud/ocp/NCU/"
+		}
+	},
+	"scripts": {
+		"test": "phpunit",
+		"test:unit": "phpunit --testsuite unit"
+	}
+}

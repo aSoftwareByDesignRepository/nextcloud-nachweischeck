@@ -1,0 +1,52 @@
+/*
+ * NachweisCheck badges — SnackCheck/AZC info pill + leading cue (WCAG 1.4.1).
+ */
+#content.app-nachweischeck .nw-badge,
+#app-content.nw-app .nw-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-1, 4px);
+	min-height: 0;
+	padding: var(--nw-space-1, 4px) var(--nw-space-2, 8px);
+	font-size: var(--nw-fs-xs, 0.75rem);
+	font-weight: 700;
+	line-height: 1.35;
+	border-radius: var(--nw-radius-pill, 999px);
+	border: none;
+	background: var(--nw-tint-info);
+	color: var(--nw-text, var(--color-main-text));
+	box-sizing: border-box;
+}
+
+/* Leading dot for brand / scope pills (status badges use .nw-badge__dot) */
+#content.app-nachweischeck .nw-brand .nw-badge::before,
+#content.app-nachweischeck .nw-scope-strip__badge::before,
+#app-content.nw-app .nw-scope-strip__badge::before {
+	content: '';
+	display: inline-block;
+	width: 0.45em;
+	height: 0.45em;
+	border-radius: 50%;
+	flex-shrink: 0;
+	background: var(--nw-primary, var(--color-primary-element));
+}
+
+#content.app-nachweischeck .nw-badge--neutral,
+#app-content.nw-app .nw-badge--neutral {
+	background: var(--nw-tint-info);
+	color: var(--nw-text, var(--color-main-text));
+}
+
+#content.app-nachweischeck .nw-badge__dot,
+#app-content.nw-app .nw-badge__dot {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+	flex: 0 0 auto;
+	background: var(--color-border-maxcontrast, var(--nw-muted));
+}
+
+#content.app-nachweischeck .nw-scope-strip__badge,
+#app-content.nw-app .nw-scope-strip__badge {
+	font-size: var(--nw-fs-xs, 0.75rem);
+}

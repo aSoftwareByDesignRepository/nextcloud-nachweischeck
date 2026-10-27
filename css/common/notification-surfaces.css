@@ -1,0 +1,644 @@
+/* Adapted from arbeitszeitcheck notification-surfaces.css (nw- prefix). */
+/**
+ * Notifications: callouts, alerts, toasts, inline-notice — theme-safe (WCAG 2.1 AA).
+ * Uses NC --color-*-text / *-rgb for contrast on light, dark, and custom themes.
+ * Icon wells: semantic fill + contrasting glyph (not low-contrast outline-only).
+ */
+
+/* Base callout geometry (modifiers set tint + accent border) */
+#app-content.nw-app .nw-callout:not(.nw-semantic-panel),
+.nw-nc-admin-settings .nw-callout,
+.modal-backdrop .nw-callout:not(.nw-semantic-panel) {
+	display: block;
+	padding: var(--nw-space-4);
+	margin: var(--nw-space-4) 0;
+	border-radius: var(--nw-radius-md);
+	border: 1px solid var(--nw-border-strong);
+	border-left-width: 5px;
+	border-left-color: var(--color-primary-element);
+	background: var(--nw-tint-info);
+	color: var(--color-main-text);
+	min-width: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+/* ── Panel accents (visible border + tint on light, dark, custom NC themes) ── */
+#app-content.nw-app .nw-callout--info:not(.nw-semantic-panel),
+.nw-nc-admin-settings .nw-callout--info,
+.modal-backdrop .nw-callout--info:not(.nw-semantic-panel),
+#app-content.nw-app .inline-notice--info,
+.modal-backdrop .inline-notice--info,
+.toast--info {
+	border-color: var(--color-primary-element);
+	border-left-width: 5px;
+	border-left-color: var(--color-primary-element);
+	background: var(--nw-tint-info);
+}
+
+#app-content.nw-app .nw-callout--warning:not(.nw-semantic-panel),
+.nw-nc-admin-settings .nw-callout--warning,
+.modal-backdrop .nw-callout--warning:not(.nw-semantic-panel),
+#app-content.nw-app .inline-notice--warning,
+.modal-backdrop .inline-notice--warning,
+.toast--warning,
+#app-content.nw-app .alert--warning,
+.modal-backdrop .alert--warning {
+	border-color: var(--color-warning-text, var(--color-warning));
+	border-left-width: 5px;
+	border-left-color: var(--color-warning-text, var(--color-warning));
+	background: var(--nw-tint-warning);
+}
+
+#app-content.nw-app .nw-callout--success:not(.nw-semantic-panel),
+.nw-nc-admin-settings .nw-callout--success,
+.modal-backdrop .nw-callout--success:not(.nw-semantic-panel),
+.toast--success,
+#app-content.nw-app .alert--success,
+.modal-backdrop .alert--success {
+	border-color: var(--color-success-text, var(--color-success));
+	border-left-width: 5px;
+	border-left-color: var(--color-success-text, var(--color-success));
+	background: var(--nw-tint-success);
+}
+
+#app-content.nw-app .nw-callout--danger:not(.nw-semantic-panel),
+#app-content.nw-app .nw-callout--error:not(.nw-semantic-panel),
+.nw-nc-admin-settings .nw-callout--danger,
+.nw-nc-admin-settings .nw-callout--error,
+.modal-backdrop .nw-callout--danger:not(.nw-semantic-panel),
+.modal-backdrop .nw-callout--error:not(.nw-semantic-panel),
+.toast--error,
+#app-content.nw-app .alert--error,
+.modal-backdrop .alert--error {
+	border-color: var(--color-error-text, var(--color-error));
+	border-left-width: 5px;
+	border-left-color: var(--color-error-text, var(--color-error));
+	background: var(--nw-tint-danger);
+}
+
+#app-content.nw-app .nw-callout--neutral:not(.nw-semantic-panel),
+.modal-backdrop .nw-callout--neutral:not(.nw-semantic-panel) {
+	border-color: var(--nw-border-strong);
+	border-left-width: 2px;
+	background: color-mix(in srgb, var(--color-main-text) 5%, var(--color-main-background));
+}
+
+/* Semantic panel panel tints: common/semantic-surfaces.css */
+
+/* ── Icon wells: pale tint + semantic stroke (same model as .nw-page-header__icon) ── */
+.nw-notif-icon-well,
+#app-content.nw-app .nw-callout__icon,
+.modal-backdrop .nw-callout__icon,
+#app-content.nw-app .alert-icon,
+.modal-backdrop .alert-icon,
+.toast-icon,
+#app-content.nw-app .inline-notice__icon,
+.modal-backdrop .inline-notice__icon,
+.nw-status-icon-well {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--nw-icon-well, 2.25rem);
+	height: var(--nw-icon-well, 2.25rem);
+	min-width: var(--nw-icon-well, 2.25rem);
+	min-height: var(--nw-icon-well, 2.25rem);
+	border-radius: var(--nw-radius-sm, 6px);
+	border: 2px solid var(--nw-border-strong, var(--color-border));
+	background: var(--color-main-background);
+	color: var(--color-main-text);
+	box-shadow: none;
+}
+
+.nw-notif-icon-well .nw-icon,
+.nw-notif-icon-well .nw-callout__icon-svg,
+.nw-notif-icon-well svg,
+#app-content.nw-app .nw-callout__icon .nw-icon,
+#app-content.nw-app .nw-callout__icon .nw-callout__icon-svg,
+#app-content.nw-app .nw-callout__icon-svg,
+.modal-backdrop .nw-callout__icon .nw-icon,
+.modal-backdrop .nw-callout__icon .nw-callout__icon-svg,
+.modal-backdrop .nw-callout__icon-svg,
+.alert-icon .nw-icon,
+.alert-icon svg,
+.toast-icon .nw-icon,
+.toast-icon svg,
+.toast-icon .toast__icon-svg,
+#app-content.nw-app .inline-notice__icon .nw-icon,
+#app-content.nw-app .inline-notice__icon .inline-notice__glyph,
+#app-content.nw-app .inline-notice__icon svg,
+.modal-backdrop .inline-notice__icon svg {
+	width: var(--nw-icon-lg, 1.375rem);
+	height: var(--nw-icon-lg, 1.375rem);
+	min-width: var(--nw-icon-lg, 1.375rem);
+	min-height: var(--nw-icon-lg, 1.375rem);
+	color: inherit;
+	stroke: currentColor;
+	fill: none;
+	opacity: 1;
+}
+
+/* Filled accent dots in IconCatalog (info / alert) */
+.nw-notif-icon-well svg circle[fill='currentColor'],
+.nw-notif-icon-well svg [fill='currentColor'],
+#app-content.nw-app .nw-callout__icon svg circle[fill='currentColor'],
+#app-content.nw-app .nw-callout__icon svg [fill='currentColor'],
+.toast-icon svg circle[fill='currentColor'],
+.toast-icon svg [fill='currentColor'] {
+	fill: currentColor;
+	stroke: none;
+}
+
+/* Variant wells — modifier class + legacy parent selectors */
+.nw-notif-icon-well--info,
+.nw-callout.nw-callout--info > .nw-callout__icon,
+.nw-callout.nw-callout--info > .nw-notif-icon-well,
+#app-content.nw-app .nw-semantic-panel--info .nw-callout__icon,
+.nw-nc-admin-settings .nw-callout--info .nw-callout__icon,
+.modal-backdrop .nw-callout--info .nw-callout__icon,
+#app-content.nw-app .alert--info .alert-icon,
+.modal-backdrop .alert--info .alert-icon,
+#app-content.nw-app .inline-notice--info .inline-notice__icon,
+.modal-backdrop .inline-notice--info .inline-notice__icon,
+.toast--info .toast-icon {
+	background: var(--nw-tint-info);
+	border-color: var(--nw-notif-fg-info);
+	color: var(--nw-accent-ink, var(--nw-notif-fg-info));
+}
+
+.nw-notif-icon-well--warning,
+.nw-callout.nw-callout--warning > .nw-callout__icon,
+.nw-callout.nw-callout--warning > .nw-notif-icon-well,
+#app-content.nw-app .nw-semantic-panel--warning .nw-callout__icon,
+.nw-nc-admin-settings .nw-callout--warning .nw-callout__icon,
+.modal-backdrop .nw-callout--warning .nw-callout__icon,
+#app-content.nw-app .alert--warning .alert-icon,
+.modal-backdrop .alert--warning .alert-icon,
+#app-content.nw-app .inline-notice--warning .inline-notice__icon,
+.modal-backdrop .inline-notice--warning .inline-notice__icon,
+.toast--warning .toast-icon {
+	background: var(--nw-tint-warning);
+	border-color: var(--nw-notif-fg-warning);
+	color: var(--nw-notif-fg-warning);
+}
+
+.nw-notif-icon-well--success,
+.nw-callout.nw-callout--success > .nw-callout__icon,
+.nw-callout.nw-callout--success > .nw-notif-icon-well,
+#app-content.nw-app .nw-semantic-panel--success .nw-callout__icon,
+.modal-backdrop .nw-callout--success .nw-callout__icon,
+#app-content.nw-app .alert--success .alert-icon,
+.modal-backdrop .alert--success .alert-icon,
+.toast--success .toast-icon {
+	background: var(--nw-tint-success);
+	border-color: var(--nw-notif-fg-success);
+	color: var(--nw-notif-fg-success);
+}
+
+.nw-notif-icon-well--danger,
+.nw-notif-icon-well--error,
+.nw-callout.nw-callout--danger > .nw-callout__icon,
+.nw-callout.nw-callout--danger > .nw-notif-icon-well,
+.nw-callout.nw-callout--error > .nw-callout__icon,
+.nw-callout.nw-callout--error > .nw-notif-icon-well,
+.nw-nc-admin-settings .nw-callout--danger .nw-callout__icon,
+.nw-nc-admin-settings .nw-callout--error .nw-callout__icon,
+.modal-backdrop .nw-callout--danger .nw-callout__icon,
+.modal-backdrop .nw-callout--error .nw-callout__icon,
+#app-content.nw-app .alert--error .alert-icon,
+.modal-backdrop .alert--error .alert-icon,
+.toast--error .toast-icon {
+	background: var(--nw-tint-danger);
+	border-color: var(--nw-notif-fg-danger);
+	color: var(--nw-notif-fg-danger);
+}
+
+.nw-notif-icon-well--neutral,
+.nw-callout.nw-callout--neutral > .nw-callout__icon,
+.nw-callout.nw-callout--neutral > .nw-notif-icon-well,
+.modal-backdrop .nw-callout--neutral .nw-callout__icon {
+	background: color-mix(in srgb, var(--color-main-text) 8%, var(--color-main-background));
+	border-color: var(--color-border-maxcontrast, var(--color-border));
+	color: var(--color-main-text);
+}
+
+#app-content.nw-app .nw-semantic-panel--success.nw-callout.auto-break-panel--disabled .nw-callout__icon {
+	background: color-mix(in srgb, var(--color-main-text) 10%, var(--color-main-background));
+	border-color: var(--color-border);
+	color: var(--color-main-text);
+}
+
+/* Body copy: main text only (AA); hints stay maxcontrast */
+#app-content.nw-app .nw-callout__title,
+.modal-backdrop .nw-callout__title,
+#app-content.nw-app .nw-callout__text,
+.modal-backdrop .nw-callout__text,
+#app-content.nw-app .alert-message,
+.modal-backdrop .alert-message,
+.toast-title,
+.toast-message,
+#app-content.nw-app .inline-notice__title,
+.modal-backdrop .inline-notice__title,
+#app-content.nw-app .inline-notice__text,
+.modal-backdrop .inline-notice__text {
+	color: var(--color-main-text);
+}
+
+#app-content.nw-app .nw-callout__hint,
+.modal-backdrop .nw-callout__hint {
+	color: var(--color-text-maxcontrast, var(--color-main-text));
+}
+
+/* Mobile-first: stack callout icon + body; ≥721px keeps horizontal row */
+#app-content.nw-app .nw-callout,
+.modal-backdrop .nw-callout,
+#app-content.nw-app .alert,
+.modal-backdrop .alert,
+#app-content.nw-app .inline-notice,
+.modal-backdrop .inline-notice,
+.toast {
+	flex-wrap: wrap;
+}
+
+#app-content.nw-app .nw-callout__icon,
+.modal-backdrop .nw-callout__icon,
+.toast-icon,
+#app-content.nw-app .alert-icon,
+.modal-backdrop .alert-icon,
+#app-content.nw-app .inline-notice__icon,
+.modal-backdrop .inline-notice__icon {
+	margin-bottom: var(--nw-space-1, 0.25rem);
+}
+
+@media (min-width: 721px) {
+	#app-content.nw-app .nw-callout__icon,
+	.modal-backdrop .nw-callout__icon,
+	.toast-icon,
+	#app-content.nw-app .alert-icon,
+	.modal-backdrop .alert-icon,
+	#app-content.nw-app .inline-notice__icon,
+	.modal-backdrop .inline-notice__icon {
+		margin-bottom: 0;
+	}
+}
+
+@media (prefers-contrast: more) {
+	#app-content.nw-app .nw-callout:not(.nw-semantic-panel),
+	.modal-backdrop .nw-callout:not(.nw-semantic-panel),
+	.toast,
+	#app-content.nw-app .alert,
+	.modal-backdrop .alert {
+		border-width: 3px;
+	}
+
+	#app-content.nw-app .nw-callout__icon,
+	.modal-backdrop .nw-callout__icon,
+	.toast-icon,
+	#app-content.nw-app .alert-icon,
+	.modal-backdrop .alert-icon {
+		border-width: 3px;
+	}
+
+	.nw-notif-icon-well .nw-icon,
+	.nw-notif-icon-well svg,
+	#app-content.nw-app .nw-callout__icon .nw-icon,
+	#app-content.nw-app .nw-callout__icon svg {
+		stroke-width: 3;
+	}
+}
+
+/* ── Legacy inline-notice (backward compat) ───────────────── */
+#app-content.nw-app .inline-notice-section,
+.modal-backdrop .inline-notice-section {
+	padding: 0;
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	margin-bottom: var(--nw-space-4, 1rem);
+}
+
+#app-content.nw-app .inline-notice,
+.modal-backdrop .inline-notice {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: var(--nw-space-3, 0.75rem) var(--nw-space-4, 1rem);
+	padding: var(--nw-space-4, 1rem) var(--nw-space-5, 1.25rem);
+	border: 2px solid var(--nw-border-strong, var(--color-border));
+	border-radius: var(--nw-radius-md, 8px);
+	background: var(--color-main-background, var(--nw-bg));
+	box-shadow: var(--nw-shadow-sm);
+	color: var(--color-main-text, var(--nw-text));
+}
+
+#app-content.nw-app .inline-notice__content,
+.modal-backdrop .inline-notice__content {
+	flex: 1 1 12rem;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-2, 0.5rem);
+}
+
+#app-content.nw-app .inline-notice__title,
+.modal-backdrop .inline-notice__title {
+	margin: 0;
+	font-size: var(--nw-fs-lg, 1.125rem);
+	font-weight: 600;
+	line-height: var(--nw-line-tight, 1.25);
+	color: var(--color-main-text, var(--nw-text));
+}
+
+#app-content.nw-app .inline-notice__text,
+.modal-backdrop .inline-notice__text {
+	margin: 0;
+	font-size: var(--nw-fs-md, 1rem);
+	line-height: var(--nw-line-base, 1.45);
+	max-width: 65ch;
+	color: var(--color-main-text, var(--nw-text));
+}
+
+#app-content.nw-app .inline-notice__actions,
+.modal-backdrop .inline-notice__actions {
+	flex-shrink: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2, 0.5rem);
+	margin: 0;
+}
+
+#app-content.nw-app .inline-notice__actions .nw-btn,
+#app-content.nw-app .inline-notice__actions .btn,
+.modal-backdrop .inline-notice__actions .nw-btn,
+.modal-backdrop .inline-notice__actions .btn {
+	min-height: 44px;
+	white-space: nowrap;
+}
+
+@media (max-width: 42rem) {
+	#app-content.nw-app .inline-notice,
+	.modal-backdrop .inline-notice {
+		flex-direction: column;
+	}
+
+	#app-content.nw-app .inline-notice__actions,
+	.modal-backdrop .inline-notice__actions {
+		width: 100%;
+	}
+
+	#app-content.nw-app .inline-notice__actions .nw-btn,
+	#app-content.nw-app .inline-notice__actions .btn,
+	.modal-backdrop .inline-notice__actions .nw-btn,
+	.modal-backdrop .inline-notice__actions .btn {
+		flex: 1 1 auto;
+		justify-content: center;
+	}
+}
+
+/* ── Toast container (MC parity: bottom-right) ───────────────── */
+.toast-container {
+	position: fixed;
+	bottom: calc(var(--nw-space-5, 1.5rem) + env(safe-area-inset-bottom, 0px));
+	right: calc(var(--nw-space-5, 1.5rem) + env(safe-area-inset-right, 0px));
+	top: auto;
+	z-index: var(--z-toast, 10000);
+	display: flex;
+	flex-direction: column-reverse;
+	gap: var(--nw-space-2, 0.5rem);
+	max-width: min(24rem, calc(100vw - 2rem));
+}
+
+/* ── Toast card (left accent, MC weight) ───────────────────── */
+.toast {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: var(--nw-space-3, 0.75rem);
+	padding: var(--nw-space-3, 0.75rem) var(--nw-space-4, 1rem);
+	border: 1px solid var(--nw-border, var(--color-border));
+	border-left-width: 4px;
+	border-radius: var(--nw-radius-md, 12px);
+	background: var(--nw-bg-card, var(--color-main-background));
+	box-shadow: var(--nw-shadow-md, 0 8px 24px color-mix(in srgb, var(--color-main-text) 12%, transparent));
+	color: var(--color-main-text, var(--nw-text));
+	font-weight: 600;
+	max-width: 100%;
+	opacity: 0;
+	transform: translateY(0.75rem);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast--show {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+@keyframes toast-slide-in {
+	from {
+		transform: translateY(0.75rem);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.toast--removing {
+	animation: toast-slide-out 0.3s ease-in forwards;
+}
+
+@keyframes toast-slide-out {
+	from {
+		transform: translateY(0);
+		opacity: 1;
+	}
+
+	to {
+		transform: translateY(0.75rem);
+		opacity: 0;
+	}
+}
+
+.toast-content {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-1, 0.25rem);
+}
+
+.toast-title {
+	margin: 0;
+	font-size: var(--nw-fs-md, 1rem);
+	font-weight: 600;
+	line-height: var(--nw-line-tight, 1.25);
+	color: var(--color-main-text, var(--nw-text));
+}
+
+.toast-message {
+	margin: 0;
+	font-size: var(--nw-fs-md, 1rem);
+	line-height: var(--nw-line-base, 1.45);
+	color: var(--color-main-text, var(--nw-text));
+	max-width: 65ch;
+}
+
+.toast-close {
+	background: none;
+	border: none;
+	font-size: var(--nw-fs-lg, 1.25rem);
+	line-height: 1;
+	color: var(--color-main-text, var(--nw-text));
+	cursor: pointer;
+	padding: var(--nw-space-1, 0.25rem);
+	border-radius: var(--nw-radius-sm, 6px);
+	opacity: 0.85;
+	flex-shrink: 0;
+	min-width: 44px;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.toast-close:hover,
+.toast-close:focus-visible {
+	opacity: 1;
+	outline: 2px solid var(--color-primary-element);
+	outline-offset: 2px;
+}
+
+@media (max-width: 42rem) {
+	.toast-container {
+		left: calc(var(--nw-space-4, 1rem) + env(safe-area-inset-left, 0px));
+		right: calc(var(--nw-space-4, 1rem) + env(safe-area-inset-right, 0px));
+		bottom: calc(var(--nw-space-4, 1rem) + env(safe-area-inset-bottom, 0px));
+		max-width: none;
+	}
+}
+
+@media (forced-colors: active) {
+	#app-content.nw-app .nw-callout,
+	.modal-backdrop .nw-callout,
+	#app-content.nw-app .alert,
+	.modal-backdrop .alert,
+	.toast,
+	#app-content.nw-app .inline-notice,
+	.modal-backdrop .inline-notice {
+		border: 2px solid CanvasText;
+		background: Canvas;
+		color: CanvasText;
+	}
+
+	#app-content.nw-app .nw-callout__icon,
+	.modal-backdrop .nw-callout__icon,
+	.toast-icon,
+	#app-content.nw-app .alert-icon,
+	.modal-backdrop .alert-icon,
+	#app-content.nw-app .inline-notice__icon,
+	.modal-backdrop .inline-notice__icon {
+		border: 2px solid CanvasText;
+		background: Canvas;
+		color: CanvasText;
+		box-shadow: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.toast,
+	.toast--removing {
+		animation: none !important;
+		transition: none !important;
+	}
+}
+
+/* App-owned toast stack — pairs with js/common/toasts.js (nwToast kernel).
+   Dedup by kind+text, timer reset, error toasts carry a report-mailto. */
+.nw-toasts {
+	position: fixed;
+	bottom: calc(var(--nw-space-4, 16px) + env(safe-area-inset-bottom, 0px));
+	inset-inline-start: calc(var(--nw-space-4, 16px) + env(safe-area-inset-left, 0px));
+	inset-inline-end: calc(var(--nw-space-4, 16px) + env(safe-area-inset-right, 0px));
+	display: flex;
+	flex-direction: column;
+	gap: var(--nw-space-2, 8px);
+	z-index: 1200;
+	max-width: min(400px, calc(100vw - 2 * var(--nw-space-4, 16px)));
+}
+
+@media (min-width: 769px) {
+	.nw-toasts {
+		inset-inline-start: auto;
+		inset-inline-end: calc(var(--nw-space-4, 16px) + env(safe-area-inset-right, 0px));
+		max-width: min(400px, 90vw);
+	}
+}
+
+.nw-toast {
+	background: var(--color-main-background);
+	color: var(--color-main-text);
+	border: 1px solid var(--nw-border-strong, var(--color-border-maxcontrast));
+	border-left: 4px solid var(--color-primary-element);
+	padding: var(--nw-space-3, 12px) var(--nw-space-4, 16px);
+	border-radius: var(--nw-radius-md, 12px);
+	box-shadow: var(--nw-shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2, 8px);
+	align-items: center;
+}
+
+.nw-toast__text {
+	color: inherit;
+	/* basis:auto so an over-wide message wraps onto its own line at narrow
+	   viewports instead of crushing beside the nowrap feedback link +
+	   44px close button (lck-vis-toast-text-link-overlap-narrow). */
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.nw-toast--success { border-left-color: var(--color-success-text, var(--color-success)); }
+.nw-toast--error { border-left-color: var(--color-error-text, var(--color-error)); }
+
+.nw-toast__feedback {
+	color: var(--nw-accent-ink, var(--color-text-link, var(--color-primary-element)));
+	text-decoration: underline;
+	white-space: nowrap;
+}
+
+.nw-toast__close {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	padding: var(--nw-space-2, 8px);
+	min-height: 44px;
+	min-width: 44px;
+	box-sizing: border-box;
+	color: inherit;
+	border-radius: var(--nw-radius-md, 12px);
+}
+
+.nw-toast__close:hover {
+	background: var(--color-background-hover);
+}
+
+.nw-toast__close:focus-visible {
+	outline: 2px solid var(--color-main-text);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nw-toast {
+		animation: none !important;
+		transition: none !important;
+	}
+}

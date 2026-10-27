@@ -1,0 +1,24 @@
+// @ts-check
+const { defineConfig, devices } = require('@playwright/test');
+
+module.exports = defineConfig({
+	testDir: './e2e',
+	globalTeardown: './e2e/global-teardown.mjs',
+
+	globalSetup: './e2e/global-setup.mjs',
+
+	timeout: 90000,
+	retries: 1,
+	workers: 1,
+	use: {
+		baseURL: process.env.NACHWEISCHECK_BASE_URL || process.env.E2E_BASE || 'http://localhost:8081',
+		trace: 'on-first-retry',
+	},
+	projects: [
+		{
+			name: 'chromium',
+			use: { ...devices['Desktop Chrome'] },
+			testIgnore: /capture-screenshot-matrix\.spec\.js/,
+		},
+	],
+});

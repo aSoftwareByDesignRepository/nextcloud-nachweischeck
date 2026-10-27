@@ -1,0 +1,65 @@
+{
+	"prefix": "nw",
+	"outDir": "craft/web",
+	"viewports": [
+		{ "name": "mobile", "width": 320, "height": 800 },
+		{ "name": "tablet", "width": 768, "height": 800 },
+		{ "name": "desktop", "width": 1280, "height": 800 }
+	],
+	"surfaces": [
+		{
+			"id": "home",
+			"path": "/",
+			"states": ["populated"],
+			"dark": true
+		},
+		{
+			"id": "dashboard",
+			"path": "/?project={PID}&view=dashboard",
+			"states": ["populated"],
+			"dark": true
+		},
+		{
+			"id": "finplan",
+			"path": "/?project={PID}&view=finplan",
+			"states": ["populated"]
+		},
+		{
+			"id": "receipts",
+			"path": "/?project={PID}&view=receipts",
+			"states": ["populated"]
+		},
+		{
+			"id": "nachweis",
+			"path": "/?project={PID}&view=nachweis",
+			"states": ["populated"],
+			"dark": true
+		},
+		{
+			"id": "deadlines",
+			"path": "/?project={PID}&view=deadlines",
+			"states": ["populated"]
+		},
+		{
+			"id": "settings-access",
+			"path": "/settings/access",
+			"states": ["current"]
+		},
+		{
+			"id": "settings-templates",
+			"path": "/settings/templates",
+			"states": ["current"]
+		},
+		{
+			"id": "settings-notifications",
+			"path": "/settings/notifications",
+			"states": ["current"]
+		},
+		{
+			"id": "denied",
+			"path": "/settings/access",
+			"states": ["current"],
+			"user": "denied"
+		}
+	]
+}
