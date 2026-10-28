@@ -24,6 +24,7 @@ use OCA\NachweisCheck\Db\TimeEntryMapper;
 use OCA\NachweisCheck\Db\TimesheetMapper;
 use OCA\NachweisCheck\Db\WorkPackageMapper;
 use OCA\NachweisCheck\Support\GapCollector;
+use OCP\IL10N;
 
 class ReadinessService
 {
@@ -40,7 +41,46 @@ class ReadinessService
 		private readonly TimesheetMapper $timesheetMapper,
 		private readonly DrawdownMapper $drawdownMapper,
 		private readonly ClaimMapper $claimMapper,
+		private readonly IL10N $l10n,
 	) {
+	}
+
+	/**
+	 * Localized gap detail for the UI checklist. The Nachweis export keeps
+	 * GapCollector's canonical German wording (manifest-hashed payload) —
+	 * only this render boundary translates.
+	 *
+	 * @param array<string, string> $refs
+	 */
+	private function gapDetail(string $type, array $refs): string
+	{
+		return match ($type) {
+			'missing_attachment' => $this->l10n->t('Receipt without attachment: %s', [$refs['vendor'] ?? '']),
+			'missing_invoice_no' => $this->l10n->t('Receipt without invoice number: %s', [$refs['vendor'] ?? '']),
+			'missing_payment_date' => $this->l10n->t('Receipt without payment date: %s', [$refs['vendor'] ?? '']),
+			'unpriced_time' => $this->l10n->t('Time entry without hourly rate: %1$s / %2$s', [$refs['entry_date'] ?? '', $refs['uid'] ?? '']),
+			default => $type,
+		};
+	}
+
+	private function stateLabel(string $state): string
+	{
+		return match ($state) {
+			'draft' => $this->l10n->t('draft'),
+			'submitted' => $this->l10n->t('submitted'),
+			'signed' => $this->l10n->t('signed'),
+			'rejected' => $this->l10n->t('rejected'),
+			default => $state,
+		};
+	}
+
+	private function claimKindLabel(string $kind): string
+	{
+		return match ($kind) {
+			'interest' => $this->l10n->t('Interest'),
+			'recovery' => $this->l10n->t('Recovery'),
+			default => $kind,
+		};
 	}
 
 	/**
@@ -54,7 +94,7 @@ class ReadinessService
 		if ($this->finplan->activeFor($project->getId()) === null) {
 			$checks[] = [
 				'id' => 'no_active_plan', 'severity' => self::SEV_BLOCKER, 'count' => 1,
-				'items' => ['Kein aktiver Finanzierungsplan — Plan anlegen und aktivieren.'],
+				'items' => [$this->l10n->t('No active financing plan — create and activate a plan.')],
 			];
 		}
 
@@ -86,6 +126,7 @@ class ReadinessService
 				'entry_date' => $t->getEntryDate()?->format('Y-m-d'),
 				'rate_minor' => $t->getRateMinor(), 'amount_minor' => $t->getAmountMinor(),
 			], $timeEntries),
+			fn(string $type, array $refs): string => $this->gapDetail($type, $refs),
 		);
 		if ($gaps !== []) {
 			$checks[] = [
@@ -112,7 +153,8 @@ class ReadinessService
 		$unsigned = [];
 		foreach ($this->timesheetMapper->findByProject($project->getId()) as $ts) {
 			if ($ts->getState() !== 'signed') {
-				$unsigned[] = $ts->getUid() . ' / ' . $ts->getPeriod() . ' (' . $ts->getState() . ')';
+				$unsigned[] = $ts->getUid() . ' / ' . $ts->getPeriod()
+					. ' (' . $this->stateLabel($ts->getState()) . ')';
 			}
 		}
 		if ($unsigned !== []) {
@@ -138,7 +180,7 @@ class ReadinessService
 		$openClaims = [];
 		foreach ($this->claimMapper->findByProject($project->getId()) as $c) {
 			if ($c->getState() === 'open') {
-				$openClaims[] = $c->getTitle() . ' (' . $c->getKind() . ')';
+				$openClaims[] = $c->getTitle() . ' (' . $this->claimKindLabel($c->getKind()) . ')';
 			}
 		}
 		if ($openClaims !== []) {

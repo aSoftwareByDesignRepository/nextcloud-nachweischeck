@@ -108,6 +108,24 @@
 	var FINANCING_MODES = { ausgaben: 'Expenditure-based funding', festbetrag: 'Flat-rate funding' };
 	var AP_STATES = { active: 'active', closed: 'closed' };
 
+	/* Audit-readiness check ids (ReadinessService) → user-facing labels.
+	   Raw snake_case enum ids must never reach the page — the contract
+	   test pins this map against the PHP enum so a new check id cannot
+	   ship unmapped. Unknown ids degrade to a humanized fallback. */
+	var READINESS_CHECK_LABELS = {
+		no_active_plan: 'No active financing plan',
+		unmapped_aps: 'Work packages without mapped positions',
+		missing_data: 'Missing receipt or time data',
+		duplicate_receipts: 'Unacknowledged duplicate receipts',
+		unsigned_timesheets: 'Unsigned timesheets',
+		pending_drawdowns: 'Drawdowns still open',
+		open_claims: 'Open claims'
+	};
+
+	function readinessCheckLabel(id) {
+		return t(READINESS_CHECK_LABELS[id] || String(id || '—').replace(/_/g, ' '));
+	}
+
 	/* ---------- small DOM builders ---------- */
 
 	function loading() {
@@ -1029,7 +1047,7 @@
 					list.appendChild(el('li', { class: 'nw-readiness-item' }, [
 						NW.badge(c.severity === 'blocker' ? 'danger' : 'warn',
 							c.severity === 'blocker' ? t('Blocker') : t('Warning')),
-						el('span', { text: ' ' + c.id + ' (' + c.count + ')' })
+						el('span', { text: ' ' + readinessCheckLabel(c.id) + ' (' + c.count + ')' })
 					]));
 				});
 				attnRegion.appendChild(el('div', {
@@ -1059,12 +1077,13 @@
 		}
 		var ul = el('ul', { class: 'nw-deadline-list' });
 		deadlines.forEach(function (d) {
+			// __item is the flex row the CSS contract lays out — the badge
+			// must be a direct child or margin-inline-start:auto cannot
+			// pin it to the row's end.
 			ul.appendChild(el('li', { class: 'nw-deadline-list__item' }, [
 				el('span', { class: 'nw-deadline-list__title', text: deadlineLabel(d.kind) }),
-				el('span', { class: 'nw-deadline-list__meta' }, [
-					document.createTextNode(NW.fmtDate(d.due_date) + ' '),
-					d.notified ? NW.badge('success', t('reminded')) : NW.badge('neutral', t('pending'))
-				])
+				el('span', { class: 'nw-deadline-list__meta', text: NW.fmtDate(d.due_date) }),
+				d.notified ? NW.badge('success', t('reminded')) : NW.badge('neutral', t('pending'))
 			]));
 		});
 		return ul;
@@ -1114,6 +1133,7 @@
 			var detail = el('div');
 			host.appendChild(detail);
 
+			var pillSeq = 0;
 			function paint() {
 				pills.innerHTML = '';
 				vers.forEach(function (v) {
@@ -1125,12 +1145,19 @@
 					b.addEventListener('click', function () { selected = v; paint(); });
 					pills.appendChild(b);
 				});
+				// Generation guard: pills are retriggerable while a positions
+				// fetch is in flight — a stale response must not render an
+				// older version's rows under the newest pill's label.
+				var seq = ++pillSeq;
+				var wanted = selected;
 				detail.innerHTML = '';
 				detail.appendChild(loading());
-				NW.api('/projects/' + pid + '/finplan/versions/' + selected.id + '/positions').then(function (positions) {
+				NW.api('/projects/' + pid + '/finplan/versions/' + wanted.id + '/positions').then(function (positions) {
+					if (seq !== pillSeq) { return; }
 					detail.innerHTML = '';
-					detail.appendChild(renderFinplanVersion(selected, positions));
+					detail.appendChild(renderFinplanVersion(wanted, positions));
 				}).catch(function (e) {
+					if (seq !== pillSeq) { return; }
 					detail.innerHTML = '';
 					NW.handleError(e);
 				});
@@ -1405,6 +1432,12 @@
 
 		var form = filterCard.querySelector('form');
 
+		// Generation guard: Apply/Clear are retriggerable while a fetch is
+		// still in flight — a stale response must never paint over, error-
+		// render, or clear the newest request's skeleton. Declared BEFORE
+		// initFilterPanel: it applies once synchronously on mount.
+		var entriesSeq = 0;
+
 		// deepLink off: the kernel mirrors every form field into
 		// location.search — hidden project/view context would surface as
 		// active-filter chips and could be "cleared" by a user.
@@ -1415,6 +1448,7 @@
 		});
 
 		function loadEntries(from, to) {
+			var seq = ++entriesSeq;
 			listRegion.innerHTML = '';
 			listRegion.appendChild(loading());
 			var qs = [];
@@ -1424,6 +1458,7 @@
 				NW.api('/projects/' + pid + '/time-entries' + (qs.length ? '?' + qs.join('&') : '')),
 				loadAps(), loadMembers()
 			]).then(function (res) {
+				if (seq !== entriesSeq) { return; }
 				var entries = res[0] || [], apMap = indexById(res[1]), memMap = {};
 				(res[2] || []).forEach(function (m) { memMap[m.uid] = m.display_name || m.uid; });
 				listRegion.innerHTML = '';
@@ -1459,6 +1494,7 @@
 						}), { empty: t('No time entries in this period.') })
 				]}));
 			}).catch(function (e) {
+				if (seq !== entriesSeq) { return; }
 				listRegion.innerHTML = '';
 				NW.handleError(e);
 			});
@@ -1895,7 +1931,7 @@
 				(readiness.checks || []).forEach(function (c) {
 					var li = el('li', { class: 'nw-readiness-item' }, [
 						stateBadge(sevBadge[c.severity] || 'neutral', t(sevLabel[c.severity] || c.severity)),
-						el('span', { text: ' ' + c.id + ' (' + c.count + ')' })
+						el('span', { text: ' ' + readinessCheckLabel(c.id) + ' (' + c.count + ')' })
 					]);
 					var sub = el('ul', { class: 'nw-readiness-sub' });
 					(c.items || []).slice(0, 5).forEach(function (it) {
@@ -2070,10 +2106,16 @@
 		return wrap;
 	}
 
+	// Generation guard: every report row's Open button re-paints the same
+	// detail region — a stale fetch must not render report A's payload
+	// after the user opened report B.
+	var nachweisDetailSeq = 0;
 	function openNachweisDetail(nid, region) {
+		var seq = ++nachweisDetailSeq;
 		region.innerHTML = '';
 		region.appendChild(loading());
 		NW.api('/projects/' + pid + '/nachweise/' + nid).then(function (n) {
+			if (seq !== nachweisDetailSeq) { return; }
 			region.innerHTML = '';
 			var head = el('div', { class: 'nw-list-head' }, [
 				el('h2', { class: 'nw-list-head__title', text: t('Usage report v%s', [String(n.version)]) }),
@@ -2086,6 +2128,7 @@
 			region.appendChild(renderNachweisPayload(n.payload || {}, n.integrity, nid));
 			region.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}).catch(function (e) {
+			if (seq !== nachweisDetailSeq) { return; }
 			region.innerHTML = '';
 			NW.handleError(e);
 		});
@@ -2117,7 +2160,11 @@
 				wide: true,
 				onOpen: function (api2) {
 					var btnRow = body.querySelector('.nw-btn-row');
+					// Generation guard: re-clicking preview after editing the
+					// period must not let the stale preview paint last.
+					var previewSeq = 0;
 					var pv = btn(t('Check preview'), function () {
+						var seq = ++previewSeq;
 						var form = api2.dialog.querySelector('form');
 						var fd = new FormData(form);
 						previewRegion.innerHTML = '';
@@ -2127,9 +2174,11 @@
 							period_from: fd.get('period_from'),
 							period_to: fd.get('period_to')
 						}}).then(function (payload) {
+							if (seq !== previewSeq) { return; }
 							previewRegion.innerHTML = '';
 							previewRegion.appendChild(renderNachweisPayload(payload, null, null));
 						}).catch(function (e) {
+							if (seq !== previewSeq) { return; }
 							previewRegion.innerHTML = '';
 							NW.handleError(e);
 						});
@@ -2271,17 +2320,26 @@
 						btn(t('Add rate'), function () { openRateDialog(members); })
 					]));
 				}
+				// Generation guard: the member select is retriggerable while
+				// a rates fetch is in flight — stale rates of member A must
+				// not paint under member B's selection.
+				var rateSeq = 0;
 				function paintRates(uid) {
+					var seq = ++rateSeq;
 					rateRegion.innerHTML = '';
 					if (!uid) { return; }
 					rateRegion.appendChild(loading());
 					NW.api('/projects/' + pid + '/rates/' + encodeURIComponent(uid)).then(function (rates) {
+						if (seq !== rateSeq) { return; }
 						rateRegion.innerHTML = '';
 						rateRegion.appendChild(tableEl([t('Role key'), t('Rate/hour'), t('Valid from')],
 							(rates || []).map(function (r) {
 								return [r.role_key || '—', fmtMoney(r.rate_minor), NW.fmtDate(r.valid_from)];
 							}), { empty: t('No rates for this member yet.') }));
-					}).catch(function () { rateRegion.innerHTML = ''; });
+					}).catch(function () {
+						if (seq !== rateSeq) { return; }
+						rateRegion.innerHTML = '';
+					});
 				}
 				host.appendChild(card(t('Hourly rates'), { children: rateChildren }));
 			}

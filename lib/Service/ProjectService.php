@@ -58,6 +58,16 @@ class ProjectService
 		$fields = [];
 		if (trim($name) === '') {
 			$fields['name'] = 'Project name is required.';
+		} elseif (mb_strlen($name) > 200) {
+			// varchar(200) — validate before the INSERT so an over-length
+			// payload gets a 400 field error, not a raw SQLSTATE 500.
+			$fields['name'] = 'Project name is too long (max 200 characters).';
+		}
+		if (mb_strlen($funderName) > 200) {
+			$fields['funder_name'] = 'Funder name is too long (max 200 characters).';
+		}
+		if (mb_strlen($funderRef) > 120) {
+			$fields['funder_ref'] = 'Funder reference is too long (max 120 characters).';
 		}
 		if ($bewStartYmd !== null && !PeriodUtil::isValidYmd($bewStartYmd)) {
 			$fields['bew_start'] = 'Invalid date.';

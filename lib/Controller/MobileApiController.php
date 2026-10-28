@@ -71,8 +71,8 @@ class MobileApiController extends NwApiController
 		}
 		$this->perm->requireView($projectId, $uid);
 		$in = $this->params();
-		$from = (string)($in['from'] ?? '0000-01-01');
-		$to = (string)($in['to'] ?? '9999-12-31');
+		$from = (string)($in['from'] ?? '1900-01-01');
+		$to = (string)($in['to'] ?? '2100-12-31');
 		if (!PeriodUtil::isValidYmd($from) || !PeriodUtil::isValidYmd($to)) {
 			throw new \OCA\NachweisCheck\Exception\ValidationException(['period' => 'Invalid date range.']);
 		}
@@ -125,8 +125,8 @@ class MobileApiController extends NwApiController
 		$this->requireSeat($uid);
 		$this->perm->requireView($projectId, $uid);
 		$in = $this->params();
-		$from = (string)($in['from'] ?? '0000-01-01');
-		$to = (string)($in['to'] ?? '9999-12-31');
+		$from = (string)($in['from'] ?? '1900-01-01');
+		$to = (string)($in['to'] ?? '2100-12-31');
 		if (!PeriodUtil::isValidYmd($from) || !PeriodUtil::isValidYmd($to)) {
 			throw new \OCA\NachweisCheck\Exception\ValidationException(['period' => 'Invalid date range.']);
 		}

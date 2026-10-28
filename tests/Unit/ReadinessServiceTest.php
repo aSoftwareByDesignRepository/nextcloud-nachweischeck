@@ -21,10 +21,21 @@ use OCA\NachweisCheck\Db\WorkPackage;
 use OCA\NachweisCheck\Db\WorkPackageMapper;
 use OCA\NachweisCheck\Service\FinplanService;
 use OCA\NachweisCheck\Service\ReadinessService;
+use OCP\IL10N;
 use Test\TestCase;
 
 class ReadinessServiceTest extends TestCase
 {
+	private function l10n(): IL10N
+	{
+		$l = $this->createMock(IL10N::class);
+		$l->method('t')->willReturnCallback(
+			static fn(string $text, array $params = []): string =>
+				$params === [] ? $text : vsprintf($text, $params)
+		);
+		return $l;
+	}
+
 	private function build(array $over = []): array
 	{
 		$m = [
@@ -47,7 +58,7 @@ class ReadinessServiceTest extends TestCase
 		}
 		$m['entry']->method('findByProjectPeriod')->willReturn([]);
 		$m['dd']->method('findByProjectState')->willReturn([]);
-		$svc = new ReadinessService($m['finplan'], $m['ap'], $m['appos'], $m['receipt'], $m['entry'], $m['ts'], $m['dd'], $m['claim']);
+		$svc = new ReadinessService($m['finplan'], $m['ap'], $m['appos'], $m['receipt'], $m['entry'], $m['ts'], $m['dd'], $m['claim'], $this->l10n());
 		return ['svc' => $svc] + $m;
 	}
 
@@ -134,6 +145,15 @@ class ReadinessServiceTest extends TestCase
 		// missing attachment + missing invoice_no + missing payment_date = 3
 		$this->assertSame(3, $report['checks'][0]['count']);
 		$this->assertSame('warning', $report['checks'][0]['severity']);
+		// UI details go through IL10N — never the German export literals.
+		$this->assertSame(
+			[
+				'Receipt without attachment: X GmbH',
+				'Receipt without invoice number: X GmbH',
+				'Receipt without payment date: X GmbH',
+			],
+			$report['checks'][0]['items'],
+		);
 	}
 
 	public function testUnpricedEntryIsWarning(): void
@@ -151,6 +171,7 @@ class ReadinessServiceTest extends TestCase
 		$report = $svc->checklist($this->project());
 		$this->assertSame('missing_data', $report['checks'][0]['id']);
 		$this->assertSame(1, $report['checks'][0]['count']);
+		$this->assertSame(['Time entry without hourly rate:  / u1'], $report['checks'][0]['items']);
 	}
 
 	public function testUnsignedTimesheetsAndPendingDrawdowns(): void

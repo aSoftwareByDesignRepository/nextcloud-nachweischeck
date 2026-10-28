@@ -16,28 +16,75 @@
 		{
 			"id": "dashboard",
 			"path": "/?project={PID}&view=dashboard",
+			"view": "dashboard",
 			"states": ["populated"],
 			"dark": true
 		},
 		{
 			"id": "finplan",
 			"path": "/?project={PID}&view=finplan",
+			"view": "finplan",
+			"states": ["populated"]
+		},
+		{
+			"id": "workpackages",
+			"path": "/?project={PID}&view=workpackages",
+			"view": "workpackages",
+			"states": ["populated"]
+		},
+		{
+			"id": "time",
+			"path": "/?project={PID}&view=time",
+			"view": "time",
 			"states": ["populated"]
 		},
 		{
 			"id": "receipts",
 			"path": "/?project={PID}&view=receipts",
+			"view": "receipts",
+			"states": ["populated"]
+		},
+		{
+			"id": "reports",
+			"path": "/?project={PID}&view=reports",
+			"view": "reports",
+			"states": ["populated"]
+		},
+		{
+			"id": "deviations",
+			"path": "/?project={PID}&view=deviations",
+			"view": "deviations",
 			"states": ["populated"]
 		},
 		{
 			"id": "nachweis",
 			"path": "/?project={PID}&view=nachweis",
+			"view": "nachweis",
 			"states": ["populated"],
 			"dark": true
 		},
 		{
 			"id": "deadlines",
 			"path": "/?project={PID}&view=deadlines",
+			"view": "deadlines",
+			"states": ["populated"]
+		},
+		{
+			"id": "finance",
+			"path": "/?project={PID}&view=finance",
+			"view": "finance",
+			"states": ["populated"]
+		},
+		{
+			"id": "team",
+			"path": "/?project={PID}&view=team",
+			"view": "team",
+			"states": ["populated"]
+		},
+		{
+			"id": "import",
+			"path": "/?project={PID}&view=import",
+			"view": "import",
 			"states": ["populated"]
 		},
 		{

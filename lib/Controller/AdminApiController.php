@@ -233,8 +233,14 @@ class AdminApiController extends NwApiController
 			throw new ForbiddenException('App admin required.');
 		}
 		$in = $this->params();
+		$mode = (string)($in['mode'] ?? 'open');
+		// Fail closed on an unrecognized door discriminator — a typo must not
+		// silently collapse to 'open' and expose the app (untyped-payload class).
+		if (!in_array($mode, ['open', 'restricted'], true)) {
+			throw new \OCA\NachweisCheck\Exception\ValidationException(['mode' => 'open or restricted.']);
+		}
 		$this->door->saveConfig(
-			(string)($in['mode'] ?? 'open'),
+			$mode,
 			is_array($in['groups'] ?? null) ? $in['groups'] : [],
 			is_array($in['users'] ?? null) ? $in['users'] : [],
 			is_array($in['admins'] ?? null) ? $in['admins'] : [],

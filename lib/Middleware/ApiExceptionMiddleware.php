@@ -76,7 +76,7 @@ class ApiExceptionMiddleware extends Middleware
 	{
 		$path = (string)$this->request->getPathInfo();
 		$path = rawurldecode($path);
-		foreach (['/index.php/apps/nachweischeck', '/apps/nachweischeck'] as $prefix) {
+		foreach (['/index.php/apps/nachweischeck', '/apps/nachweischeck'] as $prefix) { // urlgate:ok — path matching, not URL emission
 			if ($path === $prefix) {
 				return '/';
 			}

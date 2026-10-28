@@ -39,6 +39,18 @@ class AuditEvent extends Entity
 	protected ?string $afterJson = null;
 	protected ?\DateTime $ts = null;
 
+	/**
+	 * Explicit setter: the magic __call setter marks the field updated only
+	 * when the value changes — setEntityId(0) (non-entity actions like
+	 * access_door) was silently dropped from the INSERT and died on the NOT
+	 * NULL entity_id column (SQLSTATE 1364 → HTTP 500). Always mark it.
+	 */
+	public function setEntityId(int $v): void
+	{
+		$this->entityId = $v;
+		$this->markFieldUpdated('entityId');
+	}
+
 	public function __construct()
 	{
 		$this->addType('projectId', 'integer');

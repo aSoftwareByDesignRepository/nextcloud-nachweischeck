@@ -237,6 +237,11 @@ class CsvImportService
 			$rows[] = array_combine($header, array_map('strval', $r)) ?: [];
 		}
 		fclose($fh);
+		if ($rows === []) {
+			// Header-only / garbage input must fail visibly — a 200 with a
+			// zero-row batch looks like a successful import that did nothing.
+			throw new ValidationException(['file' => 'CSV has no data rows.']);
+		}
 		return $rows;
 	}
 

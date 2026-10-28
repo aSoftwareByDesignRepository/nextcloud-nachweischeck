@@ -31,7 +31,7 @@ foreach ($locales as $lang) {
 	$cat = json_decode((string)file_get_contents($jsonPath), true, 512, JSON_THROW_ON_ERROR);
 	$translations = $cat['translations'] ?? [];
 
-	$lines = ["OC.L10N.register(\n", "\t\"dutycheck\",\n", "\t{\n"];
+	$lines = ["OC.L10N.register(\n", "\t\"nachweischeck\",\n", "\t{\n"];
 	foreach ($translations as $key => $val) {
 		$k = json_encode($key, JSON_UNESCAPED_UNICODE);
 		if (is_array($val)) {

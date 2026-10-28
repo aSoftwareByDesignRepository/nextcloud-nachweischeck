@@ -489,9 +489,21 @@
 	font-size: var(--nw-fs-2xl);
 	line-height: var(--nw-line-tight);
 	/* Long compounds (de "Zugriffssteuerung") must wrap or hyphenate —
-	   never clip mid-glyph at the 320px viewport edge. */
-	overflow-wrap: anywhere;
+	   never clip mid-glyph at the 320px viewport edge. break-word (not
+	   anywhere): headings keep normal word breaks and only split as a
+	   last resort — anywhere tears mid-word on full lines. */
+	overflow-wrap: break-word;
 	hyphens: auto;
+}
+/* ≤480px phone: the title track is ~200px (viewport − shell padding − 56px
+   icon − gap). fs-2xl brand compounds ("NachweisCheck" ≈ 215px) overflow
+   it and break-word tears mid-word — family defect
+   nw-vis-mobile-h1-midword-break. fs-xl keeps the word inside the track;
+   break-word stays last-resort for genuinely overlong words. */
+@media (max-width: 480px) {
+	.nw-page-header__text h1 {
+		font-size: var(--nw-fs-xl);
+	}
 }
 .nw-page-header__lead {
 	margin: 0;
@@ -601,9 +613,30 @@
    sets border-style:none, so border-color alone would paint nothing).
    `#content.app-nachweischeck` also reaches guest/public pages — layout.public.php
    has no #app-content wrapper. */
+
+/* Base .nw-btn: same core-repaint guard as the variants — an unguarded
+   single-class base collapses to --color-primary-element-light on <button>
+   while <a> siblings stay transparent (button_variant_specificity_collapse).
+   .nw-dialog scope included: JS-built dialogs mount on document.body,
+   outside every ID-scoped root.
+   ORDER MATTERS: this block must precede the variant blocks — same
+   specificity, so the variant fill/border rules below must win the
+   declaration order for `.nw-btn .nw-btn--*` composites. */
+#app-content.nw-app .nw-btn,
+#app-content-wrapper .nw-btn,
+#content.app-nachweischeck .nw-btn,
+.nw-dialog .nw-btn,
+#app-content.nw-app .btn,
+#app-content-wrapper .btn,
+#content.app-nachweischeck .btn {
+	background: transparent !important;
+	color: var(--nw-text) !important;
+	border: 1px solid transparent !important;
+}
 #app-content.nw-app .nw-btn--primary,
 #app-content-wrapper .nw-btn--primary,
 #content.app-nachweischeck .nw-btn--primary,
+.nw-dialog .nw-btn--primary,
 #app-content.nw-app .btn--primary,
 #app-content-wrapper .btn--primary,
 #content.app-nachweischeck .btn--primary {
@@ -614,6 +647,7 @@
 #app-content.nw-app .nw-btn--secondary,
 #app-content-wrapper .nw-btn--secondary,
 #content.app-nachweischeck .nw-btn--secondary,
+.nw-dialog .nw-btn--secondary,
 #app-content.nw-app .btn--secondary,
 #app-content-wrapper .btn--secondary,
 #content.app-nachweischeck .btn--secondary {
@@ -623,7 +657,8 @@
 }
 #app-content.nw-app .nw-btn--ghost,
 #app-content-wrapper .nw-btn--ghost,
-#content.app-nachweischeck .nw-btn--ghost {
+#content.app-nachweischeck .nw-btn--ghost,
+.nw-dialog .nw-btn--ghost {
 	background: transparent !important;
 	color: var(--nw-text) !important;
 	border: 1px solid var(--nw-control-border, var(--nw-border-strong)) !important;
@@ -635,7 +670,8 @@
 }
 #app-content.nw-app .nw-btn--flat,
 #app-content-wrapper .nw-btn--flat,
-#content.app-nachweischeck .nw-btn--flat {
+#content.app-nachweischeck .nw-btn--flat,
+.nw-dialog .nw-btn--flat {
 	background: transparent !important;
 	color: var(--nw-text) !important;
 	border: 1px solid transparent !important;
@@ -653,6 +689,7 @@
 #app-content.nw-app .nw-btn--danger,
 #app-content-wrapper .nw-btn--danger,
 #content.app-nachweischeck .nw-btn--danger,
+.nw-dialog .nw-btn--danger,
 .nw-app .btn--danger {
 	/* Solid fill — never pale --color-error tint (WCAG 1.4.3 / design-system §3.3).
 	   ID-scoped + !important: NC core button:not(...) (0-1-1) otherwise paints

@@ -50,8 +50,10 @@ class PageController extends Controller
 		$user = $this->userSession->getUser();
 		$allowed = $user !== null && ($this->door->isAllowed($user) || $this->door->isAppAdmin($user));
 		if (!$allowed) {
+			AssetRegistrar::registerStyles();
 			$resp = new TemplateResponse('nachweischeck', 'main', [
 				'appAllowed' => false,
+				'homeUrl' => $this->urlGenerator->linkToDefaultPageUrl(),
 			]);
 			$resp->setStatus(Http::STATUS_FORBIDDEN);
 			return $resp;
@@ -114,7 +116,11 @@ class PageController extends Controller
 		}
 		$user = $this->userSession->getUser();
 		if ($user === null || !$this->door->isAppAdmin($user)) {
-			$resp = new TemplateResponse('nachweischeck', 'main', ['appAllowed' => false]);
+			AssetRegistrar::registerStyles();
+			$resp = new TemplateResponse('nachweischeck', 'main', [
+				'appAllowed' => false,
+				'homeUrl' => $this->urlGenerator->linkToDefaultPageUrl(),
+			]);
 			$resp->setStatus(Http::STATUS_FORBIDDEN);
 			return $resp;
 		}

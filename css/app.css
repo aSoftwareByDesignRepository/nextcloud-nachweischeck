@@ -34,7 +34,7 @@
 
 #app-content.nw-app .nw-position__title {
 	font-weight: 600;
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 #app-content.nw-app .nw-position__meta {
@@ -61,11 +61,11 @@
 }
 
 #app-content.nw-app .nw-position--over .nw-position__fill {
-	background: var(--color-warning-text, var(--color-warning));
+	background: var(--color-element-warning, var(--color-warning-text, #c98600));
 }
 
 #app-content.nw-app .nw-position--blocked .nw-position__fill {
-	background: var(--nw-danger-fill, var(--color-error));
+	background: var(--nw-danger-fill);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -292,7 +292,8 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-size: var(--nw-fs-sm, 0.875rem);
 	line-height: var(--nw-line-base, 1.45);
 	white-space: normal;
-	overflow-wrap: anywhere;
+	/* Menu labels keep normal word breaks — anywhere tears mid-word. */
+	overflow-wrap: break-word;
 }
 
 .nw-nav-footer__menu-item:hover {
@@ -440,7 +441,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.2);
 	color: var(--color-main-text);
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 .nw-support-us__intro {
@@ -491,7 +492,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.25);
 	color: var(--color-main-text);
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 .nw-support-us__benefit,
@@ -563,7 +564,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.25);
 	color: var(--color-main-text);
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 }
 
 .nw-support-us__option-hint {
@@ -587,7 +588,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	text-decoration: none;
 	box-sizing: border-box;
 	white-space: normal;
-	overflow-wrap: anywhere;
+	overflow-wrap: break-word;
 	max-width: 100%;
 }
 
@@ -797,4 +798,52 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 }
 @media (max-width: 480px) {
 	.nw-field-pair { grid-template-columns: 1fr; }
+}
+
+/* ── Access-denied door (appAllowed=false) ─────────────────────────────
+   Minimal shell + alert + one recovery CTA (Bachus no-dead-ends): the
+   denied page renders no nav/page-header chrome at all — just this
+   centered card over the family slate canvas. */
+/* The denied shell renders no #app-navigation — span the reserved sidebar
+   column too or the theming wallpaper leaks through the left gutter. */
+#content.app-nachweischeck #app-content.nw-app--access-denied {
+	grid-column: 1 / -1;
+}
+#app-content.nw-app--access-denied {
+	display: grid;
+	place-items: center;
+	min-height: 60vh;
+	padding: var(--nw-space-5);
+	background: var(--nw-bg);
+}
+.nw-denied {
+	max-width: 540px;
+	width: 100%;
+}
+.nw-denied .nw-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--nw-space-3);
+	text-align: center;
+	padding: var(--nw-space-6);
+}
+.nw-denied .nw-page-header__icon {
+	background: var(--nw-tint-critical, var(--color-error, #ffe7e7));
+	/* NC30+: --color-error is a pale surface tint — ink uses *-text. */
+	color: var(--color-error-text, var(--color-element-error, #cc4646));
+}
+.nw-denied__title {
+	margin: 0;
+	font-size: var(--nw-fs-2xl);
+	line-height: var(--nw-line-tight);
+}
+.nw-denied__text {
+	margin: 0;
+	color: var(--nw-text);
+}
+.nw-denied__hint {
+	margin: 0;
+	color: var(--nw-muted);
+	font-size: var(--nw-fs-sm);
 }

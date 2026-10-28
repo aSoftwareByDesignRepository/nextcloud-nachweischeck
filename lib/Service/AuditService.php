@@ -37,6 +37,9 @@ class AuditService
 		$e = new AuditEvent();
 		$e->setProjectId($projectId);
 		$e->setEntity($entity);
+		// AuditEvent::setEntityId marks the field unconditionally — see the
+		// entity for why (entityId=0 was dropped by the magic-setter
+		// unchanged-skip → SQLSTATE 1364 on INSERT).
 		$e->setEntityId($entityId);
 		$e->setAction($action);
 		$e->setActor($actor);

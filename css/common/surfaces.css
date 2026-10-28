@@ -405,13 +405,17 @@
 	border-top: 1px solid var(--nw-border);
 }
 
-#app-content.nw-app .nw-deadline-list__link {
+#app-content.nw-app .nw-deadline-list__link,
+#app-content.nw-app .nw-deadline-list__item {
 	display: flex;
 	align-items: center;
 	gap: var(--nw-space-3);
 	padding: var(--nw-space-3) var(--nw-space-2);
 	min-height: var(--nw-touch);
 	border-radius: var(--nw-radius-sm);
+}
+
+#app-content.nw-app .nw-deadline-list__link {
 	text-decoration: none;
 	color: var(--nw-text);
 }
@@ -446,7 +450,8 @@
 	white-space: nowrap;
 }
 
-#app-content.nw-app .nw-deadline-list__link .nw-badge {
+#app-content.nw-app .nw-deadline-list__link .nw-badge,
+#app-content.nw-app .nw-deadline-list__item > .nw-badge {
 	margin-inline-start: auto;
 	flex-shrink: 0;
 }
@@ -471,7 +476,10 @@
 	margin: 0 0 var(--nw-space-1);
 	font-size: var(--nw-fs-xl);
 	line-height: var(--nw-line-tight);
-	overflow-wrap: anywhere;
+	/* Headings keep normal word breaks — anywhere tears mid-word on
+	   full lines (family defect nw-vis-mobile-h1-midword-break). */
+	overflow-wrap: break-word;
+	hyphens: auto;
 }
 
 #app-content.nw-app .nw-hero__meta {
@@ -539,6 +547,14 @@
 	color: var(--nw-muted);
 	font-size: var(--nw-fs-sm);
 	align-self: center;
+	/* NC core pins dl dt at 130px + nowrap + end-align (apps.css); the pin
+	   clips real labels. Logical-start text + wrap; flex-basis owns the box. */
+	width: auto;
+	max-width: 100%;
+	padding: 0;
+	text-align: start;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 
 #app-content.nw-app .nw-dl__row dd {
