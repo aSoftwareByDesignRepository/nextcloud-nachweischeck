@@ -45,6 +45,26 @@ class ClaimServiceTest extends TestCase
 		$this->assertSame(Claim::STATE_OPEN, $c->getState());
 	}
 
+	public function testRecoveryKindIsMarkedForInsert(): void
+	{
+		// setKind('recovery') equals the entity's property default — the
+		// magic __call setter would skip the dirty-mark, the NOT NULL kind
+		// column (no schema default) would be omitted from the INSERT and
+		// every recovery claim died SQLSTATE 1364 → HTTP 500.
+		$m = $this->createMock(ClaimMapper::class);
+		$m->method('insert')->willReturnCallback(function ($c) {
+			$this->assertArrayHasKey('kind', $c->getUpdatedFields());
+			$c->setId(1);
+			return $c;
+		});
+		[$svc] = $this->svc($m);
+		$c = $svc->create(1, [
+			'kind' => 'recovery', 'title' => 'Rueckforderung 2026',
+			'occurred_date' => '2026-04-02', 'amount_minor' => 12345,
+		], 'u1');
+		$this->assertSame(Claim::KIND_RECOVERY, $c->getKind());
+	}
+
 	public function testInterestRequiresValidPeriod(): void
 	{
 		[$svc] = $this->svc();

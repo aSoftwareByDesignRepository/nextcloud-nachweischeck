@@ -68,7 +68,12 @@ test.describe('FOCUS_PRESERVATION_CONTRACT', () => {
 
 	test.beforeEach(async () => {
 		await adminPage.setViewportSize({ width: 1280, height: 900 });
-		await adminPage.goto(`${BASE}${APP}/?project=${projectId}&view=dashboard`, { waitUntil: 'domcontentloaded' });
+		// view=time: the dashboard of a fully-active project legitimately
+		// contains zero focusable elements inside #nw-main (actions live in
+		// #nw-page-actions outside it), which made this contract depend on
+		// whichever sibling fixture was newest (draft projects carry an
+		// extra link). The time view always renders form controls.
+		await adminPage.goto(`${BASE}${APP}/?project=${projectId}&view=time`, { waitUntil: 'domcontentloaded' });
 		await adminPage.waitForSelector('#nw-main .nw-card, #nw-main .nw-empty-state', { timeout: 45_000 });
 		await adminPage.waitForTimeout(1200);
 	});

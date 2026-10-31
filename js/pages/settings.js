@@ -301,7 +301,7 @@
 			]));
 
 			if (!role.isPro) {
-				host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'note' }, [
+				host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'status' }, [
 					el('p', { class: 'nw-callout__title', text: t('Template packs are a Pro feature') }),
 					el('p', { class: 'nw-callout__text', text: t('Installing custom funder packs requires a Pro licence.') })
 				]));

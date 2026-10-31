@@ -63,6 +63,7 @@
 		draft: 'neutral', active: 'success', closing: 'warn', closed: 'neutral',
 		open: 'info', filed: 'neutral', submitted: 'info', accepted: 'success', signed: 'success',
 		rejected: 'danger', final: 'success', superseded: 'warn',
+		requested: 'warn', received: 'success', settled: 'success',
 		pending: 'warn', applied: 'success', builtin: 'neutral', pack: 'info',
 		installed: 'info', receipt: 'neutral', salary: 'info',
 		member: 'neutral', finance: 'info', admin: 'warn',
@@ -988,7 +989,7 @@
 			]));
 
 			if (p.state === 'draft') {
-				host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'note' }, [
+				host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'status' }, [
 					el('p', { class: 'nw-callout__title', text: t('Draft project') }),
 					el('p', { class: 'nw-callout__text', text: t('Set up the financing plan first, then activate the project — after that, times and receipts can be booked.') }),
 					el('p', {}, [el('a', {
@@ -1140,7 +1141,7 @@
 					var b = el('button', {
 						type: 'button', class: 'nw-filter',
 						'aria-pressed': v.id === selected.id ? 'true' : 'false',
-						text: 'v' + v.version + ' — ' + v.state
+						text: 'v' + v.version + ' — ' + t(v.state)
 					});
 					b.addEventListener('click', function () { selected = v; paint(); });
 					pills.appendChild(b);
@@ -1321,7 +1322,7 @@
 					}), { empty: t('No work packages yet.') })
 			]}));
 			if (!positions.length) {
-				host.appendChild(el('div', { class: 'nw-callout nw-callout--warning', role: 'note' }, [
+				host.appendChild(el('div', { class: 'nw-callout nw-callout--warning', role: 'status' }, [
 					el('p', { class: 'nw-callout__title', text: t('No active financing plan') }),
 					el('p', { class: 'nw-callout__text', text: t('Positions appear once a financing plan version is activated.') })
 				]));
@@ -2960,7 +2961,7 @@
 	function renderAuditor(grants) {
 		NW.pageActions([]);
 		host.innerHTML = '';
-		host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'note' }, [
+		host.appendChild(el('div', { class: 'nw-callout nw-callout--info', role: 'status' }, [
 			el('p', { class: 'nw-callout__title', text: t('Auditor view') }),
 			el('p', { class: 'nw-callout__text', text: t('Read-only — every access is logged for the project team.') })
 		]));
@@ -3001,7 +3002,7 @@
 					region.appendChild(card(t('Receipts'), { children: [
 						tableEl([t('Vendor'), t('Invoice date'), t('Total'), t('Kind')],
 							res[2].map(function (r) {
-								return [r.vendor || '—', NW.fmtDate(r.invoice_date), fmtMoney(r.total_minor), r.kind || '—'];
+								return [r.vendor || '—', NW.fmtDate(r.invoice_date), fmtMoney(r.total_minor), r.kind ? t(r.kind) : '—'];
 							}), { empty: t('No receipts.') })
 					]}));
 				}
@@ -3010,7 +3011,7 @@
 						tableEl([t('Version'), t('Kind'), t('State'), t('Hash'), t('Generated')],
 							res[3].map(function (n) {
 								return ['v' + n.version, t(NACHWEIS_KINDS[n.kind] || n.kind),
-									n.state, el('code', { class: 'nw-mono', text: hashShort(n.manifest_hash) }),
+									t(n.state), el('code', { class: 'nw-mono', text: hashShort(n.manifest_hash) }),
 									NW.fmtDateTime(n.generated_at)];
 							}), { empty: t('None yet.') })
 					]}));

@@ -67,6 +67,19 @@ class Claim extends Entity
 	protected string $createdBy = '';
 	protected ?\DateTime $createdAt = null;
 
+	/**
+	 * Explicit setter: the magic __call setter marks the field updated only
+	 * when the value changes — setKind('recovery') equals the property
+	 * default, was silently dropped from the INSERT and died on the NOT
+	 * NULL kind column with no schema default (SQLSTATE 1364 → HTTP 500
+	 * on every recovery claim). Always mark it.
+	 */
+	public function setKind(string $v): void
+	{
+		$this->kind = $v;
+		$this->markFieldUpdated('kind');
+	}
+
 	public function __construct()
 	{
 		$this->addType('projectId', 'integer');
