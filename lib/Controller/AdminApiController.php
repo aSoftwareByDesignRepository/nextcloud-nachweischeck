@@ -327,10 +327,14 @@ class AdminApiController extends NwApiController
 		if (!$this->door->isAppAdmin($user)) {
 			throw new ForbiddenException('App admin required.');
 		}
+		$ranked = $this->seatMapper->findAllRanked();
+		$rankInput = MobileSeatService::rankInput($ranked);
+		$limit = $this->license->seatLimit();
 		$out = [];
-		foreach ($this->seatMapper->findAll() as $s) {
+		foreach ($ranked as $s) {
 			$out[] = ['id' => $s->getId(), 'uid' => $s->getUid(),
-				'assigned_at' => $s->getAssignedAt()?->format(\DateTime::ATOM)];
+				'assigned_at' => $s->getAssignedAt()?->format(\DateTime::ATOM),
+				'within_limit' => \OCA\NachweisCheck\Service\SeatRank::isWithinLimit($rankInput, (int)$s->getId(), $limit)];
 		}
 		return $this->ok($out);
 	}

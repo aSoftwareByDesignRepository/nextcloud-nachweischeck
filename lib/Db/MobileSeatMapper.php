@@ -46,6 +46,35 @@ class MobileSeatMapper extends QBMapper
 		return $this->findEntities($qb);
 	}
 
+	/**
+	 * Seat rows ranked by (assigned_at ASC, id ASC) — the downgrade-safe
+	 * order SeatRank evaluates against.
+	 *
+	 * @return list<MobileSeat>
+	 */
+	public function findAllRanked(): array
+	{
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('*')->from($this->getTableName())
+			->orderBy('assigned_at', 'ASC')
+			->addOrderBy('id', 'ASC');
+		return $this->findEntities($qb);
+	}
+
+	public function countAll(): int
+	{
+		$qb = $this->db->getQueryBuilder();
+		$qb->select($qb->func()->count('*'))->from($this->getTableName());
+		return (int)$qb->executeQuery()->fetchOne();
+	}
+
+	public function deleteAll(): void
+	{
+		$qb = $this->db->getQueryBuilder();
+		$qb->delete($this->getTableName());
+		$qb->executeStatement();
+	}
+
 	public function findByUid(string $uid): ?MobileSeat
 	{
 		$qb = $this->db->getQueryBuilder();

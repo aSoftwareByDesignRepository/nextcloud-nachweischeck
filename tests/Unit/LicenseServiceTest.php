@@ -2,32 +2,64 @@
 
 declare(strict_types=1);
 
+/**
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 namespace OCA\NachweisCheck\Tests\Unit;
 
+use OCA\NachweisCheck\Db\LicenseState;
+use OCA\NachweisCheck\Db\LicenseStateMapper;
+use OCA\NachweisCheck\Db\MobileSeatMapper;
 use OCA\NachweisCheck\Exception\LicenseException;
+use OCA\NachweisCheck\Service\AuditService;
 use OCA\NachweisCheck\Service\LicenseService;
-use OCP\App\IAppManager;
+use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IAppConfig;
+use OCP\IDBConnection;
+use OCP\Lock\ILockingProvider;
 use Test\TestCase;
 
 class LicenseServiceTest extends TestCase
 {
-	/**
-	 * @param array<string, string> $values appconfig rows keyed "app|key"
-	 */
-	private function svc(array $values = [], bool $opsInstalled = false): LicenseService
+	private const TODAY = '2026-10-31';
+
+	private function state(?string $validUntil, int $mobileSeats = 5): ?LicenseState
+	{
+		if ($validUntil === null) {
+			return null;
+		}
+		$s = new LicenseState();
+		$s->setCustomerId('acme-corp');
+		$s->setIssuedAt('2026-01-01');
+		$s->setValidUntil($validUntil);
+		$s->setMobileSeats($mobileSeats);
+		$s->setPayloadB64('payload');
+		$s->setSignatureB64('sig');
+		return $s;
+	}
+
+	private function svc(array $appValues = [], ?LicenseState $state = null, int $seatCount = 0): LicenseService
 	{
 		$appConfig = $this->createMock(IAppConfig::class);
 		$appConfig->method('getValueString')
-			->willReturnCallback(function (string $app, string $key, string $default = '') use ($values): string {
-				return $values[$app . '|' . $key] ?? $default;
-			});
-		$appManager = $this->createMock(IAppManager::class);
-		$appManager->method('isInstalled')->willReturnCallback(
-			fn(string $appId): bool => $appId === 'sbdlicenseops' && $opsInstalled
+			->willReturnCallback(fn(string $app, string $key, string $default = ''): string => $appValues[$app . '|' . $key] ?? $default);
+		$stateMapper = $this->createMock(LicenseStateMapper::class);
+		$stateMapper->method('findSingleton')->willReturn($state);
+		$seatMapper = $this->createMock(MobileSeatMapper::class);
+		$seatMapper->method('countAll')->willReturn($seatCount);
+		$time = $this->createMock(ITimeFactory::class);
+		$time->method('getDateTime')->willReturn(new \DateTime(self::TODAY . ' 12:00:00'));
+		$time->method('getTime')->willReturn(strtotime(self::TODAY));
+		$locking = $this->createMock(ILockingProvider::class);
+		$audit = $this->createMock(AuditService::class);
+		return new LicenseService(
+			$this->createMock(IDBConnection::class),
+			$stateMapper, $seatMapper, $time, $appConfig, $locking, $audit,
 		);
-		return new LicenseService($appConfig, $appManager);
 	}
+
+	// ---- gate matrix (spec contract test: Free/Pro × Feature) -------------
 
 	public function testProModeOverrideWins(): void
 	{
@@ -35,48 +67,47 @@ class LicenseServiceTest extends TestCase
 		$this->assertTrue($svc->isPro());
 	}
 
-	public function testFreeModeOverrideShortCircuitsOpsProbe(): void
+	public function testFreeOverrideShortCircuitsValidLicense(): void
 	{
-		// even with a valid ops license present, explicit 'free' wins
-		$svc = $this->svc([
-			'nachweischeck|nw_license_mode' => 'free',
-			'sbdlicenseops|license_nachweischeck_state' => 'active',
-		], true);
+		$svc = $this->svc(
+			['nachweischeck|nw_license_mode' => 'free'],
+			$this->state('2099-01-01'),
+		);
 		$this->assertFalse($svc->isPro());
 	}
 
-	public function testOpsAppMissingMeansFree(): void
+	public function testValidStoredLicenseIsPro(): void
 	{
-		$svc = $this->svc([], false);
+		// validUntil == today is still valid (inclusive, day precision)
+		foreach (['2026-10-31', '2099-01-01'] as $until) {
+			$svc = $this->svc([], $this->state($until));
+			$this->assertTrue($svc->isPro(), "validUntil {$until} must be pro");
+		}
+	}
+
+	public function testExpiredLicenseIsFreeButDataReadable(): void
+	{
+		$svc = $this->svc([], $this->state('2026-10-30'));
 		$this->assertFalse($svc->isPro());
+		// grace semantics: expired state blocks pro mutations, never reads
+		$st = $svc->status();
+		$this->assertSame('free', $st['tier']);
+		$this->assertFalse($st['state']['valid']);
+		$this->assertSame('acme-corp', $st['state']['customerId']);
 	}
 
-	public function testOpsActiveAndGraceStatesArePro(): void
+	public function testNoStateMeansFree(): void
 	{
-		foreach (['active', 'grace'] as $state) {
-			$svc = $this->svc(['sbdlicenseops|license_nachweischeck_state' => $state], true);
-			$this->assertTrue($svc->isPro(), "state {$state} should be pro");
-		}
-	}
-
-	public function testOpsOtherStatesAreFree(): void
-	{
-		foreach (['expired', 'invalid', ''] as $state) {
-			$svc = $this->svc(['sbdlicenseops|license_nachweischeck_state' => $state], true);
-			$this->assertFalse($svc->isPro(), "state '{$state}' should be free");
-		}
+		$this->assertFalse($this->svc()->isPro());
 	}
 
 	public function testProFeatureMatrixAllOpen(): void
 	{
 		$svc = $this->svc(['nachweischeck|nw_license_mode' => 'pro']);
 		foreach ([
-			LicenseService::FEATURE_ERECHNUNG,
-			LicenseService::FEATURE_TEMPLATES,
-			LicenseService::FEATURE_MULTI_PROJECT,
-			LicenseService::FEATURE_TIMESHEET_SIGNOFF,
-			LicenseService::FEATURE_AUDITOR_SEAT,
-			LicenseService::FEATURE_MOBILE_SEATS,
+			LicenseService::FEATURE_ERECHNUNG, LicenseService::FEATURE_TEMPLATES,
+			LicenseService::FEATURE_MULTI_PROJECT, LicenseService::FEATURE_TIMESHEET_SIGNOFF,
+			LicenseService::FEATURE_AUDITOR_SEAT, LicenseService::FEATURE_MOBILE_SEATS,
 		] as $f) {
 			$this->assertTrue($svc->hasFeature($f), "pro must open {$f}");
 		}
@@ -86,16 +117,12 @@ class LicenseServiceTest extends TestCase
 	{
 		$svc = $this->svc();
 		foreach ([
-			LicenseService::FEATURE_ERECHNUNG,
-			LicenseService::FEATURE_TEMPLATES,
-			LicenseService::FEATURE_MULTI_PROJECT,
-			LicenseService::FEATURE_TIMESHEET_SIGNOFF,
-			LicenseService::FEATURE_AUDITOR_SEAT,
-			LicenseService::FEATURE_MOBILE_SEATS,
+			LicenseService::FEATURE_ERECHNUNG, LicenseService::FEATURE_TEMPLATES,
+			LicenseService::FEATURE_MULTI_PROJECT, LicenseService::FEATURE_TIMESHEET_SIGNOFF,
+			LicenseService::FEATURE_AUDITOR_SEAT, LicenseService::FEATURE_MOBILE_SEATS,
 		] as $f) {
 			$this->assertFalse($svc->hasFeature($f), "free must close {$f}");
 		}
-		// unlisted features default open on the free tier
 		$this->assertTrue($svc->hasFeature('csv_import'));
 	}
 
@@ -115,15 +142,58 @@ class LicenseServiceTest extends TestCase
 	public function testActiveProjectLimitFreeTier(): void
 	{
 		$svc = $this->svc();
-		$svc->checkActiveProjectLimit(0); // first active project is allowed
+		$svc->checkActiveProjectLimit(0);
 		$this->expectException(LicenseException::class);
-		$svc->checkActiveProjectLimit(1); // second one is not
+		$svc->checkActiveProjectLimit(1);
 	}
 
 	public function testActiveProjectLimitUnlimitedOnPro(): void
 	{
 		$svc = $this->svc(['nachweischeck|nw_license_mode' => 'pro']);
 		$svc->checkActiveProjectLimit(42);
-		$this->assertTrue(true); // reached without exception
+		$this->assertTrue(true);
+	}
+
+	// ---- seat entitlement + status envelope ------------------------------
+
+	public function testSeatLimitFollowsLicense(): void
+	{
+		$this->assertSame(7, $this->svc([], $this->state('2099-01-01', 7))->seatLimit());
+		$this->assertSame(0, $this->svc([], $this->state('2020-01-01', 7))->seatLimit());
+		$this->assertSame(0, $this->svc()->seatLimit());
+		// override 'pro' without stored key → no seat entitlement
+		$this->assertSame(0, $this->svc(['nachweischeck|nw_license_mode' => 'pro'])->seatLimit());
+	}
+
+	public function testStatusShape(): void
+	{
+		$st = $this->svc([], $this->state('2026-11-15', 5), 2)->status();
+		$this->assertSame('pro', $st['tier']);
+		$this->assertTrue($st['state']['valid']);
+		$this->assertTrue($st['state']['expiresSoon']);
+		$this->assertSame(15, $st['state']['daysRemaining']);
+		$this->assertSame(['assigned' => 2, 'limit' => 5], $st['seats']);
+		$this->assertSame(LicenseService::PURCHASE_URL, $st['purchaseUrl']);
+	}
+
+	public function testBuildEnvelopeOnlyWhileValid(): void
+	{
+		$env = $this->svc([], $this->state('2099-01-01'))->buildEnvelope();
+		$this->assertSame('NWC2', $env['format']);
+		$this->assertSame('payload', $env['payloadB64']);
+		$this->assertNull($this->svc([], $this->state('2020-01-01'))->buildEnvelope());
+		$this->assertNull($this->svc()->buildEnvelope());
+	}
+
+	public function testApplyRejectsMalformedKey(): void
+	{
+		$svc = $this->svc();
+		try {
+			$svc->apply('admin', 'not-a-key');
+			$this->fail('expected rejection');
+		} catch (\OCA\NachweisCheck\Exception\NwException $e) {
+			$this->assertSame('license_invalid', $e->getErrorCode());
+			$this->assertSame(422, $e->getHttpStatus());
+		}
 	}
 }

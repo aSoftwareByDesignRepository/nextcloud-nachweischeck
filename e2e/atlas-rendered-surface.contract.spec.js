@@ -82,7 +82,7 @@ test.describe('ATLAS_RENDERED_SURFACE_CONTRACT', () => {
 		});
 	}
 
-	for (const section of ['access', 'templates', 'notifications']) {
+	for (const section of ['access', 'templates', 'notifications', 'license']) {
 		test(`settings ${section}`, async () => {
 			await adminPage.goto(`${BASE}${APP}/settings/${section}`, { waitUntil: 'domcontentloaded' });
 			await adminPage.waitForSelector('#nw-settings .nw-card, #nw-settings .nw-empty-state', { timeout: 45_000 });

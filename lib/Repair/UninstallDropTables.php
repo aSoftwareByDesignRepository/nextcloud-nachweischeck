@@ -58,6 +58,7 @@ final class UninstallDropTables implements IRepairStep
 		'nw_finplan_ver',
 		'nw_import_batch',
 		'nw_incoming_payment',
+		'nw_license_state',
 		'nw_mobile_seat',
 		'nw_nachweis',
 		'nw_position',

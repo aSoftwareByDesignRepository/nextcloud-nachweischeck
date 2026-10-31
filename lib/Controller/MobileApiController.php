@@ -59,6 +59,10 @@ class MobileApiController extends NwApiController
 			'api' => self::API_VERSION,
 			'seat' => $this->seats->hasSeat($user->getUID()),
 			'pro' => $this->license->isPro(),
+			'licensing' => [
+				'seatLimit' => $this->license->seatLimit(),
+				'envelope' => $this->license->buildEnvelope(),
+			],
 		]);
 	}
 
