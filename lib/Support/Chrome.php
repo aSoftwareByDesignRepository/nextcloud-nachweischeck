@@ -137,6 +137,7 @@ final class Chrome
 			'access' => $l10n->t('Access'),
 			'templates' => $l10n->t('Funder templates'),
 			'notifications' => $l10n->t('Notifications'),
+			'license' => $l10n->t('License'),
 			default => $s,
 		};
 	}
