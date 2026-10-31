@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Service;
 
+use OCA\NachweisCheck\Activity\ActivityService;
 use OCA\NachweisCheck\Db\AuditEvent;
 use OCA\NachweisCheck\Db\AuditEventMapper;
 
@@ -22,6 +23,7 @@ class AuditService
 {
 	public function __construct(
 		private readonly AuditEventMapper $mapper,
+		private readonly ?ActivityService $activity = null,
 	) {
 	}
 
@@ -47,5 +49,8 @@ class AuditService
 		$e->setAfterJson($after === null ? null : json_encode($after, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 		$e->setTs(new \DateTime());
 		$this->mapper->insert($e);
+		// Whitelisted fiscal events additionally surface in the NC Activity
+		// feed (I-10). Emission is fail-safe inside ActivityService.
+		$this->activity?->onAuditEvent($projectId, $entity, $entityId, $action, $actor, $after);
 	}
 }

@@ -27,6 +27,10 @@ class InterestCalculatorTest extends TestCase
 		// 30E/360: start 31st clamps to 30th → Jan30→Feb30 (30d) + 1 = 31
 		self::assertSame(31, InterestCalculator::days360('2026-01-31', '2026-03-01'));
 		self::assertSame(29, InterestCalculator::days360('2024-01-30', '2024-02-29'));
+		// End-day 31st clamps to the 30th (30E/360): 31.1.→31.3. = 60 days,
+		// not 61. Kills the "no clamp" mutant.
+		self::assertSame(60, InterestCalculator::days360('2026-01-31', '2026-03-31'));
+		self::assertSame(32, InterestCalculator::days360('2026-02-28', '2026-03-31'));
 	}
 
 	public function testDays360ZeroOrInverted(): void

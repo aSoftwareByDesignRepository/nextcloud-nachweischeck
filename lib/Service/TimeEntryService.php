@@ -70,8 +70,10 @@ class TimeEntryService
 			}
 			throw $x;
 		}
+		// Person-linked money (rate, derived amount) is salary data — it
+		// does not belong in the audit payload (PII-in-logs threat row).
 		$this->audit->record($projectId, 'time_entry', $e->getId(), 'create', $actor, null, [
-			'uid' => $uid, 'date' => $dateYmd, 'minutes' => $minutes, 'rate_minor' => $rate, 'amount_minor' => $e->getAmountMinor(),
+			'uid' => $uid, 'date' => $dateYmd, 'minutes' => $minutes,
 		]);
 		return $e;
 	}
@@ -91,7 +93,7 @@ class TimeEntryService
 		$e->setUpdatedAt(new \DateTime());
 		$e = $this->mapper->update($e);
 		$this->audit->record($e->getProjectId(), 'time_entry', $e->getId(), 'update', $actor, $before, [
-			'date' => $dateYmd, 'minutes' => $minutes, 'amount_minor' => $e->getAmountMinor(),
+			'date' => $dateYmd, 'minutes' => $minutes,
 		]);
 		return $e;
 	}
@@ -100,7 +102,7 @@ class TimeEntryService
 	{
 		$this->audit->record($e->getProjectId(), 'time_entry', $e->getId(), 'delete', $actor, [
 			'uid' => $e->getUid(), 'date' => $e->getEntryDate()?->format('Y-m-d'),
-			'minutes' => $e->getMinutes(), 'amount_minor' => $e->getAmountMinor(),
+			'minutes' => $e->getMinutes(),
 		]);
 		$this->mapper->delete($e);
 	}

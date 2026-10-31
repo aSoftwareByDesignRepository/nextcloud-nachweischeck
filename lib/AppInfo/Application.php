@@ -95,6 +95,14 @@ class Application extends App implements IBootstrap
 			);
 		});
 
+		// I-10 Activity provider — registered explicitly so the Activity app
+		// resolves it through this app's container (dutycheck pattern).
+		$context->registerService(\OCA\NachweisCheck\Activity\Provider::class, function ($c): \OCA\NachweisCheck\Activity\Provider {
+			return new \OCA\NachweisCheck\Activity\Provider(
+				$c->get(\OCP\L10N\IFactory::class),
+			);
+		});
+
 	}
 
 	public function boot(IBootContext $context): void

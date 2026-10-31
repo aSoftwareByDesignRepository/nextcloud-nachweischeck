@@ -72,7 +72,17 @@ final class Money
 			return PHP_INT_MAX;
 		}
 		$r = $used - $q * $budget;
-		return $q * 1000 + intdiv($r * 1000, $budget);
+		if ($r <= intdiv(PHP_INT_MAX, 1000)) {
+			$tail = intdiv($r * 1000, $budget);
+		} else {
+			// r < budget yet r*1000 would overflow int64 — only reachable
+			// beyond ~9.2e15 minor units. Rescale both operands down by the
+			// same factor; the tail is < 1000 so the bounded error (<1)
+			// is noise at that scale.
+			$k = intdiv($budget, intdiv(PHP_INT_MAX, 1000)) + 1;
+			$tail = intdiv(intdiv($r, $k) * 1000, max(1, intdiv($budget, $k)));
+		}
+		return $q * 1000 + $tail;
 	}
 
 	/** Sum with strict typing — guards against float contamination. */

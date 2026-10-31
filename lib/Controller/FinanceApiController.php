@@ -26,6 +26,9 @@ use OCA\NachweisCheck\Service\PermissionService;
 use OCA\NachweisCheck\Service\ProjectService;
 use OCA\NachweisCheck\Service\RateService;
 use OCA\NachweisCheck\Service\ReallocationService;
+use OCA\NachweisCheck\Service\SollIstService;
+use OCA\NachweisCheck\Support\InterestCalculator;
+use OCA\NachweisCheck\Support\PeriodUtil;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
@@ -47,6 +50,7 @@ class FinanceApiController extends NwApiController
 		private readonly DrawdownService $drawdowns,
 		private readonly ClaimService $claims,
 		private readonly ProjectService $projects,
+		private readonly SollIstService $sollIst,
 	) {
 		parent::__construct($appName, $request, $userSession, $door, $perm);
 	}
@@ -272,6 +276,54 @@ class FinanceApiController extends NwApiController
 	}
 
 	// ---- claims / Zinsen + Rueckforderung (NH-06) -------------------------
+
+	/**
+	 * NH-06: preview interest on unverbrauchte Mittel (ANBest-P Nr. 8).
+	 * Principal = received payments minus recorded spend, computed
+	 * server-side — the client never invents the base. The finance role can
+	 * then file it as a kind=interest claim via POST /claims.
+	 */
+	#[NoAdminRequired]
+	public function unspentInterest(int $projectId): JSONResponse
+	{
+		$uid = $this->uid();
+		$this->perm->requireFinance($projectId, $uid);
+		$p = $this->projects->getOrFail($projectId);
+		$in = $this->params();
+		$to = (string)($in['to'] ?? '');
+		$rateBp = (int)($in['rate_bp'] ?? 0);
+		$from = (string)($in['from'] ?? '') ?: ($p->getBewEnd()?->format('Y-m-d') ?? '');
+		$fields = [];
+		if (!PeriodUtil::isValidYmd($from)) {
+			$fields['from'] = 'Invalid date.';
+		}
+		if (!PeriodUtil::isValidYmd($to) || (PeriodUtil::isValidYmd($from) && $to <= $from)) {
+			$fields['to'] = 'Interest end must be a valid date after the start.';
+		}
+		if ($rateBp <= 0 || $rateBp > 100000) {
+			$fields['rate_bp'] = 'Rate must be 1–100000 basis points.';
+		}
+		if ($fields !== []) {
+			throw new \OCA\NachweisCheck\Exception\ValidationException($fields);
+		}
+		$received = 0;
+		foreach ($this->paymentMapper->findByProject($projectId) as $pay) {
+			$received += $pay->getAmountMinor();
+		}
+		$used = $this->sollIst->forProject($p)['totals']['used'] ?? 0;
+		$unspent = max(0, $received - $used);
+		$days = InterestCalculator::days360($from, $to);
+		return $this->ok([
+			'received_minor' => $received,
+			'used_minor' => $used,
+			'unspent_minor' => $unspent,
+			'period_from' => $from,
+			'period_to' => $to,
+			'rate_bp' => $rateBp,
+			'days_360' => $days,
+			'interest_minor' => InterestCalculator::interestMinor($unspent, $rateBp, $days),
+		]);
+	}
 
 	#[NoAdminRequired]
 	public function claims(int $projectId): JSONResponse

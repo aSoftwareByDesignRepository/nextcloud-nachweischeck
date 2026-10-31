@@ -63,8 +63,11 @@ class AdminApiController extends NwApiController
 		$this->perm->requireView($projectId, $uid);
 		$out = [];
 		foreach ($this->memberMapper->findByProject($projectId) as $m) {
+			// Prefer the live display name; the stored snapshot is the
+			// fallback for deactivated/deleted accounts (spec §9).
 			$out[] = [
-				'uid' => $m->getUid(), 'role' => $m->getRole(), 'display_name' => $m->getDisplayName(),
+				'uid' => $m->getUid(), 'role' => $m->getRole(),
+				'display_name' => $this->userManager->get($m->getUid())?->getDisplayName() ?: $m->getDisplayName(),
 			];
 		}
 		return $this->ok($out);

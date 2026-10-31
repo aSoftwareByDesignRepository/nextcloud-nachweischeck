@@ -92,6 +92,16 @@ class ProjectApiController extends NwApiController
 		]);
 	}
 
+	/** Project-level settings — currently retention_years (NFR, audited). */
+	#[NoAdminRequired]
+	public function update(int $projectId): JSONResponse
+	{
+		$uid = $this->uid();
+		$this->perm->requireAdmin($projectId, $uid);
+		$p = $this->projects->updateSettings($this->projects->getOrFail($projectId), $this->params(), $uid);
+		return $this->ok($this->serializeProject($p, $uid));
+	}
+
 	#[NoAdminRequired]
 	public function activate(int $projectId): JSONResponse
 	{
@@ -162,6 +172,7 @@ class ProjectApiController extends NwApiController
 			'bew_end' => $p->getBewEnd()?->format('Y-m-d'),
 			'template_key' => $p->getTemplateKey(),
 			'financing_mode' => $p->getFinancingMode(),
+			'retention_years' => $p->getRetentionYears(),
 			'state' => $p->getState(),
 			'capabilities' => $this->perm->capabilities($p->getId(), $uid),
 		];

@@ -34,6 +34,11 @@
 		<command>OCA\NachweisCheck\Command\UpgradeBackupCommand</command>
 	</commands>
 
+	<activity>
+		<providers>
+			<provider>OCA\NachweisCheck\Activity\Provider</provider>
+		</providers>
+	</activity>
 	<repair-steps>
 		<install>
 			<step>OCA\NachweisCheck\Repair\EnsureNachweisCheckSchema</step>

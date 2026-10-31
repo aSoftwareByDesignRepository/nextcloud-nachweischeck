@@ -256,4 +256,34 @@ class ProjectServiceTest extends TestCase
 			}
 		}
 	}
+
+	public function testUpdateSettingsRetentionAudited(): void
+	{
+		$p = $this->project('active');
+		$p->setRetentionYears(10);
+		$m = $this->svc();
+		$m['projects']->expects($this->once())->method('update')->willReturnArgument(0);
+		$m['audit']->expects($this->once())->method('record')
+			->with(1, 'project', 1, 'retention', 'admin', ['retention_years' => 10], ['retention_years' => 12]);
+		$out = $m['svc']->updateSettings($p, ['retention_years' => 12], 'admin');
+		$this->assertSame(12, $out->getRetentionYears());
+	}
+
+	public function testUpdateSettingsRetentionValidationAndNoop(): void
+	{
+		$p = $this->project('active');
+		$p->setRetentionYears(10);
+		$m = $this->svc();
+		// unchanged → no write, no audit
+		$m['projects']->expects($this->never())->method('update');
+		$m['svc']->updateSettings($p, ['retention_years' => 10], 'admin');
+		foreach ([0, 51, -3, 'abc', 2.5] as $bad) {
+			try {
+				$m['svc']->updateSettings($p, ['retention_years' => $bad], 'admin');
+				$this->fail("accepted $bad");
+			} catch (\OCA\NachweisCheck\Exception\ValidationException $e) {
+				$this->assertArrayHasKey('retention_years', $e->getFields());
+			}
+		}
+	}
 }

@@ -50,8 +50,10 @@ class RateService
 		$row->setCreatedBy($actor);
 		$row->setCreatedAt(new \DateTime());
 		$row = $this->mapper->insert($row);
+		// Salary values stay out of the audit payload (threat model: PII in
+		// logs) — the event records THAT a rate changed, never its amount.
 		$this->audit->record($projectId, 'rate_history', $row->getId(), 'create', $actor, null, [
-			'uid' => $uid, 'rate_minor' => $rateMinor, 'valid_from' => $validFromYmd, 'role_key' => $roleKey,
+			'uid' => $uid, 'valid_from' => $validFromYmd, 'role_key' => $roleKey,
 		]);
 		return $row;
 	}

@@ -42,6 +42,9 @@ class MoneyTest extends TestCase
 		$this->assertSame(0, Money::ratioMilli(-5, 100));
 		// huge values: no float, no overflow
 		$this->assertSame(500, Money::ratioMilli(9_000_000_000_000_000, 18_000_000_000_000_000));
+		// Beyond the int64 mul boundary (r*1000 would overflow): rescale path.
+		$this->assertSame(916, Money::ratioMilli(11_000_000_000_000_000, 12_000_000_000_000_000));
+		$this->assertGreaterThan(1000, Money::ratioMilli(12_500_000_000_000_000, 12_000_000_000_000_000));
 	}
 
 	public function testApplyFx(): void

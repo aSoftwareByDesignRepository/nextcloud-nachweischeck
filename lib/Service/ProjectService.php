@@ -152,6 +152,30 @@ class ProjectService
 	}
 
 	/**
+	 * Update project-level settings (NFR retention): currently the
+	 * retention flag only — configurable, audited before/after.
+	 */
+	public function updateSettings(Project $p, array $in, string $actor): Project
+	{
+		if (array_key_exists('retention_years', $in)) {
+			$years = $in['retention_years'];
+			if (!is_int($years) && !(is_string($years) && preg_match('/^\d+$/', $years)) || (int)$years < 1 || (int)$years > 50) {
+				throw new ValidationException(['retention_years' => 'Retention must be a whole number of years (1–50).']);
+			}
+			$years = (int)$years;
+			if ($years !== $p->getRetentionYears()) {
+				$before = $p->getRetentionYears();
+				$p->setRetentionYears($years);
+				$p->setUpdatedAt(new \DateTime());
+				$p = $this->projectMapper->update($p);
+				$this->audit->record($p->getId(), 'project', $p->getId(), 'retention', $actor,
+					['retention_years' => $before], ['retention_years' => $years]);
+			}
+		}
+		return $p;
+	}
+
+	/**
 	 * Activate: requires an activated plan version and every AP mapped to ≥1
 	 * position (US-NW-01 AC-3). Enforces the free-tier per-user active-project
 	 * limit. The limit check runs inside a global activation lock — a

@@ -51,4 +51,16 @@ class ERechnungParserTest extends TestCase
 		$this->assertFalse($r['ok']);
 		$this->assertSame('unsupported_container', $r['reason']);
 	}
+
+	public function testToMinorRoundsHalfUpOnThirdDecimal(): void
+	{
+		$m = new \ReflectionMethod(\OCA\NachweisCheck\Support\ERechnungParser::class, 'toMinor');
+		$this->assertSame(123, $m->invoke(null, '1.234'));
+		$this->assertSame(124, $m->invoke(null, '1.235'));
+		$this->assertSame(124, $m->invoke(null, '1.239'));
+		$this->assertSame(100, $m->invoke(null, '1'));
+		$this->assertSame(150, $m->invoke(null, '1.5'));
+		$this->assertSame(0, $m->invoke(null, 'not-a-number'));
+		$this->assertSame(-124, $m->invoke(null, '-1.235'));
+	}
 }

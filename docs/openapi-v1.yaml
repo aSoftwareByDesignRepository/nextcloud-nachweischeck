@@ -19,6 +19,7 @@ paths:
     post: {tags: [projects], summary: Create funded project}
   /projects/{projectId}:
     get: {tags: [projects], summary: Project detail incl. soll_ist + work_packages + deadlines}
+    put: {tags: [projects], summary: 'Update project settings {retention_years:1-50} — audited (admin)'}
     delete: {tags: [projects], summary: Delete (draft only)}
   /projects/{projectId}/activate:
     post: {tags: [projects], summary: Activate (requires mapped APs + active plan)}
@@ -171,6 +172,8 @@ paths:
     post: {tags: [finance], summary: 'receive (binds payment_id) or reject — terminal states'}
   /projects/{projectId}/forecast:
     get: {tags: [finance], summary: 'Liquiditätsprognose (NH-01): cash, burn rate, runway, suggested drawdown — all minor units'}
+  /projects/{projectId}/claims/unspent-interest:
+    get: {tags: [finance], parameters: [{name: to, in: query, required: true}, {name: rate_bp, in: query, required: true}, {name: from, in: query}], summary: 'NH-06: server-computed interest preview on unverbrauchte Mittel (ANBest-P Nr. 8)'}
   /projects/{projectId}/claims:
     get: {tags: [finance], summary: 'Zinsen/Rückforderungen (NH-06)'}
     post: {tags: [finance], summary: 'kind=interest computes amount server-side act/360; kind=recovery takes amount_minor'}

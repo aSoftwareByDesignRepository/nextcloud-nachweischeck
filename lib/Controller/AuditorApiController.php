@@ -65,10 +65,17 @@ class AuditorApiController extends NwApiController
 		$uid = $this->uid();
 		$out = [];
 		$grantMapper = null;
+		$today = (new \DateTimeImmutable('today'))->format('Y-m-d');
 		foreach ($this->auditors->grantsForUid($uid) as $g) {
+			$from = $g->getValidFrom()?->format('Y-m-d');
+			$to = $g->getValidTo()?->format('Y-m-d');
+			$state = $g->getRevokedAt() !== null ? 'revoked'
+				: ($from !== null && $from > $today ? 'pending'
+				: ($to !== null && $to < $today ? 'expired' : 'active'));
 			$out[] = [
 				'grant_id' => $g->getId(), 'project_id' => $g->getProjectId(),
-				'valid_to' => $g->getValidTo()?->format('Y-m-d'),
+				'valid_from' => $from, 'valid_to' => $to,
+				'state' => $state, 'active' => $state === 'active',
 			];
 		}
 		return $this->ok($out);

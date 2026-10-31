@@ -222,4 +222,23 @@ class NachweisServiceTest extends TestCase
 		$n->setPayloadJson(json_encode($payload));
 		$this->assertFalse($svc->verify($n));
 	}
+
+	public function testGenerateMarksPeriodReceiptsFiled(): void
+	{
+		$receipt = $this->createMock(ReceiptMapper::class);
+		$r = new Receipt();
+		$r->setId(5);
+		$r->setState('open');
+		$receipt->method('findByProjectPeriod')->willReturn([$r]);
+		$receipt->expects($this->once())->method('update')->with($r);
+		$nachweis = $this->createMock(NachweisMapper::class);
+		$nachweis->method('insert')->willReturnCallback(function ($n) { $n->setId(1); return $n; });
+		$nachweis->method('maxVersion')->willReturn(0);
+		$m = $this->build([
+			'receipt' => $receipt, 'nachweis' => $nachweis,
+		]);
+		$n = $m['svc']->generate($this->project(), 'final', '2026-01-01', '2026-12-31', 'fin');
+		$this->assertSame('filed', $r->getState());
+		$this->assertSame('final', $n->getState());
+	}
 }

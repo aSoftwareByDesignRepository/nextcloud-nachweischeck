@@ -641,7 +641,7 @@
         "Valid until": "Gültig bis",
         "day(s) remaining": "Tag(e) verbleibend",
         "Mobile seats used": "Mobile Plätze genutzt",
-        "A dev override (nw_license_mode=%s) is active and takes precedence over the stored license.": "Ein Dev-Override (nw_license_mode=%s) ist aktiv und hat Vorrang vor der hinterlegten Lizenz.",
+        "A dev override (nw_license_mode=%s) is active and takes precedence over the stored license.": "Ein Dev-Override über nw_license_mode=%s ist aktiv und hat Vorrang vor der hinterlegten Lizenz.",
         "License key": "Lizenzschlüssel",
         "Paste an NWC2 license key.": "NWC2-Lizenzschlüssel einfügen.",
         "Save license": "Lizenz speichern",
@@ -653,7 +653,17 @@
         "Purchase or renew": "Kaufen oder verlängern",
         "NachweisCheck Pro": "NachweisCheck Pro",
         "Pro unlocks multiple active projects, all funder templates, e-invoice parsing, the timesheet sign-off chain, auditor seats and mobile companion seats.": "Pro schaltet mehrere aktive Projekte, alle Geber-Templates, den E-Rechnung-Import, die Stundenzettel-Freigabekette, Auditor-Plätze und mobile Companion-Plätze frei.",
-        "Paste the full key from your license email. Line breaks are OK.": "Fügen Sie den vollständigen Schlüssel aus Ihrer Lizenz-E-Mail ein. Zeilenumbrüche sind kein Problem."
+        "Paste the full key from your license email. Line breaks are OK.": "Fügen Sie den vollständigen Schlüssel aus Ihrer Lizenz-E-Mail ein. Zeilenumbrüche sind kein Problem.",
+        "Project activated: %s": "Projekt aktiviert: %s",
+        "Project %1$s moved to state %2$s": "Projekt %1$s in Status %2$s überführt",
+        "Financing plan v%2$s activated for %1$s": "Finanzierungsplan v%2$s für %1$s aktiviert",
+        "Nachweis (%2$s, v%3$s) generated for %1$s": "Nachweis (%2$s, v%3$s) für %1$s erzeugt",
+        "Deviation logged on %1$s (%2$s/%3$s)": "Abweichung an %1$s erfasst (%2$s/%3$s)",
+        "Auditor seat granted on %1$s (%2$s)": "Prüferzugang für %1$s erteilt (%2$s)",
+        "Auditor seat revoked on %1$s (%2$s)": "Prüferzugang für %1$s widerrufen (%2$s)",
+        "Budget reallocation requested on %s": "Umschichtung für %s beantragt",
+        "Budget reallocation %2$s on %1$s": "Umschichtung %2$s für %1$s",
+        "Carryover recorded on %s": "Mittelübertrag für %s erfasst"
     },
     "pluralForm": "nplurals=2; plural=(n != 1);"
 }

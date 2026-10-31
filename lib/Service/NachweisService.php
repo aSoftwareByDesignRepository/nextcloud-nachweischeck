@@ -341,6 +341,16 @@ class NachweisService
 				'kind' => $kind, 'version' => $n->getVersion(), 'manifest_hash' => $hash,
 				'supersedes' => $supersedesId,
 			]);
+			// Receipts inside the reported period are now covered by a fiscal
+			// document — flip their lifecycle to 'filed' so list surfaces can
+			// badge them. Source data stays editable (corrections mint a new
+			// version + reason); the flag means "was part of a Nachweis".
+			foreach ($this->receiptMapper->findByProjectPeriod($project->getId(), $fromYmd, $toYmd) as $r) {
+				if ($r->getState() !== 'filed') {
+					$r->setState('filed');
+					$this->receiptMapper->update($r);
+				}
+			}
 			return $n;
 		});
 	}

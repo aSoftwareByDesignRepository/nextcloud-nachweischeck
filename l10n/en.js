@@ -654,6 +654,16 @@ OC.L10N.register(
 	"Purchase or renew" : "Purchase or renew",
 	"NachweisCheck Pro" : "NachweisCheck Pro",
 	"Pro unlocks multiple active projects, all funder templates, e-invoice parsing, the timesheet sign-off chain, auditor seats and mobile companion seats." : "Pro unlocks multiple active projects, all funder templates, e-invoice parsing, the timesheet sign-off chain, auditor seats and mobile companion seats.",
-	"Paste the full key from your license email. Line breaks are OK." : "Paste the full key from your license email. Line breaks are OK."
+	"Paste the full key from your license email. Line breaks are OK." : "Paste the full key from your license email. Line breaks are OK.",
+	"Project activated: %s" : "Project activated: %s",
+	"Project %1$s moved to state %2$s" : "Project %1$s moved to state %2$s",
+	"Financing plan v%2$s activated for %1$s" : "Financing plan v%2$s activated for %1$s",
+	"Nachweis (%2$s, v%3$s) generated for %1$s" : "Nachweis (%2$s, v%3$s) generated for %1$s",
+	"Deviation logged on %1$s (%2$s\/%3$s)" : "Deviation logged on %1$s (%2$s\/%3$s)",
+	"Auditor seat granted on %1$s (%2$s)" : "Auditor seat granted on %1$s (%2$s)",
+	"Auditor seat revoked on %1$s (%2$s)" : "Auditor seat revoked on %1$s (%2$s)",
+	"Budget reallocation requested on %s" : "Budget reallocation requested on %s",
+	"Budget reallocation %2$s on %1$s" : "Budget reallocation %2$s on %1$s",
+	"Carryover recorded on %s" : "Carryover recorded on %s"
 	}
 );

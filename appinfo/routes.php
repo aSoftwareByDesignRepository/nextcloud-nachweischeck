@@ -18,6 +18,7 @@ return [
 		['name' => 'projectApi#index', 'url' => '/api/v1/projects', 'verb' => 'GET'],
 		['name' => 'projectApi#create', 'url' => '/api/v1/projects', 'verb' => 'POST'],
 		['name' => 'projectApi#show', 'url' => '/api/v1/projects/{projectId}', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
+		['name' => 'projectApi#update', 'url' => '/api/v1/projects/{projectId}', 'verb' => 'PUT', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'projectApi#activate', 'url' => '/api/v1/projects/{projectId}/activate', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'projectApi#transition', 'url' => '/api/v1/projects/{projectId}/state/{target}', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+', 'target' => '[a-z]+']],
 		['name' => 'projectApi#delete', 'url' => '/api/v1/projects/{projectId}', 'verb' => 'DELETE', 'requirements' => ['projectId' => '\d+']],
@@ -76,6 +77,7 @@ return [
 		['name' => 'financeApi#decideDrawdown', 'url' => '/api/v1/projects/{projectId}/drawdowns/{id}/decide', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+', 'id' => '\d+']],
 		['name' => 'financeApi#forecast', 'url' => '/api/v1/projects/{projectId}/forecast', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'financeApi#claims', 'url' => '/api/v1/projects/{projectId}/claims', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
+		['name' => 'financeApi#unspentInterest', 'url' => '/api/v1/projects/{projectId}/claims/unspent-interest', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'financeApi#addClaim', 'url' => '/api/v1/projects/{projectId}/claims', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'financeApi#settleClaim', 'url' => '/api/v1/projects/{projectId}/claims/{id}/settle', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+', 'id' => '\d+']],
 

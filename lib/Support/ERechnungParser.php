@@ -149,13 +149,19 @@ final class ERechnungParser
 	private static function toMinor(string $decimal): int
 	{
 		$decimal = trim($decimal);
-		if ($decimal === '') {
+		if ($decimal === '' || !preg_match('/^[+-]?\d+(\.\d+)?$/', $decimal)) {
 			return 0;
 		}
 		$neg = str_starts_with($decimal, '-');
 		$decimal = ltrim($decimal, '+-');
-		[$e, $c] = array_pad(explode('.', $decimal, 2), 2, '0');
-		$minor = (int)$e * 100 + (int)substr(str_pad($c, 2, '0'), 0, 2);
+		[$e, $c] = array_pad(explode('.', $decimal, 2), 2, '');
+		$c .= '00';
+		$minor = (int)$e * 100 + (int)substr($c, 0, 2);
+		// Round half-up on the third decimal — invoice lines may carry more
+		// precision than cents; silent truncation skews the draft total.
+		if ((int)substr($c, 2, 1) >= 5) {
+			$minor++;
+		}
 		return $neg ? -$minor : $minor;
 	}
 
