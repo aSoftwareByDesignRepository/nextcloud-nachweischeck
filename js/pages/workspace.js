@@ -61,7 +61,7 @@
 
 	var STATE_BADGE = {
 		draft: 'neutral', active: 'success', closing: 'warn', closed: 'neutral',
-		open: 'info', submitted: 'info', accepted: 'success', signed: 'success',
+		open: 'info', filed: 'neutral', submitted: 'info', accepted: 'success', signed: 'success',
 		rejected: 'danger', final: 'success', superseded: 'warn',
 		pending: 'warn', applied: 'success', builtin: 'neutral', pack: 'info',
 		installed: 'info', receipt: 'neutral', salary: 'info',

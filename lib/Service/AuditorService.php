@@ -77,7 +77,9 @@ class AuditorService
 		if ($g->getRevokedAt() === null) {
 			$g->setRevokedAt(new \DateTime());
 			$g = $this->mapper->update($g);
-			$this->audit->record($g->getProjectId(), 'auditor_grant', $g->getId(), 'revoke', $actor);
+			$this->audit->record($g->getProjectId(), 'auditor_grant', $g->getId(), 'revoke', $actor, null, [
+				'nc_uid' => $g->getNcUid(),
+			]);
 		}
 		return $g;
 	}

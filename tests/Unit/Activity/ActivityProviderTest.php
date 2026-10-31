@@ -8,6 +8,7 @@ use OCA\NachweisCheck\Activity\Provider;
 use OCP\Activity\Exceptions\UnknownActivityException;
 use OCP\Activity\IEvent;
 use OCP\IL10N;
+use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
 use Test\TestCase;
 
@@ -29,7 +30,10 @@ class ActivityProviderTest extends TestCase
 		$l->method('t')->willReturnCallback(fn($s, $p = []) => vsprintf(str_replace(['%1$s','%2$s','%3$s'], ['%s','%s','%s'], $s), $p ?: []));
 		$f = $this->createMock(IFactory::class);
 		$f->method('get')->willReturn($l);
-		return new Provider($f);
+		$url = $this->createMock(IURLGenerator::class);
+		$url->method('imagePath')->willReturnCallback(fn($app, $img) => "/apps/$app/img/$img");
+		$url->method('getAbsoluteURL')->willReturnCallback(fn($u) => 'https://nc.test' . $u);
+		return new Provider($f, $url);
 	}
 
 	public function testForeignAppRejected(): void
@@ -69,5 +73,25 @@ class ActivityProviderTest extends TestCase
 			$this->assertNotSame('', (string)$parsed, $subject);
 			$this->assertStringContainsString('P', (string)$parsed, $subject);
 		}
+	}
+
+	/**
+	 * Regression pin (intake 20261031T203300Z): parse() must setIcon() on
+	 * every event — the Activity app's ActivityModel throws "The icon
+	 * argument is not a valid string" on an empty icon and the whole feed
+	 * fails to render for every user with a nw_fiscal row.
+	 */
+	public function testParsedEventCarriesIcon(): void
+	{
+		$event = $this->event('nachweischeck', 'project_activated', ['P']);
+		$icon = null;
+		$event->method('setIcon')->willReturnCallback(function ($i) use (&$icon, $event) {
+			$icon = $i;
+			return $event;
+		});
+		$this->provider()->parse('en', $event);
+		$this->assertIsString($icon);
+		$this->assertNotSame('', $icon);
+		$this->assertStringContainsString('app.svg', $icon);
 	}
 }

@@ -629,6 +629,7 @@ OC.L10N.register(
 	"duplicate" : "Duplikat",
 	"e.g. 1:30, 1,5 h or 90" : "z. B. 1:30, 1,5 h oder 90",
 	"expired" : "abgelaufen",
+	"filed" : "abgelegt",
 	"final" : "final",
 	"finance" : "Finanzen",
 	"installed" : "installiert",

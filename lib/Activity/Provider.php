@@ -16,12 +16,14 @@ use OCA\NachweisCheck\AppInfo\Application;
 use OCP\Activity\Exceptions\UnknownActivityException;
 use OCP\Activity\IEvent;
 use OCP\Activity\IProvider;
+use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
 
 class Provider implements IProvider
 {
 	public function __construct(
 		private readonly IFactory $l10nFactory,
+		private readonly IURLGenerator $url,
 	) {
 	}
 
@@ -33,6 +35,9 @@ class Provider implements IProvider
 		if ($event->getApp() !== Application::APP_ID) {
 			throw new UnknownActivityException();
 		}
+		// Every parsed event must carry an icon — an empty icon string makes
+		// the Activity app's ActivityModel throw and fails the whole stream.
+		$event->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app.svg')));
 		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		$p = $event->getSubjectParameters();
 		$project = (string)($p[0] ?? '');

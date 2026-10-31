@@ -100,6 +100,7 @@ class Application extends App implements IBootstrap
 		$context->registerService(\OCA\NachweisCheck\Activity\Provider::class, function ($c): \OCA\NachweisCheck\Activity\Provider {
 			return new \OCA\NachweisCheck\Activity\Provider(
 				$c->get(\OCP\L10N\IFactory::class),
+				$c->get(\OCP\IURLGenerator::class),
 			);
 		});
 

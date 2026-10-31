@@ -148,11 +148,12 @@ class AuditorServiceTest extends TestCase
 		$mapper->expects($this->once())->method('update')->willReturnCallback(fn($g) => $g);
 		$audit = $this->createMock(AuditService::class);
 		$audit->expects($this->once())->method('record')
-			->with(1, 'auditor_grant', 9, 'revoke', 'admin');
+			->with(1, 'auditor_grant', 9, 'revoke', 'admin', null, ['nc_uid' => 'aud1']);
 		$m = $this->svc(['mapper' => $mapper, 'audit' => $audit]);
 		$g = new AuditorGrant();
 		$g->setId(9);
 		$g->setProjectId(1);
+		$g->setNcUid('aud1');
 		$g = $m['svc']->revoke($g, 'admin');
 		$this->assertNotNull($g->getRevokedAt());
 		// second revoke is a no-op — no second update, no second audit row
