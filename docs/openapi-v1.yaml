@@ -84,7 +84,7 @@ paths:
     post: {tags: [reports], summary: draft|submitted|accepted}
   /projects/{projectId}/timesheets:
     get: {tags: [reports]}
-    post: {tags: [reports], summary: Generate Stundenzettel {period,ap_id?,uid?}}
+    post: {tags: [reports], summary: 'Generate Stundenzettel {period,ap_id?,uid?}'}
   /projects/{projectId}/timesheets/{id}/submit:
     post: {tags: [reports], summary: Pro sign-off chain}
   /projects/{projectId}/timesheets/{id}/sign:
@@ -93,7 +93,7 @@ paths:
     post: {tags: [reports]}
   /projects/{projectId}/nachweise:
     get: {tags: [nachweis]}
-    post: {tags: [nachweis], summary: Generate immutable Nachweis {kind,period_from,period_to,supersedes_id?,reason?}}
+    post: {tags: [nachweis], summary: 'Generate immutable Nachweis {kind,period_from,period_to,supersedes_id?,reason?}'}
   /projects/{projectId}/nachweise/preview:
     post: {tags: [nachweis], summary: Build payload without persisting}
   /projects/{projectId}/nachweise/{id}:
@@ -108,7 +108,7 @@ paths:
     delete: {tags: [admin]}
   /projects/{projectId}/grants:
     get: {tags: [admin]}
-    post: {tags: [admin], summary: Auditor grant {nc_uid,name,firm,valid_from,valid_to,scope?}}
+    post: {tags: [admin], summary: 'Auditor grant {nc_uid,name,firm,valid_from,valid_to,scope?}'}
   /projects/{projectId}/grants/{grantId}/revoke:
     post: {tags: [admin]}
   /projects/{projectId}/grants/{grantId}/reads:
@@ -118,7 +118,7 @@ paths:
   /projects/{projectId}/ics-feed/rotate:
     post: {tags: [admin]}
   /projects/{projectId}/import/times:
-    post: {tags: [admin], summary: CSV import {preset,csv,filename}}
+    post: {tags: [admin], summary: 'CSV import {preset,csv,filename}'}
   /projects/{projectId}/import/receipts:
     post: {tags: [admin]}
   /templates:
@@ -150,45 +150,54 @@ paths:
     get: {tags: [auditor]}
   /auditor/projects/{projectId}/nachweise:
     get: {tags: [auditor]}
+  /projects/{projectId}/dashboard:
+    get: {tags: [projects], summary: 'Aggregated dashboard view: soll_ist per position (three-state threshold), per-AP hours/cost, upcoming deadlines'}
+  /projects/{projectId}/files/resolve:
+    get: {tags: [receipts], parameters: [{name: path, in: query, required: true}], summary: 'Resolve a Files path to a file_id for Beleg attachment (I-01 node link)'}
+  /license:
+    get: {tags: [admin], summary: 'License state: tier, features, seat limit, envelope'}
+    post: {tags: [admin], summary: 'Apply NWC2 license key (app admin)'}
+    delete: {tags: [admin], summary: 'Remove license — Pro features fall back to free tier'}
+  # ---- V2 surfaces ---------------------------------------------------------
+  /projects/{projectId}/cofunders:
+    get: {tags: [finance], summary: 'List co-funders (BQ-03 multi-funder)'}
+    post: {tags: [finance], summary: 'Create co-funder (finance role)'}
+  /projects/{projectId}/cofunders/{id}:
+    delete: {tags: [finance], summary: 'Delete co-funder — refused while positions reference it (COFUNDER_IN_USE)'}
+  /projects/{projectId}/drawdowns:
+    get: {tags: [finance], summary: 'Mittelabruf history (NH-09)'}
+    post: {tags: [finance], summary: 'Record drawdown; external_ref idempotent'}
+  /projects/{projectId}/drawdowns/{id}/decide:
+    post: {tags: [finance], summary: 'receive (binds payment_id) or reject — terminal states'}
+  /projects/{projectId}/forecast:
+    get: {tags: [finance], summary: 'Liquiditätsprognose (NH-01): cash, burn rate, runway, suggested drawdown — all minor units'}
+  /projects/{projectId}/claims:
+    get: {tags: [finance], summary: 'Zinsen/Rückforderungen (NH-06)'}
+    post: {tags: [finance], summary: 'kind=interest computes amount server-side act/360; kind=recovery takes amount_minor'}
+  /projects/{projectId}/claims/{id}/settle:
+    post: {tags: [finance], summary: 'Settle an open claim (one-way transition)'}
+  /projects/{projectId}/readiness:
+    get: {tags: [nachweis], summary: 'Prüfungsbereit checklist (NH-04): blocker/warning/info checks, ready flag'}
+  /projects/{projectId}/export/datev:
+    get: {tags: [finance], summary: 'DATEV-naher Belegexport CSV (NH-07), finance role, audit-logged with sha256'}
+  /projects/{projectId}/sachbericht-suggestions:
+    get: {tags: [reports], summary: 'Sachbericht-Textbausteine from submitted/accepted work reports (NH-08)'}
+  /projects/{projectId}/antrag:
+    get: {tags: [finance], summary: 'Antragstellung document (NH-02): format=csv|ods|pdf, finance role, audit-logged'}
   /mobile/status:
     get: {tags: [mobile]}
   /mobile/projects/{projectId}/entries:
     get: {tags: [mobile]}
     post: {tags: [mobile]}
+  /mobile/projects/{projectId}/positions:
+    get: {tags: [mobile], summary: 'Active-plan positions for the mobile split picker (seat-gated)'}
+  /mobile/projects/{projectId}/receipts:
+    get: {tags: [mobile], summary: 'Receipts + splits, seat-gated'}
+    post: {tags: [mobile], summary: 'Book receipt; splits must sum to total; external_ref idempotent'}
+  /mobile/projects/{projectId}/timesheets:
+    get: {tags: [mobile], summary: 'Own Stundenzettel (state mirror), seat-gated'}
 components:
   securitySchemes:
     basicAuth: {type: http, scheme: basic}
-
-  # ---- appended 0.3.0: V2 surfaces ----------------------------------------
-  /projects/{projectId}/cofunders:
-    get: { summary: 'List co-funders (BQ-03 multi-funder)', parameters: [ { name: projectId, in: path, required: true, schema: { type: integer } } ] }
-    post: { summary: 'Create co-funder (finance role)', parameters: [ { name: projectId, in: path, required: true, schema: { type: integer } } ] }
-  /projects/{projectId}/cofunders/{id}:
-    delete: { summary: 'Delete co-funder — refused while positions reference it (COFUNDER_IN_USE)' }
-  /projects/{projectId}/drawdowns:
-    get: { summary: 'Mittelabruf history (NH-09)' }
-    post: { summary: 'Record drawdown; external_ref idempotent' }
-  /projects/{projectId}/drawdowns/{id}/decide:
-    post: { summary: 'receive (binds payment_id) or reject — terminal states' }
-  /projects/{projectId}/forecast:
-    get: { summary: 'Liquiditätsprognose (NH-01): cash, burn rate, runway, suggested drawdown — all minor units' }
-  /projects/{projectId}/claims:
-    get: { summary: 'Zinsen/Rückforderungen (NH-06)' }
-    post: { summary: 'kind=interest computes amount server-side act/360; kind=recovery takes amount_minor' }
-  /projects/{projectId}/claims/{id}/settle:
-    post: { summary: 'Settle an open claim (one-way transition)' }
-  /projects/{projectId}/readiness:
-    get: { summary: 'Prüfungsbereit checklist (NH-04): blocker/warning/info checks, ready flag' }
-  /projects/{projectId}/export/datev:
-    get: { summary: 'DATEV-naher Belegexport CSV (NH-07), finance role, audit-logged with sha256' }
-  /projects/{projectId}/sachbericht-suggestions:
-    get: { summary: 'Sachbericht-Textbausteine from submitted/accepted work reports (NH-08)' }
-  /projects/{projectId}/antrag:
-    get: { summary: 'Antragstellung document (NH-02): format=csv|ods|pdf, finance role, audit-logged' }
-  /mobile/projects/{projectId}/positions:
-    get: { summary: 'Active-plan positions for the mobile split picker (seat-gated)' }
-  /mobile/projects/{projectId}/receipts:
-    get: { summary: 'Receipts + splits, seat-gated' }
-    post: { summary: 'Book receipt; splits must sum to total; external_ref idempotent' }
-  /mobile/projects/{projectId}/timesheets:
-    get: { summary: 'Own Stundenzettel (state mirror), seat-gated' }
+  # Public ICS feed (outside /api/v1): GET /apps/nachweischeck/projects/{projectId}/calendar.ics?token=…
+  # Token-gated, uniform 404 on bad/missing token; mint+rotate via /projects/{projectId}/ics-feed above.
