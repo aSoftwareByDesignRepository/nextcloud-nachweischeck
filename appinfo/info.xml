@@ -15,7 +15,7 @@
 		Nachweis package (zahlenmäßiger Nachweis, Belegliste, Sachbericht skeleton, gaps report)
 		with manifest hash. Fully standalone — no other app required.
 	]]></description>
-	<version>0.4.0</version>
+	<version>0.4.1</version>
 	<licence>agpl</licence>
 	<author>Software by Design</author>
 	<namespace>NachweisCheck</namespace>
