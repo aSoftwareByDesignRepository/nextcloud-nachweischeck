@@ -34,6 +34,17 @@
  *   projects.state.<key> entry, TimesheetService.php likewise for
  *   timesheets.state.<key> — in BOTH en and de.
  *
+ * Render-site legs (dl rows + badge labels — the auditor project-head
+ * "State: active" regression of 20261101 reached a dl value raw because
+ * the catalog/badge legs above only prove a translation EXISTS, not
+ * that the render site applies it):
+ *   dlEl(…) args — every FIELD.state|kind|type|status access must be a
+ *   direct t(…) argument or sit in a non-rendering position (ternary
+ *   predicate, === / !== / comparison). `x.state || '—'` paints the raw
+ *   English enum into the <dd> in every locale.
+ *   stateBadge(…) calls — the badge falls back to the raw enum when no
+ *   label is given, so every call site must pass a t(…) second arg.
+ *
  * Run: node tests/js/state-badge-l10n.test.cjs
  */
 'use strict';
@@ -238,6 +249,82 @@ const kindMapKeys = new Set([
 for (const s of states) {
 	assert(badgeKeys.has(s), `${s}: server state missing from STATE_BADGE (falls back to 'neutral' silently)`);
 }
+
+// ---------- render sites: dl values + badge labels ----------
+
+// Balanced-arg extractor: returns the (…) text of every `name(` call,
+// marking the `function name(` definition so callers can skip it.
+// String literals are skipped while scanning so brackets/quotes inside
+// them cannot break the depth count.
+function callArgs(src, name) {
+	const out = [];
+	let idx = 0;
+	while ((idx = src.indexOf(name + '(', idx)) !== -1) {
+		const def = /function\s*$/.test(src.slice(Math.max(0, idx - 10), idx));
+		let depth = 0;
+		let inStr = null;
+		let i = idx + name.length + 1;
+		const start = i;
+		for (; i < src.length; i++) {
+			const c = src[i];
+			if (inStr) {
+				if (c === '\\') { i++; continue; }
+				if (c === inStr) inStr = null;
+				continue;
+			}
+			if (c === "'" || c === '"' || c === '`') { inStr = c; continue; }
+			if (c === '(' || c === '[' || c === '{') { depth++; continue; }
+			if (c === ')' || c === ']' || c === '}') {
+				if (depth === 0) break;
+				depth--;
+			}
+		}
+		out.push({ args: src.slice(start, i), def });
+		idx = i;
+	}
+	return out;
+}
+
+// Field accesses quoted inside string literals are labels or data, not
+// code — strip them (positions don't need preserving; we only check the
+// surrounding operators on the stripped text).
+function stripStrings(src) {
+	return src.replace(/'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"/g, "''");
+}
+
+const ENUM_FIELD = /[A-Za-z_$][\w$]*\.(state|kind|type|status)\b/g;
+let dlCalls = 0;
+for (const call of callArgs(js, 'dlEl')) {
+	if (call.def) continue;
+	dlCalls++;
+	const stripped = stripStrings(call.args);
+	for (const m of stripped.matchAll(ENUM_FIELD)) {
+		const before = stripped.slice(0, m.index);
+		const after = stripped.slice(m.index + m[0].length);
+		const wrapped = /t\s*\(\s*$/.test(before);
+		const rest = after.trimStart();
+		// Non-rendering positions: comparisons (a `=`/`!`/`<`/`>` next
+		// char) or the ternary predicate. `?.`/`??`/`||`/`&&` still
+		// yield the raw enum — the left side is itself the result.
+		const condition = /^[=!><]/.test(rest)
+			|| (rest[0] === '?' && rest[1] !== '.' && rest[1] !== '?');
+		assert(wrapped || condition,
+			`${m[0]}: raw enum access inside dlEl() — the <dd> renders the untranslated enum in every locale; wrap in t(…)`);
+	}
+}
+assert(dlCalls >= 1, `expected >=1 dlEl() call site in workspace.js, got ${dlCalls}`);
+
+// stateBadge(state, label) paints `label || state || '—'` — a call
+// without a t(…) label renders the raw enum (badge fallback). Every
+// call site must pass a t(…) second arg.
+let badgeCalls = 0;
+for (const call of callArgs(js, 'stateBadge')) {
+	if (call.def) continue;
+	badgeCalls++;
+	assert(/,\s*t\s*\(/.test(stripStrings(call.args)),
+		`stateBadge(${call.args.trim().slice(0, 60)}…): second arg must be a t(…) label — the badge falls back to the raw enum`);
+}
+assert(badgeCalls >= 10, `expected >=10 stateBadge() call sites, got ${badgeCalls}`);
 
 // ---------- catalogs ----------
 

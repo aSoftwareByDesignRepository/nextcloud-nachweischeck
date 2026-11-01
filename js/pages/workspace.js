@@ -2989,7 +2989,7 @@
 							[t('Funder'), p.funder_name || '—'],
 							[t('Reference number'), p.funder_ref || '—'],
 							[t('Funding period'), (p.bew_start || '—') + ' – ' + (p.bew_end || '—')],
-							[t('State'), p.state || '—']
+							[t('State'), p.state ? t(p.state) : '—']
 						])
 					]}));
 				}
