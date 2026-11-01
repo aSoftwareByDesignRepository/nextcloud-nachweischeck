@@ -40,10 +40,10 @@ final class Chrome
 		$r = self::route(...);
 		$l10n = Server::get(IFactory::class)->get('nachweischeck');
 		$_['pageId'] = (string)($_['pageId'] ?? $navId);
-		$_['pageTitle'] = (string)($_['pageTitle'] ?? 'NachweisCheck');
+		$_['pageTitle'] = (string)($_['pageTitle'] ?? $l10n->t('NachweisCheck'));
 		$_['pageHelp'] = (string)($_['pageHelp'] ?? '');
 		$_['pageIcon'] = (string)($_['pageIcon'] ?? 'clipboard-check');
-		$_['brandTitle'] = 'NachweisCheck';
+		$_['brandTitle'] = $l10n->t('NachweisCheck');
 		$_['brandIcon'] = 'clipboard-check';
 		$_['urls'] = ['home' => $r('nachweischeck.page.index')];
 		$_['roleLabel'] = (string)($_['roleLabel'] ?? $l10n->t('Member'));
@@ -62,7 +62,7 @@ final class Chrome
 			$items[] = [
 				'id' => 'proj-' . $p['id'],
 				'label' => (string)$p['name'],
-				'hint' => $p['state'],
+				'hint' => $l10n->t((string)$p['state']),
 				'icon' => 'layout-grid',
 				'href' => $r('nachweischeck.page.index') . '?project=' . $p['id'] . '&view=dashboard',
 				'active' => $current !== null && $current['id'] === $p['id'],
@@ -131,7 +131,7 @@ final class Chrome
 		}
 	}
 
-	private static function sectionLabel($l10n, string $s): string
+	public static function sectionLabel($l10n, string $s): string
 	{
 		return match ($s) {
 			'access' => $l10n->t('Access'),

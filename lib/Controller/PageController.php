@@ -23,6 +23,7 @@ use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
@@ -39,6 +40,7 @@ class PageController extends Controller
 		private readonly ProjectMapper $projectMapper,
 		private readonly IInitialState $initialState,
 		private readonly IURLGenerator $urlGenerator,
+		private readonly IL10N $l10n,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -87,12 +89,12 @@ class PageController extends Controller
 
 		$params = [
 			'appAllowed' => true,
-			'pageTitle' => $current !== null ? $current['name'] : 'NachweisCheck',
+			'pageTitle' => $current !== null ? $current['name'] : $this->l10n->t('NachweisCheck'),
 			'pageIcon' => 'clipboard-check',
 			'pageHelp' => $current === null
-				? 'Select a project on the left, or create your first funded project.'
+				? $this->l10n->t('Select a project on the left, or create your first funded project.')
 				: '',
-			'roleLabel' => $isAppAdmin ? 'App admin' : 'Member',
+			'roleLabel' => $isAppAdmin ? $this->l10n->t('App admin') : $this->l10n->t('Member'),
 		];
 		Chrome::apply($params, $current !== null ? 'view-' . $view : 'home', $projects, $current);
 		return new TemplateResponse('nachweischeck', 'main', $params);
@@ -138,10 +140,10 @@ class PageController extends Controller
 		AssetRegistrar::register('settings');
 		$params = [
 			'appAllowed' => true,
-			'pageTitle' => 'NachweisCheck settings',
+			'pageTitle' => Chrome::sectionLabel($this->l10n, $section),
 			'pageIcon' => 'settings',
 			'settingsSection' => $section,
-			'roleLabel' => 'App admin',
+			'roleLabel' => $this->l10n->t('App admin'),
 		];
 		Chrome::apply($params, 'settings-' . $section, $projects, null);
 		return new TemplateResponse('nachweischeck', 'settings', $params);
