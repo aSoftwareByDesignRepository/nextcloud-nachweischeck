@@ -162,7 +162,9 @@ test.describe('ATLAS_DIALOG_FILTERS', () => {
 		const row = page.locator('tr', { hasText: `${MARK}-del` });
 		await expect(row).toHaveCount(1, { timeout: 15_000 });
 
-		// Cancel leg: dialog closes, row survives.
+		// Cancel leg: dialog closes, row survives. Row actions reveal on
+		// hover (§3.7 overlay recipe) — hover first like a real pointer.
+		await row.hover();
 		await row.locator('button').last().click();
 		const confirm = page.locator(DIALOG);
 		await expect(confirm).toHaveCount(1, { timeout: 10_000 });
@@ -172,6 +174,7 @@ test.describe('ATLAS_DIALOG_FILTERS', () => {
 		expect(list.json.data.some((e) => e.id === entryId)).toBe(true);
 
 		// Confirm leg: delete persists (durable re-read).
+		await row.hover();
 		await row.locator('button').last().click();
 		await expect(page.locator(DIALOG)).toHaveCount(1, { timeout: 10_000 });
 		await page.locator(DIALOG).locator('button[type="submit"]').click();

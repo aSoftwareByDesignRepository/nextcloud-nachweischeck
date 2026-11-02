@@ -212,12 +212,13 @@
 	background: var(--nw-bg-card, var(--color-main-background));
 }
 /* §3.7 one frame: inside a card/section/dialog the wrap drops its own
-   box — the outer frame is the only frame. */
+   box — the outer frame is the only frame. Dialog rules stay bare:
+   <dialog> renders in the top layer outside #content. */
 #content.app-nachweischeck #app-content .nw-card .nw-table-wrap,
 #content.app-nachweischeck #app-content .section .nw-table-wrap,
 #content.app-nachweischeck #app-content .nw-card .table-container,
 #content.app-nachweischeck #app-content .nw-card .table-responsive,
-#content.app-nachweischeck .nw-dialog .nw-table-wrap {
+.nw-dialog .nw-table-wrap {
 	border: 0;
 	border-radius: 0;
 	background: transparent;
@@ -256,9 +257,9 @@
 #content.app-nachweischeck .section .nw-table-wrap,
 #content.app-nachweischeck .nw-card .table-container,
 #content.app-nachweischeck .nw-card .table-responsive,
-#content.app-nachweischeck .nw-dialog .nw-table-wrap,
-#content.app-nachweischeck .nw-dialog .table-container,
-#content.app-nachweischeck .nw-dialog .table-responsive {
+.nw-dialog .nw-table-wrap,
+.nw-dialog .table-container,
+.nw-dialog .table-responsive {
 	border: 0;
 	border-radius: 0;
 	background: transparent;
