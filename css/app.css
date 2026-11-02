@@ -77,7 +77,7 @@
       column keeps a column header above the grid, so AT gets the same
       structure as the eye. */
 
-#app-content.nw-app .nw-edit-grid {
+:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid {
 	display: grid;
 	grid-template-columns: minmax(7rem, 1.2fr) minmax(0, 2fr) minmax(6rem, .8fr) minmax(5.5rem, .8fr) auto;
 	gap: var(--nw-space-2);
@@ -86,11 +86,11 @@
 }
 
 /* Splits: position | work package | amount | note | remove */
-#app-content.nw-app .nw-edit-grid--splits {
+:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid--splits {
 	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(5.5rem, .7fr) minmax(0, 1.2fr) auto;
 }
 
-#app-content.nw-app .nw-edit-grid__head {
+:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid__head {
 	font-size: var(--nw-fs-xs);
 	font-weight: 700;
 	text-transform: uppercase;
@@ -98,21 +98,21 @@
 	color: var(--nw-muted);
 }
 
-#app-content.nw-app .nw-edit-grid__row {
+:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid__row {
 	display: contents;
 }
 
-#app-content.nw-app .nw-edit-grid__row > * {
+:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid__row > * {
 	min-width: 0;
 }
 
 @media (max-width: 640.98px) {
-	#app-content.nw-app .nw-edit-grid,
-	#app-content.nw-app .nw-edit-grid--splits {
+	:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid,
+	:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid--splits {
 		grid-template-columns: 1fr;
 	}
-	#app-content.nw-app .nw-edit-grid__head { display: none; }
-	#app-content.nw-app .nw-edit-grid__row {
+	:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid__head { display: none; }
+	:is(#app-content.nw-app, .nw-dialog) .nw-edit-grid__row {
 		display: flex;
 		flex-direction: column;
 		gap: var(--nw-space-2);
@@ -123,7 +123,7 @@
 }
 
 /* Sum line under the split editor — the invariant the server enforces. */
-#app-content.nw-app .nw-split-sum {
+:is(#app-content.nw-app, .nw-dialog) .nw-split-sum {
 	display: flex;
 	justify-content: space-between;
 	gap: var(--nw-space-3);
@@ -732,7 +732,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	padding: var(--nw-space-3, 0.75rem) var(--nw-space-4, 1rem);
 	cursor: pointer;
 	font-weight: 600;
-	font-size: var(--nw-fs-base, 1rem);
+	font-size: var(--nw-fs-md);
 	line-height: var(--nw-line-tight, 1.2);
 	color: var(--nw-text, var(--color-main-text));
 	list-style: none;
