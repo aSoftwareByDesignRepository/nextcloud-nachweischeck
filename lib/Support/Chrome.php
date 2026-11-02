@@ -57,8 +57,26 @@ final class Chrome
 		$_['clientHints'] = ['locale' => $lang, 'htmlLang' => $lang, 'timezone' => $tz];
 
 		$groups = [];
-		// The active project's view links are the primary navigation — they
-		// come first so a long project list never buries them below the fold.
+		$items = [];
+		foreach ($projects as $p) {
+			$items[] = [
+				'id' => 'proj-' . $p['id'],
+				'label' => (string)$p['name'],
+				'hint' => $l10n->t((string)$p['state']),
+				'icon' => 'layout-grid',
+				'href' => $r('nachweischeck.page.index') . '?project=' . $p['id'] . '&view=dashboard',
+				'active' => $current !== null && $current['id'] === $p['id'],
+			];
+		}
+		$items[] = [
+			'id' => 'new-project',
+			'label' => $l10n->t('New project'),
+			'icon' => 'plus',
+			'href' => $r('nachweischeck.page.index') . '?new=1',
+			'active' => $navId === 'new-project',
+		];
+		$groups[] = ['label' => $l10n->t('Projects'), 'items' => $items];
+
 		if ($current !== null) {
 			$caps = $current['caps'] ?? [];
 			$base = $r('nachweischeck.page.index') . '?project=' . $current['id'] . '&view=';
@@ -89,26 +107,6 @@ final class Chrome
 			unset($v);
 			$groups[] = ['label' => $current['name'], 'items' => $views];
 		}
-
-		$items = [];
-		foreach ($projects as $p) {
-			$items[] = [
-				'id' => 'proj-' . $p['id'],
-				'label' => (string)$p['name'],
-				'hint' => $l10n->t((string)$p['state']),
-				'icon' => 'layout-grid',
-				'href' => $r('nachweischeck.page.index') . '?project=' . $p['id'] . '&view=dashboard',
-				'active' => $current !== null && $current['id'] === $p['id'],
-			];
-		}
-		$items[] = [
-			'id' => 'new-project',
-			'label' => $l10n->t('New project'),
-			'icon' => 'plus',
-			'href' => $r('nachweischeck.page.index') . '?new=1',
-			'active' => $navId === 'new-project',
-		];
-		$groups[] = ['label' => $l10n->t('Projects'), 'items' => $items];
 		$_['navGroups'] = $groups;
 		$_['footerPartial'] = dirname(__DIR__, 2) . '/templates/parts/feedback-nav-footer.php';
 
