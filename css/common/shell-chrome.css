@@ -207,8 +207,21 @@
 #content.app-nachweischeck #app-content .nw-table-wrap {
 	border: 1px solid var(--nw-border, var(--color-border));
 	border-radius: var(--nw-radius-md, 12px);
-	overflow: hidden;
+	overflow-x: auto;
+	overflow-y: visible;
 	background: var(--nw-bg-card, var(--color-main-background));
+}
+/* §3.7 one frame: inside a card/section/dialog the wrap drops its own
+   box — the outer frame is the only frame. */
+#content.app-nachweischeck #app-content .nw-card .nw-table-wrap,
+#content.app-nachweischeck #app-content .section .nw-table-wrap,
+#content.app-nachweischeck #app-content .nw-card .table-container,
+#content.app-nachweischeck #app-content .nw-card .table-responsive,
+#content.app-nachweischeck .nw-dialog .nw-table-wrap {
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
 }
 /* Empty states — AZ-like bordered soft panel (never page how-to guides) */
 #content.app-nachweischeck #app-content .nw-empty:not(.nw-page-guide),
@@ -230,12 +243,26 @@
 #content.app-nachweischeck .table-container,
 #content.app-nachweischeck .table-responsive {
 	overflow-x: auto;
+	overflow-y: visible;
 	border: 1px solid var(--nw-border, var(--color-border));
 	border-radius: var(--nw-radius-md, 12px);
 	background-color: var(--nw-bg-card, var(--color-main-background));
 	-webkit-overflow-scrolling: touch;
 	width: 100%;
 	box-sizing: border-box;
+}
+/* Same one-frame rule for the flat wrap selectors above (1-ID tier). */
+#content.app-nachweischeck .nw-card .nw-table-wrap,
+#content.app-nachweischeck .section .nw-table-wrap,
+#content.app-nachweischeck .nw-card .table-container,
+#content.app-nachweischeck .nw-card .table-responsive,
+#content.app-nachweischeck .nw-dialog .nw-table-wrap,
+#content.app-nachweischeck .nw-dialog .table-container,
+#content.app-nachweischeck .nw-dialog .table-responsive {
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
 }
 #content.app-nachweischeck .nw-table,
 #content.app-nachweischeck .table,

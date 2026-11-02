@@ -237,6 +237,39 @@
 	align-items: center;
 }
 
+/*
+ * Actions field (Apply + Clear) — §3.6b. The base .nw-filter-field is a
+ * label/control subgrid pair; the actions field has no label, so it leaves
+ * the subgrid and becomes a bottom-aligned button row in the control
+ * track. Buttons keep touch height, shrink to content on desktop and
+ * stack full-width on narrow screens.
+ */
+#app-content.nw-app .nw-filter-field--actions {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2, 0.5rem);
+	align-items: flex-end;
+	grid-row: span 2;
+}
+
+#app-content.nw-app .nw-filter-field--actions > .nw-btn,
+#app-content.nw-app .nw-filter-field--actions > .button {
+	flex: 0 0 auto;
+	min-height: 44px;
+}
+
+@media (max-width: 768.98px) {
+	#app-content.nw-app .nw-filter-field--actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	#app-content.nw-app .nw-filter-field--actions > * {
+		width: 100%;
+	}
+}
+
 #app-content.nw-app .nw-filter-field--wide,
 #app-content.nw-app .nw-filter-field--full,
 #app-content.nw-app .nw-filter-grid > .nw-choice-group {
@@ -486,20 +519,43 @@
 	scroll-padding-inline-end: var(--nw-space-4, 1rem);
 }
 
+#app-content.nw-app .nw-card .table-container,
+#app-content.nw-app .nw-card .table-responsive,
+#app-content.nw-app .nw-card .nw-table-wrap,
+#app-content.nw-app .section .table-container,
+#app-content.nw-app .section .table-responsive,
+#app-content.nw-app .section .nw-table-wrap,
+.nw-dialog .table-container,
+.nw-dialog .table-responsive,
+.nw-dialog .nw-table-wrap,
 #app-content.nw-app .nw-card__body > .table-container,
 #app-content.nw-app .nw-card__body > .table-responsive,
 #app-content.nw-app .nw-card__body > .nw-table-wrap {
 	margin-block: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+/* Sole content of the card: sit flush under the header, no inner inset. */
+#app-content.nw-app .nw-card__body:has(> .table-container:only-child),
+#app-content.nw-app .nw-card__body:has(> .table-responsive:only-child),
+#app-content.nw-app .nw-card__body:has(> .nw-table-wrap:only-child) {
+	padding: 0;
+	gap: 0;
 }
 
 #app-content.nw-app .table-container .table,
 #app-content.nw-app .table-container .grid-table,
 #app-content.nw-app .table-container .nachweischeck-table,
+#app-content.nw-app .table-container .nw-table,
 #app-content.nw-app .table-container .report-table,
 #app-content.nw-app .table-responsive .table,
 #app-content.nw-app .table-responsive .grid-table,
 #app-content.nw-app .nw-table-wrap .table,
-#app-content.nw-app .nw-table-wrap .grid-table {
+#app-content.nw-app .nw-table-wrap .grid-table,
+#app-content.nw-app .nw-table-wrap .nw-table {
 	margin-bottom: 0;
 	width: 100%;
 	table-layout: auto;
@@ -510,10 +566,12 @@
 	#app-content.nw-app .table-container .table:not(.nw-table--matrix),
 	#app-content.nw-app .table-container .grid-table:not(.nw-table--matrix),
 	#app-content.nw-app .table-container .nachweischeck-table:not(.nw-table--matrix),
+	#app-content.nw-app .table-container .nw-table:not(.nw-table--matrix),
 	#app-content.nw-app .table-responsive .table:not(.nw-table--matrix),
 	#app-content.nw-app .table-responsive .grid-table:not(.nw-table--matrix),
 	#app-content.nw-app .nw-table-wrap .table:not(.nw-table--matrix),
-	#app-content.nw-app .nw-table-wrap .grid-table:not(.nw-table--matrix) {
+	#app-content.nw-app .nw-table-wrap .grid-table:not(.nw-table--matrix),
+	#app-content.nw-app .nw-table-wrap .nw-table:not(.nw-table--matrix) {
 		width: 100%;
 		min-width: max-content;
 	}
@@ -528,18 +586,32 @@
 	white-space: normal;
 }
 
-#app-content.nw-app .table thead th,
-#app-content.nw-app .grid-table thead th,
-#app-content.nw-app .nw-table thead th {
+#app-content.nw-app .table:not(.nw-table--matrix) thead,
+#app-content.nw-app .grid-table:not(.nw-table--matrix) thead,
+#app-content.nw-app .nw-table:not(.nw-table--matrix) thead,
+.nw-dialog .table thead {
+	background: transparent;
+}
+
+/* §3.7: header cells use the card surface — never a dark band. */
+#app-content.nw-app .table:not(.nw-table--matrix) thead th,
+#app-content.nw-app .grid-table:not(.nw-table--matrix) thead th,
+#app-content.nw-app .nw-table:not(.nw-table--matrix) thead th,
+.nw-dialog .table thead th {
 	position: sticky;
 	top: 0;
-	z-index: 1;
-	background-color: var(--nachweischeck-color-table-header-background, var(--color-background-dark));
-	box-shadow: 0 1px 0 var(--nachweischeck-color-table-border, var(--color-border));
+	z-index: 3;
+	background-color: var(--nw-bg-card, var(--color-main-background));
+	color: var(--nw-muted, var(--color-text-maxcontrast));
+	font-weight: 600;
+	font-size: var(--nw-fs-sm, 0.875rem);
+	box-shadow: none;
+	border-bottom: 1px solid var(--nw-border, var(--color-border));
 }
 
 #app-content.nw-app .table tbody tr:focus-within,
-#app-content.nw-app .grid-table tbody tr:focus-within {
+#app-content.nw-app .grid-table tbody tr:focus-within,
+#app-content.nw-app .nw-table tbody tr:focus-within {
 	outline: 2px solid var(--color-primary-element);
 	outline-offset: -2px;
 }
@@ -548,6 +620,8 @@
 #app-content.nw-app .table td.nw-table-loading,
 #app-content.nw-app .grid-table td.nw-table-empty,
 #app-content.nw-app .grid-table td.nw-table-loading,
+#app-content.nw-app .nw-table td.nw-table-empty,
+#app-content.nw-app .nw-table td.nw-table-loading,
 #app-content.nw-app .table td.text-center:not(:only-child),
 #app-content.nw-app .grid-table td.text-center:not(:only-child) {
 	text-align: center;
@@ -557,12 +631,14 @@
 }
 
 #app-content.nw-app .table td .nw-empty-state,
-#app-content.nw-app .grid-table td .nw-empty-state {
+#app-content.nw-app .grid-table td .nw-empty-state,
+#app-content.nw-app .nw-table td .nw-empty-state {
 	padding: var(--nw-space-5, 1.25rem) var(--nw-space-3, 0.75rem);
 }
 
 #app-content.nw-app .table .nw-table-actions,
 #app-content.nw-app .grid-table .nw-table-actions,
+#app-content.nw-app .nw-table .nw-table-actions,
 #app-content.nw-app .table .admin-holidays__row-actions {
 	display: flex;
 	flex-wrap: wrap;
@@ -571,7 +647,12 @@
 	justify-content: flex-end;
 }
 
-/* Actions column: never shrink below button labels (avoid width:1% clipping) */
+/* Actions column alignment. Width lives in the two media blocks below:
+   below 769px the column sizes to the button labels; from 769px it
+   collapses and the buttons cover the inline end of the hovered or
+   focused row. That cover is the layout. Do not put min-width:max-content
+   back on these cells at desktop — it reserves a column and the release
+   check treats that as a regression. */
 #app-content.nw-app .table th.nw-table-actions-col,
 #app-content.nw-app .table th.actions-col,
 #app-content.nw-app .table td.actions-cell,
@@ -581,14 +662,36 @@
 #app-content.nw-app .table td.layer-card__history-actions,
 #app-content.nw-app .grid-table th.nw-table-actions-col,
 #app-content.nw-app .grid-table td.actions-cell,
-#app-content.nw-app .grid-table td.nw-table-actions-col {
+#app-content.nw-app .grid-table td.nw-table-actions-col,
+#app-content.nw-app .nw-table th.nw-table-actions-col,
+#app-content.nw-app .nw-table td.actions-cell,
+#app-content.nw-app .nw-table td.nw-table-actions-col {
 	text-align: right;
 	vertical-align: middle;
 	white-space: nowrap;
-	width: auto;
-	min-width: max-content;
-	max-width: none;
 	overflow: visible;
+}
+
+/* Narrow tables: size the actions column to the button labels.
+   From 769px the column collapses — see the wide-table block below. */
+@media (max-width: 768.98px) {
+	#app-content.nw-app .table th.nw-table-actions-col,
+	#app-content.nw-app .table th.actions-col,
+	#app-content.nw-app .table td.actions-cell,
+	#app-content.nw-app .table td.nw-table-actions-col,
+	#app-content.nw-app .table td.admin-ot-audit__actions,
+	#app-content.nw-app .table td.admin-tariff-rules__row-actions,
+	#app-content.nw-app .table td.layer-card__history-actions,
+	#app-content.nw-app .grid-table th.nw-table-actions-col,
+	#app-content.nw-app .grid-table td.actions-cell,
+	#app-content.nw-app .grid-table td.nw-table-actions-col,
+	#app-content.nw-app .nw-table th.nw-table-actions-col,
+	#app-content.nw-app .nw-table td.actions-cell,
+	#app-content.nw-app .nw-table td.nw-table-actions-col {
+		width: auto;
+		min-width: max-content;
+		max-width: none;
+	}
 }
 
 #app-content.nw-app .table td.actions-cell,
@@ -597,17 +700,165 @@
 #app-content.nw-app .table td.admin-tariff-rules__row-actions,
 #app-content.nw-app .table td.layer-card__history-actions,
 #app-content.nw-app .grid-table td.actions-cell,
-#app-content.nw-app .grid-table td.nw-table-actions-col {
+#app-content.nw-app .grid-table td.nw-table-actions-col,
+#app-content.nw-app .nw-table td.actions-cell,
+#app-content.nw-app .nw-table td.nw-table-actions-col {
 	display: table-cell;
 }
 
 #app-content.nw-app .table td.nw-table-actions-col .btn,
 #app-content.nw-app .table td.actions-cell .btn,
 #app-content.nw-app .table .nw-table-actions .btn,
+#app-content.nw-app .table .nw-table-actions .nw-btn,
 #app-content.nw-app .grid-table td.actions-cell .btn,
-#app-content.nw-app .grid-table .nw-table-actions .btn {
+#app-content.nw-app .grid-table .nw-table-actions .btn,
+#app-content.nw-app .nw-table .nw-table-actions .btn,
+#app-content.nw-app .nw-table .nw-table-actions .nw-btn {
 	flex-shrink: 0;
 	white-space: nowrap;
+}
+
+/*
+ * Wide tables: the actions column must not widen the table or sit on top of
+ * the data while you scroll. On hover, focus, or a touch screen the buttons
+ * do cover the inline end of that row — that overlap is intentional.
+ * The header text stays in the accessibility tree
+ * and is clipped by the zero-width cell. Buttons stay in the tab order
+ * (never display:none). A pointer reveals them on the row; keyboard focus
+ * does too. Escape adds .nw-row-actions-dismissed until the pointer
+ * re-enters or focus returns to an action. Touch (hover: none) keeps the
+ * cluster visible, pinned to the inline end, so it is tappable without a
+ * sideways scroll. Dialogs live on document.body, so .nw-dialog is included.
+ */
+@media (min-width: 769px) {
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) th.nw-table-actions-col,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) th.actions-col,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table th.nw-table-actions-col {
+		width: 0;
+		min-width: 0;
+		max-width: 0;
+		padding: 0;
+		border: 0;
+		overflow: hidden;
+		position: static;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.nw-table-actions-col,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-ot-audit__actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-tariff-rules__row-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.layer-card__history-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.nw-table-actions-col {
+		position: sticky;
+		inset-inline-end: 0;
+		width: 0;
+		min-width: 0;
+		max-width: none;
+		padding: 0;
+		overflow: visible;
+		background: transparent;
+		box-shadow: none;
+		z-index: 2;
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell > .nw-row-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell > .nw-row-actions,
+	:is(#app-content.nw-app, .nw-dialog) .nw-table td.actions-cell > .nw-row-actions {
+		width: 0;
+		min-width: 0;
+		overflow: visible;
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.nw-table-actions-col .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-ot-audit__actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-tariff-rules__row-actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.layer-card__history-actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.nw-table-actions-col .nw-table-actions {
+		position: absolute;
+		inset-inline-end: 0;
+		top: 0;
+		bottom: 0;
+		transform: none;
+		z-index: 2;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: var(--nw-space-2, 0.5rem);
+		margin: 0;
+		max-width: none;
+		padding-block: 0;
+		padding-inline: 1.25rem var(--nw-space-3, 0.75rem);
+		overflow: hidden;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background-color: var(--nw-bg-card, var(--color-main-background));
+		background-image: linear-gradient(
+			to inline-end,
+			transparent,
+			var(--nw-bg-card, var(--color-main-background)) 1rem
+		);
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions > .btn,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions > .nw-btn,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions > a,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions > .btn,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions > .nw-btn,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions > a {
+		flex: 0 0 auto;
+		width: auto;
+		max-width: none;
+		white-space: nowrap;
+	}
+}
+
+@media (min-width: 769px) and (hover: hover) {
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.nw-table-actions-col .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-ot-audit__actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.admin-tariff-rules__row-actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.layer-card__history-actions .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.nw-table-actions-col .nw-table-actions {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.12s linear;
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) tbody tr:hover td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) tbody tr:focus-within td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table tbody tr:hover td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table tbody tr:focus-within td.actions-cell .nw-table-actions {
+		opacity: 1;
+		pointer-events: auto;
+		background-color: var(--color-background-hover, var(--nw-bg-card, var(--color-main-background)));
+		background-image: linear-gradient(
+			to inline-end,
+			transparent,
+			var(--color-background-hover, var(--nw-bg-card, var(--color-main-background))) 1rem
+		);
+	}
+
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) tbody tr.nw-row-actions-dismissed td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table tbody tr.nw-row-actions-dismissed td.actions-cell .nw-table-actions {
+		opacity: 0;
+		pointer-events: none;
+	}
+}
+
+@media (min-width: 769px) and (hover: hover) and (prefers-reduced-motion: reduce) {
+	:is(#app-content.nw-app, .nw-dialog) :is(.table, .nw-table) td.actions-cell .nw-table-actions,
+	:is(#app-content.nw-app, .nw-dialog) .grid-table td.actions-cell .nw-table-actions {
+		transition: none;
+	}
 }
 
 /* Truncated text columns — do not steal space from actions */
@@ -664,7 +915,8 @@
 		min-width: 36rem;
 	}
 
-	#app-content.nw-app .table .nw-table-actions {
+	#app-content.nw-app .table .nw-table-actions,
+	#app-content.nw-app .nw-table .nw-table-actions {
 		justify-content: flex-start;
 	}
 

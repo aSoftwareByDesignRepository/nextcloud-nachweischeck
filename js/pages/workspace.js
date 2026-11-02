@@ -182,8 +182,9 @@
 	}
 
 	/* Table with mobile card rows — every cell under a non-empty header
-	   carries its label via data-cell (§3.7); '' headers mark action
-	   columns that render label-free. */
+	   carries its label via data-cell (§3.7); '' headers mark the actions
+	   column: th gets nw-table-actions-col, td gets actions-cell so the
+	   pack's hover/focus reveal + inline-end pin applies. */
 	function tableEl(headers, rows, opts) {
 		opts = opts || {};
 		var wrap = el('div', { class: 'nw-table-wrap' });
@@ -191,7 +192,9 @@
 		var thead = el('thead');
 		var hr = el('tr');
 		headers.forEach(function (h) {
-			hr.appendChild(el('th', { scope: 'col', text: h }));
+			var th = el('th', { scope: 'col', text: h });
+			if (h === '') { th.className = 'nw-table-actions-col'; }
+			hr.appendChild(th);
 		});
 		thead.appendChild(hr);
 		tbl.appendChild(thead);
@@ -211,6 +214,8 @@
 				var td = el('td');
 				if (headers[i] !== '') {
 					td.setAttribute('data-cell', headers[i]);
+				} else {
+					td.className = 'actions-cell';
 				}
 				if (typeof cellData === 'string' || typeof cellData === 'number') {
 					td.textContent = String(cellData);
@@ -1295,7 +1300,7 @@
 			host.appendChild(card(t('Work packages'), { children: [
 				tableEl([t('Code'), t('Title'), t('Owner'), t('Period'), t('Positions'), t('State'), ''],
 					aps.map(function (ap) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance && ap.state !== 'closed') {
 							act.appendChild(smallBtn(t('Positions'), function () { openApPositions(ap, positions); }));
 							act.appendChild(smallBtn(t('Close'), function () {
@@ -1405,21 +1410,25 @@
 		fromIn.id = 'nw-time-from';
 		var toIn = inputEl('to', { type: 'date' });
 		toIn.id = 'nw-time-to';
-		var filterCard = el('section', { class: 'nw-filter-panel' }, [
+		var filterCard = el('section', { class: 'nw-filter-panel', 'aria-labelledby': 'nw-time-filter-title' }, [
+			el('header', { class: 'nw-filter-panel__head' }, [
+				el('h2', { id: 'nw-time-filter-title', text: t('Filter') }),
+				el('p', { class: 'nw-filter-panel__intro', text: t('Narrow the list to a period, then click Apply.') })
+			]),
 			el('div', { class: 'nw-filter-panel__body' }, [
-				el('form', { class: 'nw-filter-panel__form' }, [
-					el('div', { class: 'nw-filter-grid' }, [
+				el('form', { class: 'nw-filter-panel__form', role: 'search', 'aria-label': t('Filter time entries'), novalidate: 'novalidate' }, [
+					el('div', { class: 'nw-filter-grid', role: 'group', 'aria-label': t('Filter options') }, [
 						el('div', { class: 'nw-filter-field' }, [
 							el('label', { class: 'nw-filter-field__label', 'for': 'nw-time-from', text: t('From') }),
-							fromIn
+							el('div', { class: 'nw-filter-field__control' }, [fromIn])
 						]),
 						el('div', { class: 'nw-filter-field' }, [
 							el('label', { class: 'nw-filter-field__label', 'for': 'nw-time-to', text: t('To') }),
-							toIn
+							el('div', { class: 'nw-filter-field__control' }, [toIn])
 						]),
 						el('div', { class: 'nw-filter-field nw-filter-field--actions' }, [
-							el('button', { type: 'submit', class: 'nw-btn nw-btn--primary nw-btn--small', text: t('Apply') }),
-							el('button', { type: 'button', class: 'nw-btn nw-btn--ghost nw-btn--small', 'data-filter-clear': '1', text: t('Clear') })
+							el('button', { type: 'submit', class: 'nw-btn nw-btn--primary', text: t('Apply') }),
+							el('button', { type: 'button', class: 'nw-btn nw-btn--secondary', 'data-filter-clear': '1', text: t('Clear') })
 						])
 					])
 				])
@@ -1468,7 +1477,7 @@
 						[t('Date'), t('User'), t('AP'), t('Hours'), t('Note')]
 							.concat(caps.can_see_rates ? [t('Amount')] : []).concat(['']),
 						entries.map(function (e) {
-							var act = el('span', { class: 'nw-actions-inline' });
+							var act = el('span', { class: 'nw-table-actions' });
 							if (caps.can_finance || (caps.can_book && e.uid === boot.uid)) {
 								act.appendChild(smallBtn(t('Edit'), function () { openEntryEdit(e, res[1]); }));
 								act.appendChild(smallBtn(t('Delete'), function () {
@@ -1511,7 +1520,7 @@
 				var children = [
 					tableEl([t('Period'), t('User'), t('AP'), t('Hours'), t('State'), ''],
 						sheets.map(function (ts) {
-							var act = el('span', { class: 'nw-actions-inline' });
+							var act = el('span', { class: 'nw-table-actions' });
 							if (role.isPro && caps.can_book && (ts.state === 'draft' || ts.state === 'rejected')) {
 								act.appendChild(smallBtn(t('Submit'), function () {
 									tsAction(ts.id, 'submit');
@@ -1632,7 +1641,7 @@
 			pillBar.appendChild(pills);
 			var qIn = inputEl('rq', { type: 'search', placeholder: t('Vendor or invoice no…') });
 			qIn.setAttribute('aria-label', t('Filter receipts'));
-			pillBar.appendChild(qIn);
+			pillBar.appendChild(el('div', { class: 'nw-quick-filters__search' }, [qIn]));
 			var listCard = el('div');
 			var count = el('span', { class: 'nw-list-head__count' });
 			host.appendChild(pillBar);
@@ -1673,10 +1682,10 @@
 					el('div', { class: 'nw-list-head' }, [count]),
 					tableEl([t('Vendor'), t('Invoice no.'), t('Invoice date'), t('Payment date'), t('Total'), t('Kind'), t('Flags'), ''],
 					shown.map(function (r) {
-						var flags = el('span', { class: 'nw-actions-inline' }, [stateBadge(r.state, t(r.state))]);
+						var flags = el('span', { class: 'nw-badge-row' }, [stateBadge(r.state, t(r.state))]);
 						if (r.dup_flag) { flags.appendChild(NW.badge('warn', t('duplicate'))); }
 						if (!r.file_id) { flags.appendChild(NW.badge('danger', t('no attachment'))); }
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance) {
 							act.appendChild(smallBtn(t('Edit'), function () { openReceiptDialog(r); }));
 							act.appendChild(smallBtn(t('Splits'), function () { openSplitsDialog(r); }));
@@ -1799,7 +1808,7 @@
 				host.appendChild(card(b.ap.code + ' — ' + b.ap.title, { children: [
 					tableEl([t('Period'), t('State'), t('Author'), t('Summary'), ''],
 						b.reports.map(function (r) {
-							var act = el('span', { class: 'nw-actions-inline' });
+							var act = el('span', { class: 'nw-table-actions' });
 							if (caps.can_book && r.state === 'draft') {
 								act.appendChild(smallBtn(t('Submit'), function () { reportState(r, 'submitted'); }));
 							}
@@ -1945,12 +1954,12 @@
 					items.push(li);
 				});
 				var readyNote = readiness.ready
-					? el('p', { class: 'nw-hint', text: t('No blockers — the export can run. Warnings are listed in the report.') })
+					? el('p', { class: 'nw-field__hint', text: t('No blockers — the export can run. Warnings are listed in the report.') })
 					: el('p', { class: 'nw-field-error', text: t('Blockers found — resolve them before generating the report.') });
 				host.appendChild(card(t('Audit readiness'), { children: [
 					readyNote,
 					items.length ? el('ul', { class: 'nw-readiness-list' }, items)
-						: el('p', { class: 'nw-hint', text: t('Everything looks audit-ready.') })
+						: el('p', { class: 'nw-field__hint', text: t('Everything looks audit-ready.') })
 				] }));
 			}
 
@@ -1973,7 +1982,7 @@
 			host.appendChild(card(t('Usage reports'), { children: [
 				tableEl([t('Version'), t('Kind'), t('Period'), t('State'), t('Hash'), t('Generated'), ''],
 					(list || []).map(function (n) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						act.appendChild(smallBtn(t('Open'), function () { openNachweisDetail(n.id, detail); }));
 						return [
 							'v' + n.version + (n.supersedes_id ? ' ↺' : ''),
@@ -2123,7 +2132,7 @@
 				stateBadge(n.state, t(n.state))
 			]);
 			region.appendChild(head);
-			region.appendChild(el('div', { class: 'nw-nwpreview__meta' }, [
+			region.appendChild(el('div', { class: 'nw-preview__meta' }, [
 				el('span', { text: (n.manifest_hash || '') }),
 			]));
 			region.appendChild(renderNachweisPayload(n.payload || {}, n.integrity, nid));
@@ -2285,7 +2294,7 @@
 			var payChildren = [
 				tableEl([t('Date'), t('Amount'), t('Call reference'), t('Year'), t('Note'), ''],
 					payments.map(function (pay) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance) {
 							act.appendChild(smallBtn(t('Delete'), function () {
 								NW.confirmDialog(t('Delete payment'), t('Delete this incoming payment?'))
@@ -2310,10 +2319,11 @@
 			// Rates (can_see_rates)
 			if (caps.can_see_rates) {
 				var rateRegion = el('div');
-				var selWrap = el('div', { class: 'nw-filter-grid' }, [
+				var selWrap = el('div', {}, [
 					fieldEl(t('Member'), memberSelect('rate_member', members, null, { blank: t('— choose —') }))
 				]);
 				var rateSel = selWrap.querySelector('select');
+				rateSel.classList.add('nw-select--inline');
 				rateSel.addEventListener('change', function () { paintRates(rateSel.value); });
 				var rateChildren = [selWrap, rateRegion];
 				if (caps.can_finance) {
@@ -2349,7 +2359,7 @@
 			var reaChildren = [
 				tableEl([t('From'), t('To'), t('Amount'), t('Reason'), t('State'), ''],
 					reallocs.map(function (r) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_admin && r.state === 'pending') {
 							act.appendChild(smallBtn(t('Approve'), function () { reallocDecide(r.id, 'approve'); }));
 							act.appendChild(smallBtn(t('Reject'), function () { reallocDecide(r.id, 'reject'); }));
@@ -2390,7 +2400,7 @@
 			var cofChildren = [
 				tableEl([t('Name'), t('Reference'), t('Contact'), t('Note'), ''],
 					cofunders.map(function (c) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance) {
 							act.appendChild(smallBtn(t('Delete'), function () {
 								NW.confirmDialog(t('Delete co-funder'), t('Delete this co-funder? Fails while plan positions still reference it.'))
@@ -2428,7 +2438,7 @@
 			ddChildren.push(
 				tableEl([t('Requested'), t('Amount'), t('Call ref'), t('State'), ''],
 					drawdowns.map(function (d) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance && d.state === 'requested') {
 							act.appendChild(smallBtn(t('Received'), function () { drawdownDecide(d.id, 'receive', payments); }));
 							act.appendChild(smallBtn(t('Reject'), function () { drawdownDecide(d.id, 'reject'); }));
@@ -2448,7 +2458,7 @@
 			var claimChildren = [
 				tableEl([t('Kind'), t('Title'), t('Date'), t('Principal'), t('Rate (bp)'), t('Amount'), t('State'), ''],
 					claims.map(function (c) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						if (caps.can_finance && c.state === 'open') {
 							act.appendChild(smallBtn(t('Settle'), function () {
 								NW.api('/projects/' + pid + '/claims/' + c.id + '/settle', { method: 'POST', json: {} })
@@ -2745,8 +2755,9 @@
 			host.appendChild(card(t('Members'), { children: [
 				tableEl([t('User'), t('Name'), t('Role'), ''],
 					members.map(function (m) {
-						var act = el('span', { class: 'nw-actions-inline' });
+						var act = el('span', { class: 'nw-table-actions' });
 						var roleSel = selectEl('role', MEMBER_ROLES.map(function (r) { return [r[0], t(r[1])]; }), m.role);
+						roleSel.classList.add('nw-select--inline');
 						roleSel.setAttribute('aria-label', t('Role for %s', [m.uid]));
 						roleSel.addEventListener('change', function () {
 							NW.api('/projects/' + pid + '/members/' + encodeURIComponent(m.uid), {
@@ -2777,7 +2788,7 @@
 			grantChildren.push(tableEl([t('Auditor'), t('Firm'), t('Account'), t('Valid'), t('Scope'), t('State'), ''],
 				grants.map(function (g) {
 					var stateTxt = g.revoked ? 'revoked' : (g.expired ? 'expired' : 'active');
-					var act = el('span', { class: 'nw-actions-inline' });
+					var act = el('span', { class: 'nw-table-actions' });
 					if (!g.revoked) {
 						act.appendChild(smallBtn(t('Reads'), function () { openReadsDialog(g); }));
 						act.appendChild(smallBtn(t('Revoke'), function () {
@@ -3107,9 +3118,43 @@
 		renderProjectPicker();
 	}
 
+	/* §3.7 row actions: Escape dismisses the revealed cluster until the
+	   pointer re-enters the row or focus returns to an action. */
+	function installRowActionsDismiss() {
+		document.addEventListener('keydown', function (ev) {
+			if (ev.key !== 'Escape') { return; }
+			if (document.querySelector('dialog[open]')) { return; }
+			var target = ev.target;
+			if (!(target instanceof Element)) { return; }
+			var row = target.closest('tr');
+			if (!row || row.classList.contains('nw-row-actions-dismissed')) { return; }
+			if (!row.querySelector('.nw-table-actions')) { return; }
+			ev.preventDefault();
+			row.classList.add('nw-row-actions-dismissed');
+			if (!row.hasAttribute('tabindex')) {
+				row.setAttribute('tabindex', '-1');
+				row.dataset.nwRowTabindexAdded = 'true';
+			}
+			row.focus();
+		});
+		document.addEventListener('pointerover', function (ev) {
+			var target = ev.target;
+			if (!(target instanceof Element)) { return; }
+			var row = target.closest('tr.nw-row-actions-dismissed');
+			if (row) { row.classList.remove('nw-row-actions-dismissed'); }
+		});
+		document.addEventListener('focusin', function (ev) {
+			var target = ev.target;
+			if (!(target instanceof Element) || !target.closest('.nw-table-actions')) { return; }
+			var row = target.closest('tr.nw-row-actions-dismissed');
+			if (row) { row.classList.remove('nw-row-actions-dismissed'); }
+		});
+	}
+
 	function init() {
 		host = document.getElementById('nw-main');
 		if (!host) { return; }
+		installRowActionsDismiss();
 		render();
 		if (boot.newProject) {
 			openProjectDialog();
