@@ -1,10 +1,12 @@
 /**
  * Form controls — ArbeitszeitCheck parity (prefix dc).
- * Scoped to #content.app-nachweischeck so NC chrome is untouched.
+ * Scoped to #content.app-nachweischeck + dialog.nw-dialog (body-mounted
+ * top layer) so NC chrome outside the app is untouched.
  * Uses Nextcloud --color-* tokens (theme-safe). WCAG 2.1 AA: 44px targets,
  * 3px focus ring, accent-color on checkbox/radio.
  */
-#content.app-nachweischeck {
+#content.app-nachweischeck,
+dialog.nw-dialog {
 	--nw-form-bg: var(--color-main-background);
 	--nw-form-fg: var(--color-main-text);
 	--nw-form-border: var(--color-border-maxcontrast, var(--nw-border-strong, color-mix(in srgb, var(--color-main-text) 24%, transparent)));
@@ -20,25 +22,25 @@
 }
 
 /* Text fields, selects, textareas — match AZ .form-input / base input chrome */
-#content.app-nachweischeck #app-content input[type="text"]:not(.input-field__input):not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="search"]:not(.input-field__input):not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="email"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="number"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="date"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="time"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="datetime-local"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="password"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="url"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input[type="tel"]:not(.nw-sr-only),
-#content.app-nachweischeck #app-content input:not([type]):not(.nw-sr-only),
-#content.app-nachweischeck #app-content textarea:not(.nw-sr-only),
-#content.app-nachweischeck #app-content select:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .form-input:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .form-select:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .form-textarea:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .nw-input:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .nw-select:not(.nw-sr-only),
-#content.app-nachweischeck #app-content .nw-textarea:not(.nw-sr-only) {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="text"]:not(.input-field__input):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="search"]:not(.input-field__input):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="email"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="number"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="date"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="time"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="datetime-local"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="password"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="url"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="tel"]:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input:not([type]):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-textarea:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-input:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-select:not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-textarea:not(.nw-sr-only) {
 	display: block;
 	width: 100%;
 	max-width: 100%;
@@ -56,9 +58,9 @@
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-#content.app-nachweischeck #app-content textarea,
-#content.app-nachweischeck #app-content .form-textarea,
-#content.app-nachweischeck #app-content .nw-textarea {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-textarea,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-textarea {
 	min-height: 100px;
 	resize: vertical;
 	appearance: auto;
@@ -70,10 +72,10 @@
  * theme (an SVG data-URI cannot use CSS variables and went invisible in
  * dark mode). `:not([multiple])` — list boxes must never be squashed to
  * a single 44px row. */
-#content.app-nachweischeck #app-content select:not([multiple]):not(.nw-sr-only),
-#content.app-nachweischeck #app-content select.nw-input:not([multiple]):not(.nw-sr-only),
-#content.app-nachweischeck #app-content .form-select:not([multiple]):not(.nw-sr-only),
-#content.app-nachweischeck #app-content .nw-select:not([multiple]):not(.nw-sr-only) {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:not([multiple]):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select.nw-input:not([multiple]):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:not([multiple]):not(.nw-sr-only),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-select:not([multiple]):not(.nw-sr-only) {
 	height: var(--nw-touch, 44px);
 	min-height: var(--nw-touch, 44px);
 	padding: 0.625rem 2.5rem 0.625rem 1rem;
@@ -93,31 +95,31 @@
 	cursor: pointer;
 }
 
-#content.app-nachweischeck #app-content select::-ms-expand,
-#content.app-nachweischeck #app-content .form-select::-ms-expand {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select::-ms-expand,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select::-ms-expand {
 	display: none;
 }
 
 /* Scope-strip site filter is an inline control in the header strip —
  * the block/width:100% text-field chrome above must not stretch it. */
-#content.app-nachweischeck #app-content select.nw-scope-strip__select {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select.nw-scope-strip__select {
 	display: inline-block;
 	width: auto;
 	max-width: min(18rem, 100%);
 }
 
-#content.app-nachweischeck #app-content input:not([type="checkbox"]):not([type="radio"]):focus,
-#content.app-nachweischeck #app-content input:not([type="checkbox"]):not([type="radio"]):focus-visible,
-#content.app-nachweischeck #app-content textarea:focus,
-#content.app-nachweischeck #app-content textarea:focus-visible,
-#content.app-nachweischeck #app-content select:focus,
-#content.app-nachweischeck #app-content select:focus-visible,
-#content.app-nachweischeck #app-content .form-input:focus,
-#content.app-nachweischeck #app-content .form-input:focus-visible,
-#content.app-nachweischeck #app-content .form-select:focus,
-#content.app-nachweischeck #app-content .form-select:focus-visible,
-#content.app-nachweischeck #app-content .form-textarea:focus,
-#content.app-nachweischeck #app-content .form-textarea:focus-visible {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input:not([type="checkbox"]):not([type="radio"]):focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-textarea:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-textarea:focus-visible {
 	border-color: var(--nw-form-border-focus);
 	/* Solid primary outline (≥3:1) — never outline:none with only a diluted box-shadow */
 	outline: var(--nw-focus, 3px solid var(--color-primary-element));
@@ -125,45 +127,45 @@
 	box-shadow: 0 0 0 3px var(--nw-form-ring);
 }
 
-#content.app-nachweischeck #app-content input:disabled,
-#content.app-nachweischeck #app-content textarea:disabled,
-#content.app-nachweischeck #app-content select:disabled,
-#content.app-nachweischeck #app-content .form-input:disabled,
-#content.app-nachweischeck #app-content .form-select:disabled {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input:disabled,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea:disabled,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:disabled,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input:disabled,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:disabled {
 	background-color: var(--nw-form-disabled-bg);
 	color: var(--nw-muted, var(--color-text-maxcontrast));
 	cursor: not-allowed;
 	opacity: 0.85;
 }
 
-#content.app-nachweischeck #app-content input::placeholder,
-#content.app-nachweischeck #app-content textarea::placeholder,
-#content.app-nachweischeck #app-content .form-input::placeholder {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input::placeholder,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea::placeholder,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input::placeholder {
 	color: var(--color-text-maxcontrast);
 	opacity: 1;
 }
 
 /* Error / success states (AZ) */
-#content.app-nachweischeck #app-content .form-input--error,
-#content.app-nachweischeck #app-content input[aria-invalid="true"],
-#content.app-nachweischeck #app-content select[aria-invalid="true"],
-#content.app-nachweischeck #app-content textarea[aria-invalid="true"] {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input--error,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[aria-invalid="true"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select[aria-invalid="true"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea[aria-invalid="true"] {
 	border-color: var(--nw-form-error);
 }
-#content.app-nachweischeck #app-content .form-input--error:focus,
-#content.app-nachweischeck #app-content input[aria-invalid="true"]:focus,
-#content.app-nachweischeck #app-content select[aria-invalid="true"]:focus,
-#content.app-nachweischeck #app-content textarea[aria-invalid="true"]:focus {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input--error:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[aria-invalid="true"]:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select[aria-invalid="true"]:focus,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea[aria-invalid="true"]:focus {
 	border-color: var(--nw-form-error);
 	box-shadow: 0 0 0 3px var(--nw-form-error-ring);
 }
 
 /* Checkbox / radio — accent + touch-friendly label row */
-#content.app-nachweischeck #app-content .form-checkbox,
-#content.app-nachweischeck #app-content .form-radio,
-#content.app-nachweischeck #app-content .nw-checkbox,
-#content.app-nachweischeck #app-content label:has(> input[type="checkbox"]),
-#content.app-nachweischeck #app-content label:has(> input[type="radio"]) {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-checkbox,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-radio,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-checkbox,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) label:has(> input[type="checkbox"]),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) label:has(> input[type="radio"]) {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--nw-space-2, 0.5rem);
@@ -174,11 +176,11 @@
 }
 
 /* Exclude track-switch inputs — they are visually replaced by .nw-switch-field__track */
-#content.app-nachweischeck #app-content input[type="checkbox"]:not(.nw-switch-field__input),
-#content.app-nachweischeck #app-content input[type="radio"],
-#content.app-nachweischeck #app-content .form-checkbox input[type="checkbox"],
-#content.app-nachweischeck #app-content .form-radio input[type="radio"],
-#content.app-nachweischeck #app-content .nw-checkbox input {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="checkbox"]:not(.nw-switch-field__input),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="radio"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-checkbox input[type="checkbox"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-radio input[type="radio"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-checkbox input {
 	width: 1.25rem;
 	height: 1.25rem;
 	min-width: 1.25rem;
@@ -199,37 +201,37 @@
 	-webkit-appearance: auto;
 }
 
-#content.app-nachweischeck #app-content input[type="radio"] {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="radio"] {
 	border-radius: 50%;
 }
 
-#content.app-nachweischeck #app-content input[type="checkbox"]:focus-visible,
-#content.app-nachweischeck #app-content input[type="radio"]:focus-visible {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="checkbox"]:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="radio"]:focus-visible {
 	outline: 3px solid var(--nw-form-border-focus);
 	outline-offset: 2px;
 }
 
 /* Do not restyle file / color / range / hidden / button inputs as text fields */
-#content.app-nachweischeck #app-content input[type="file"],
-#content.app-nachweischeck #app-content input[type="color"],
-#content.app-nachweischeck #app-content input[type="range"],
-#content.app-nachweischeck #app-content input[type="hidden"],
-#content.app-nachweischeck #app-content input[type="checkbox"],
-#content.app-nachweischeck #app-content input[type="radio"],
-#content.app-nachweischeck #app-content input[type="button"],
-#content.app-nachweischeck #app-content input[type="submit"],
-#content.app-nachweischeck #app-content input[type="reset"],
-#content.app-nachweischeck #app-content input[type="image"] {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="file"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="color"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="range"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="hidden"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="checkbox"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="radio"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="button"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="submit"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="reset"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="image"] {
 	/* checkbox/radio keep size rules above; reset text-field chrome for others */
 }
 
-#content.app-nachweischeck #app-content input[type="file"],
-#content.app-nachweischeck #app-content input[type="color"],
-#content.app-nachweischeck #app-content input[type="range"],
-#content.app-nachweischeck #app-content input[type="button"],
-#content.app-nachweischeck #app-content input[type="submit"],
-#content.app-nachweischeck #app-content input[type="reset"],
-#content.app-nachweischeck #app-content input[type="image"] {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="file"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="color"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="range"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="button"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="submit"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="reset"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="image"] {
 	width: auto;
 	min-height: var(--nw-touch, 44px);
 	padding: var(--nw-space-2, 0.5rem) var(--nw-space-3, 0.75rem);
@@ -239,9 +241,9 @@
 }
 
 /* Filter / form labels — field-grid gap owns spacing (no extra margin-bottom) */
-#content.app-nachweischeck #app-content .form-label,
-#content.app-nachweischeck #app-content .nw-field label,
-#content.app-nachweischeck #app-content label.form-label {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-label,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-field label,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) label.form-label {
 	display: block;
 	font-size: var(--nw-fs-sm, 0.875rem);
 	font-weight: 600;
@@ -251,11 +253,11 @@
 /* .nw-field is a flex column whose gap already spaces label→control —
    an extra margin here widens label→input while sibling fields sit at 0,
    which visually pairs each label with the control above it. */
-#content.app-nachweischeck #app-content .nw-field > label {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-field > label {
 	margin-bottom: 0;
 }
 
-#content.app-nachweischeck #app-content .nw-filter-field > .nw-filter-field__label {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-filter-field > .nw-filter-field__label {
 	display: block;
 	font-size: 0.8125rem;
 	font-weight: 700;
@@ -265,20 +267,20 @@
 }
 
 /* Checkbox-row labels stay inline — never block + margin like field titles */
-#content.app-nachweischeck #app-content .nw-filter-field .nw-checkbox-row {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-filter-field .nw-checkbox-row {
 	margin-bottom: 0;
 }
 
 /* Combobox-ish NC / custom listboxes */
-#content.app-nachweischeck #app-content [role="combobox"],
-#content.app-nachweischeck #app-content [role="listbox"] {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) [role="combobox"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) [role="listbox"] {
 	min-height: var(--nw-touch, 44px);
 	border-radius: var(--nw-form-radius);
 	border: 1px solid var(--nw-form-border);
 	box-sizing: border-box;
 }
-#content.app-nachweischeck #app-content [role="combobox"]:focus-visible,
-#content.app-nachweischeck #app-content [role="listbox"]:focus-visible {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) [role="combobox"]:focus-visible,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) [role="listbox"]:focus-visible {
 	border-color: var(--nw-form-border-focus);
 	box-shadow: 0 0 0 3px var(--nw-form-ring);
 	outline: var(--nw-focus, 3px solid var(--color-primary-element));
@@ -286,16 +288,16 @@
 }
 
 /* Inputs always full-width capped; touch ≥44px at all breakpoints (mobile-first) */
-#content.app-nachweischeck #app-content input[type="text"]:not(.input-field__input),
-#content.app-nachweischeck #app-content input[type="search"]:not(.input-field__input),
-#content.app-nachweischeck #app-content input[type="email"],
-#content.app-nachweischeck #app-content input[type="number"],
-#content.app-nachweischeck #app-content input[type="date"],
-#content.app-nachweischeck #app-content input[type="time"],
-#content.app-nachweischeck #app-content textarea,
-#content.app-nachweischeck #app-content select,
-#content.app-nachweischeck #app-content .form-input,
-#content.app-nachweischeck #app-content .form-select {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="text"]:not(.input-field__input),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="search"]:not(.input-field__input),
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="email"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="number"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="date"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="time"],
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select {
 	max-width: 100%;
 	min-height: var(--nw-touch, 44px);
 }
@@ -303,8 +305,8 @@
 /* Track switches: sr-only native control (see css/common/switch-field.css).
    Geometry covers the whole switch field so the semantic input's bounds
    coincide with the visual track — not a 1px dot AT/geometry checks trip on. */
-#content.app-nachweischeck #app-content .nw-switch-field__input,
-#content.app-nachweischeck #app-content input[type="checkbox"].nw-switch-field__input {
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-switch-field__input,
+:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input[type="checkbox"].nw-switch-field__input {
 	position: absolute;
 	inset: 0;
 	width: 100%;
@@ -331,13 +333,13 @@
 
 /* Forced colors / high-contrast OS: keep a visible outline (box-shadow alone can vanish) */
 @media (forced-colors: active) {
-	#content.app-nachweischeck #app-content input:not([type="checkbox"]):not([type="radio"]):focus-visible,
-	#content.app-nachweischeck #app-content textarea:focus-visible,
-	#content.app-nachweischeck #app-content select:focus-visible,
-	#content.app-nachweischeck #app-content .form-input:focus-visible,
-	#content.app-nachweischeck #app-content .form-select:focus-visible,
-	#content.app-nachweischeck #app-content .form-textarea:focus-visible,
-	#content.app-nachweischeck #app-content .nw-btn:focus-visible {
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) input:not([type="checkbox"]):not([type="radio"]):focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) textarea:focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) select:focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-input:focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-select:focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .form-textarea:focus-visible,
+	:is(#content.app-nachweischeck #app-content, dialog.nw-dialog) .nw-btn:focus-visible {
 		outline: 2px solid CanvasText;
 		outline-offset: 2px;
 		box-shadow: none;

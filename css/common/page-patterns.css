@@ -561,7 +561,10 @@
 	table-layout: auto;
 }
 
-/* Desktop: fill available width; scroll horizontally only when columns need more space */
+/* Desktop: fill available width. Cells wrap (td white-space:normal +
+   .nw-badge-row flex-wrap) so dense tables — e.g. receipts with stacked
+   flag pills — fit the wrap instead of forcing horizontal scroll; the
+   wrap still scrolls once the min-content floor is reached. */
 @media (min-width: 769px) {
 	#app-content.nw-app .table-container .table:not(.nw-table--matrix),
 	#app-content.nw-app .table-container .grid-table:not(.nw-table--matrix),
@@ -573,7 +576,6 @@
 	#app-content.nw-app .nw-table-wrap .grid-table:not(.nw-table--matrix),
 	#app-content.nw-app .nw-table-wrap .nw-table:not(.nw-table--matrix) {
 		width: 100%;
-		min-width: max-content;
 	}
 }
 
@@ -616,12 +618,12 @@
 	outline-offset: -2px;
 }
 
-#app-content.nw-app .table td.nw-table-empty,
-#app-content.nw-app .table td.nw-table-loading,
-#app-content.nw-app .grid-table td.nw-table-empty,
-#app-content.nw-app .grid-table td.nw-table-loading,
-#app-content.nw-app .nw-table td.nw-table-empty,
-#app-content.nw-app .nw-table td.nw-table-loading,
+:is(#app-content.nw-app, .nw-dialog) .table td.nw-table-empty,
+:is(#app-content.nw-app, .nw-dialog) .table td.nw-table-loading,
+:is(#app-content.nw-app, .nw-dialog) .grid-table td.nw-table-empty,
+:is(#app-content.nw-app, .nw-dialog) .grid-table td.nw-table-loading,
+:is(#app-content.nw-app, .nw-dialog) .nw-table td.nw-table-empty,
+:is(#app-content.nw-app, .nw-dialog) .nw-table td.nw-table-loading,
 #app-content.nw-app .table td.text-center:not(:only-child),
 #app-content.nw-app .grid-table td.text-center:not(:only-child) {
 	text-align: center;

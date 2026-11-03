@@ -158,10 +158,33 @@ test.describe('ATLAS_DELTA_CRAFT', () => {
 		}
 	});
 
-	test('receipts: hover reveals row actions (§3.7 overlay)', async () => {
+	test('receipts: flag pills never clip at the wrap edge (nw-vis-receipts-flags-pill-clipped)', async () => {
 		await goto(page, `/?project=${pid}&view=receipts`);
 		const row = page.locator('#nw-main table tbody tr', { hasText: `${MARK}-vendor` });
 		await expect(row).toHaveCount(1, { timeout: 15_000 });
+		// The seeded receipt carries ≥2 flag pills (state + "no attachment").
+		await expect(row.locator('.nw-badge-row .nw-badge')).toHaveCount(2);
+		// Every flag badge's right edge must land inside the table wrap —
+		// pre-fix min-width:max-content pushed the last pill past the clip
+		// boundary and it rendered mid-glyph at 1280px.
+		const clip = await page.evaluate(() => {
+			const wrap = document.querySelector('#nw-main .nw-table-wrap');
+			const wr = wrap.getBoundingClientRect();
+			const out = [];
+			wrap.querySelectorAll('.nw-badge-row').forEach((badgeRow) => {
+				badgeRow.querySelectorAll('.nw-badge').forEach((b) => {
+					const r = b.getBoundingClientRect();
+					if (r.right > wr.right - 1 || r.left < wr.left - 1) {
+						out.push({ text: b.textContent, right: r.right, wrapRight: wr.right });
+					}
+				});
+			});
+			return { out, scrollLeak: wrap.scrollWidth - wrap.clientWidth };
+		});
+		expect(clip.out, `flag pills clipped at wrap edge: ${JSON.stringify(clip.out)}`).toEqual([]);
+		expect(clip.scrollLeak, 'receipts table still overflows the wrap at 1280px').toBeLessThanOrEqual(1);
+		await shot(page, 'nw-receipts-populated-desktop.png', { surface: 'receipts', delta: 'fix-flags-pill-clip' });
+
 		const actions = row.locator('.nw-table-actions button');
 		await expect(actions.first()).toBeAttached();
 		await row.hover();
@@ -201,6 +224,30 @@ test.describe('ATLAS_DELTA_CRAFT', () => {
 		expect(styles.fieldsetBorder, 'fieldset border missing inside dialog').not.toBe('0px');
 		expect(styles.legendAlign, 'legend not start-aligned').toMatch(/start|left/);
 		expect(styles.sumDisplay, 'split-sum not flexed').toBe('flex');
+
+		// Field-layer pin (nw-vis-dialog-scalar-fields-dead-app-css): the
+		// scalar-field recipe must reach the top layer — .nw-field is a flex
+		// column whose control fills it (pre-fix NC pinned dialog inputs at
+		// ~130-180px and labels sat inline-left of them).
+		const fieldPin = await dlg.evaluate((d) => {
+			const field = d.querySelector('.nw-field');
+			if (!field) { return null; }
+			const input = field.querySelector('.nw-input, .nw-select, .nw-textarea');
+			const label = field.querySelector('label');
+			const cs = getComputedStyle(field);
+			return {
+				display: cs.display,
+				dir: cs.flexDirection,
+				inputW: input ? input.getBoundingClientRect().width : 0,
+				fieldW: field.getBoundingClientRect().width,
+				labelDisplay: label ? getComputedStyle(label).display : null,
+			};
+		});
+		expect(fieldPin, 'no .nw-field inside file-receipt dialog').toBeTruthy();
+		expect(fieldPin.display, '.nw-field not flex inside dialog').toBe('flex');
+		expect(fieldPin.dir, '.nw-field not column inside dialog').toBe('column');
+		expect(fieldPin.labelDisplay, 'dialog label not block').toBe('block');
+		expect(fieldPin.inputW, `dialog input pinned at ${fieldPin.inputW}px vs field ${fieldPin.fieldW}px`).toBeGreaterThan(fieldPin.fieldW * 0.9);
 
 		await shot(page, 'nw-delta-receipt-dialog-splits-desktop.png', { surface: 'receipts', dialog: 'file-receipt', delta: 'e4a64e0' });
 
@@ -242,6 +289,25 @@ test.describe('ATLAS_DELTA_CRAFT', () => {
 		await expect(dlg.locator('.nw-fieldset')).toHaveCount(1);
 		const border = await dlg.locator('.nw-fieldset').evaluate((el) => getComputedStyle(el).borderTopWidth);
 		expect(border, 'grant fieldset border missing inside dialog').not.toBe('0px');
+
+		// Checkbox-row pin (same must_fix): scope checkboxes inside dialogs
+		// were unstyled — no flex row, no 44px label target, NC-default box.
+		const rowPin = await dlg.evaluate((d) => {
+			const rowEl = d.querySelector('.nw-checkbox-row');
+			if (!rowEl) { return null; }
+			const lbl = rowEl.querySelector('label');
+			const cb = rowEl.querySelector('input[type="checkbox"]');
+			return {
+				rowDisplay: getComputedStyle(rowEl).display,
+				labelH: lbl ? lbl.getBoundingClientRect().height : 0,
+				cbW: cb ? cb.getBoundingClientRect().width : 0,
+			};
+		});
+		expect(rowPin, 'no .nw-checkbox-row inside grant dialog').toBeTruthy();
+		expect(rowPin.rowDisplay, '.nw-checkbox-row not flex inside dialog').toBe('flex');
+		expect(rowPin.labelH, 'checkbox label lost its 44px touch target').toBeGreaterThanOrEqual(40);
+		expect(rowPin.cbW, 'checkbox rendered at unstyled default size').toBeGreaterThanOrEqual(18);
+
 		await shot(page, 'nw-delta-grant-dialog-fieldset-desktop.png', { surface: 'team', dialog: 'grant-auditor', delta: '260e635' });
 		await page.keyboard.press('Escape');
 		await expect(page.locator(DIALOG)).toHaveCount(0, { timeout: 10_000 });

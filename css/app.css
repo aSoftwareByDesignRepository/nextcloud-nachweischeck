@@ -133,17 +133,6 @@
 	border-top: 1px solid var(--nw-border);
 }
 
-/* ── Nachweis payload preview ──────────────────────────────────────── */
-
-#app-content.nw-app .nw-nwpreview__meta {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--nw-space-2) var(--nw-space-4);
-	font-size: var(--nw-fs-sm);
-	color: var(--nw-muted);
-	margin-bottom: var(--nw-space-3);
-}
-
 #app-content.nw-app .nw-mono {
 	font-family: var(--font-monospace, ui-monospace, "SFMono-Regular", "Menlo", monospace);
 	font-size: var(--nw-fs-sm);
@@ -173,13 +162,6 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 }
 
 /* ── Small helpers the packs do not carry ──────────────────────────── */
-
-#app-content.nw-app .nw-actions-inline {
-	display: inline-flex;
-	flex-wrap: wrap;
-	gap: var(--nw-space-1);
-	align-items: center;
-}
 
 #app-content.nw-app .nw-downloads {
 	display: flex;

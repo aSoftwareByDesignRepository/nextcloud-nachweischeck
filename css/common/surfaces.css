@@ -162,7 +162,7 @@
 	min-width: 0;
 }
 
-#app-content.nw-app .nw-btn-row {
+:is(#app-content.nw-app, .nw-dialog) .nw-btn-row {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-3);
@@ -190,18 +190,18 @@
 /* Stacked forms: the form owns the field rhythm. Without this, sibling
    .nw-field blocks have 0px between them while label→input inside each
    field is larger — labels visually attach to the previous control. */
-#app-content.nw-app .nw-form {
+:is(#app-content.nw-app, .nw-dialog) .nw-form {
 	display: flex;
 	flex-direction: column;
 	gap: var(--nw-space-3);
 }
 /* Column stretch would balloon lone submit buttons to full width — keep
    actions content-sized; .nw-form-actions rows handle grouped buttons. */
-#app-content.nw-app .nw-form > .nw-btn {
+:is(#app-content.nw-app, .nw-dialog) .nw-form > .nw-btn {
 	align-self: flex-start;
 }
 
-#app-content.nw-app .nw-field {
+:is(#app-content.nw-app, .nw-dialog) .nw-field {
 	display: flex;
 	flex-direction: column;
 	gap: var(--nw-space-1);
@@ -209,25 +209,25 @@
 	flex: 1 1 auto;
 }
 
-#app-content.nw-app .nw-field-row {
+:is(#app-content.nw-app, .nw-dialog) .nw-field-row {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-3);
 }
 
-#app-content.nw-app .nw-field-row > .nw-field {
+:is(#app-content.nw-app, .nw-dialog) .nw-field-row > .nw-field {
 	flex: 1 1 180px;
 	min-width: 0;
 }
 
-#app-content.nw-app .nw-label {
+:is(#app-content.nw-app, .nw-dialog) .nw-label {
 	font-weight: 600;
 	font-size: var(--nw-fs-sm);
 }
 
-#app-content.nw-app .nw-input,
-#app-content.nw-app .nw-select,
-#app-content.nw-app .nw-textarea {
+:is(#app-content.nw-app, .nw-dialog) .nw-input,
+:is(#app-content.nw-app, .nw-dialog) .nw-select,
+:is(#app-content.nw-app, .nw-dialog) .nw-textarea {
 	width: 100%;
 	min-height: var(--nw-touch);
 	padding: var(--nw-space-2) var(--nw-space-3);
@@ -240,35 +240,35 @@
 	box-sizing: border-box;
 }
 
-#app-content.nw-app .nw-textarea {
+:is(#app-content.nw-app, .nw-dialog) .nw-textarea {
 	min-height: 5.5rem;
 	resize: vertical;
 }
 
-#app-content.nw-app .nw-input:focus-visible,
-#app-content.nw-app .nw-select:focus-visible,
-#app-content.nw-app .nw-textarea:focus-visible {
+:is(#app-content.nw-app, .nw-dialog) .nw-input:focus-visible,
+:is(#app-content.nw-app, .nw-dialog) .nw-select:focus-visible,
+:is(#app-content.nw-app, .nw-dialog) .nw-textarea:focus-visible {
 	outline: var(--nw-focus);
 	outline-offset: var(--nw-focus-offset);
 	border-color: var(--nw-primary);
 }
 
-#app-content.nw-app .nw-input[aria-invalid="true"],
-#app-content.nw-app .nw-select[aria-invalid="true"],
-#app-content.nw-app .nw-textarea[aria-invalid="true"] {
+:is(#app-content.nw-app, .nw-dialog) .nw-input[aria-invalid="true"],
+:is(#app-content.nw-app, .nw-dialog) .nw-select[aria-invalid="true"],
+:is(#app-content.nw-app, .nw-dialog) .nw-textarea[aria-invalid="true"] {
 	border-color: var(--color-error);
 }
 
-#app-content.nw-app .nw-input--amount { max-width: 11rem; font-variant-numeric: var(--nw-tab-num); }
-#app-content.nw-app .nw-input--currency { max-width: 5.5rem; text-transform: uppercase; }
+:is(#app-content.nw-app, .nw-dialog) .nw-input--amount { max-width: 11rem; font-variant-numeric: var(--nw-tab-num); }
+:is(#app-content.nw-app, .nw-dialog) .nw-input--currency { max-width: 5.5rem; text-transform: uppercase; }
 
-#app-content.nw-app .nw-field__hint {
+:is(#app-content.nw-app, .nw-dialog) .nw-field__hint {
 	margin: 0;
 	font-size: var(--nw-fs-sm);
 	color: var(--nw-muted);
 }
 
-#app-content.nw-app .nw-form-actions {
+:is(#app-content.nw-app, .nw-dialog) .nw-form-actions {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-3);
@@ -277,13 +277,13 @@
 
 /* Checkbox chips (lead-day pickers) — large touch targets, no color-only cue */
 
-#app-content.nw-app .nw-check-row {
+:is(#app-content.nw-app, .nw-dialog) .nw-check-row {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-2);
 }
 
-#app-content.nw-app .nw-check {
+:is(#app-content.nw-app, .nw-dialog) .nw-check {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--nw-space-2);
@@ -297,35 +297,67 @@
 	user-select: none;
 }
 
-#app-content.nw-app .nw-check input {
+:is(#app-content.nw-app, .nw-dialog) .nw-check input {
 	width: 1.125rem;
 	height: 1.125rem;
 	accent-color: var(--nw-primary);
 	margin: 0;
 }
 
-#app-content.nw-app .nw-check:has(input:checked) {
+:is(#app-content.nw-app, .nw-dialog) .nw-check:has(input:checked) {
 	background: var(--nw-tint-info);
 	border-color: var(--nw-primary);
 	font-weight: 600;
 }
 
-#app-content.nw-app .nw-check:focus-within {
+:is(#app-content.nw-app, .nw-dialog) .nw-check:focus-within {
 	outline: var(--nw-focus);
 	outline-offset: var(--nw-focus-offset);
 }
 
+/* Plain checkbox rows (grant scopes, position pickers) — the row supplies
+   the rhythm, the nested label supplies the 44px target via the
+   label:has(> input) arm in form-controls.css. Emitted almost exclusively
+   inside dialog bodies, so the rule must reach the top layer. */
+:is(#app-content.nw-app, .nw-dialog) .nw-checkbox-row {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-2);
+	min-height: var(--nw-touch);
+}
+:is(#app-content.nw-app, .nw-dialog) .nw-checkbox-row + .nw-checkbox-row {
+	margin-block-start: var(--nw-space-1);
+}
+
+/* Inline field errors inside dialogs — css/common/field-errors.css is a
+   verbatim-synced pack scoped to #app-content only, so body-mounted
+   dialogs need this app-owned twin with the same declarations. */
+.nw-dialog .nw-input[aria-invalid="true"],
+.nw-dialog input[aria-invalid="true"],
+.nw-dialog select[aria-invalid="true"],
+.nw-dialog textarea[aria-invalid="true"] {
+	border-color: var(--color-error-text, var(--nw-danger-ink, var(--color-error)));
+	box-shadow: 0 0 0 1px var(--color-error-text, var(--nw-danger-ink, var(--color-error)));
+}
+.nw-dialog .nw-field-error {
+	margin: 0.25rem 0 0;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.4;
+	color: var(--color-error-text, var(--nw-danger-ink, var(--color-error)));
+}
+
 /* Inline add-forms (cost rows, pickers) */
 
-#app-content.nw-app .nw-inline-form {
+:is(#app-content.nw-app, .nw-dialog) .nw-inline-form {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-2);
 	align-items: center;
 }
 
-#app-content.nw-app .nw-inline-form .nw-input { flex: 1 1 140px; width: auto; }
-#app-content.nw-app .nw-inline-form .nw-select { width: auto; }
+:is(#app-content.nw-app, .nw-dialog) .nw-inline-form .nw-input { flex: 1 1 140px; width: auto; }
+:is(#app-content.nw-app, .nw-dialog) .nw-inline-form .nw-select { width: auto; }
 
 /* ── Toolbar (search + filters above lists) ────────────────── */
 
@@ -347,20 +379,20 @@
 
 /* ── Tables ────────────────────────────────────────────────── */
 
-#app-content.nw-app .nw-table-wrap {
+:is(#app-content.nw-app, .nw-dialog) .nw-table-wrap {
 	overflow-x: auto;
 	border: 1px solid var(--nw-border);
 	border-radius: var(--nw-radius-md);
 	background: var(--nw-bg-card);
 }
 
-#app-content.nw-app .nw-table {
+:is(#app-content.nw-app, .nw-dialog) .nw-table {
 	width: 100%;
 	border-collapse: collapse;
 	font-size: var(--nw-fs-md);
 }
 
-#app-content.nw-app .nw-table th {
+:is(#app-content.nw-app, .nw-dialog) .nw-table th {
 	text-align: start;
 	font-weight: 600;
 	font-size: var(--nw-fs-sm);
@@ -370,26 +402,26 @@
 	white-space: nowrap;
 }
 
-#app-content.nw-app .nw-table td {
+:is(#app-content.nw-app, .nw-dialog) .nw-table td {
 	padding: var(--nw-space-3) var(--nw-space-4);
 	border-bottom: 1px solid var(--nw-border);
 	vertical-align: middle;
 }
 
-#app-content.nw-app .nw-table tbody tr:last-child td { border-bottom: none; }
-#app-content.nw-app .nw-table tbody tr:hover { background: var(--nw-bg-soft); }
-#app-content.nw-app .nw-table--compact td,
-#app-content.nw-app .nw-table--compact th {
+:is(#app-content.nw-app, .nw-dialog) .nw-table tbody tr:last-child td { border-bottom: none; }
+:is(#app-content.nw-app, .nw-dialog) .nw-table tbody tr:hover { background: var(--nw-bg-soft); }
+:is(#app-content.nw-app, .nw-dialog) .nw-table--compact td,
+:is(#app-content.nw-app, .nw-dialog) .nw-table--compact th {
 	padding: var(--nw-space-2) var(--nw-space-3);
 }
 
-#app-content.nw-app .nw-table__actions {
+:is(#app-content.nw-app, .nw-dialog) .nw-table__actions {
 	text-align: end;
 	white-space: nowrap;
 }
 
-#app-content.nw-app .nw-table__actions .nw-btn { margin-inline-start: var(--nw-space-1); }
-#app-content.nw-app .nw-num { font-variant-numeric: var(--nw-tab-num); text-align: end; }
+:is(#app-content.nw-app, .nw-dialog) .nw-table__actions .nw-btn { margin-inline-start: var(--nw-space-1); }
+:is(#app-content.nw-app, .nw-dialog) .nw-num { font-variant-numeric: var(--nw-tab-num); text-align: end; }
 
 /* ── Deadline list (dashboard panels) ──────────────────────── */
 
@@ -613,22 +645,22 @@
 
 /* ── Pickers (combobox + chips) ────────────────────────────── */
 
-#app-content.nw-app .nw-picker {
+:is(#app-content.nw-app, .nw-dialog) .nw-picker {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	gap: var(--nw-space-2);
 }
 
-#app-content.nw-app .nw-picker__chips {
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__chips {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--nw-space-2);
 }
 
-#app-content.nw-app .nw-picker__chips:empty { display: none; }
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__chips:empty { display: none; }
 
-#app-content.nw-app .nw-chip {
+:is(#app-content.nw-app, .nw-dialog) .nw-chip {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--nw-space-1);
@@ -640,13 +672,13 @@
 	max-width: 100%;
 }
 
-#app-content.nw-app .nw-chip__label {
+:is(#app-content.nw-app, .nw-dialog) .nw-chip__label {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-#app-content.nw-app .nw-chip__remove {
+:is(#app-content.nw-app, .nw-dialog) .nw-chip__remove {
 	min-width: var(--nw-touch);
 	min-height: var(--nw-touch);
 	margin: calc(-1 * var(--nw-space-1)) calc(-1 * var(--nw-space-1)) calc(-1 * var(--nw-space-1)) 0;
@@ -659,13 +691,13 @@
 	border-radius: var(--nw-radius-pill);
 }
 
-#app-content.nw-app .nw-chip__remove:hover { color: var(--nw-danger-ink); }
-#app-content.nw-app .nw-chip__remove:focus-visible {
+:is(#app-content.nw-app, .nw-dialog) .nw-chip__remove:hover { color: var(--nw-danger-ink); }
+:is(#app-content.nw-app, .nw-dialog) .nw-chip__remove:focus-visible {
 	outline: var(--nw-focus);
 	outline-offset: var(--nw-focus-offset);
 }
 
-#app-content.nw-app .nw-picker__results {
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__results {
 	position: absolute;
 	inset-inline: 0;
 	top: 100%;
@@ -681,7 +713,7 @@
 	overflow-y: auto;
 }
 
-#app-content.nw-app .nw-picker__result {
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result {
 	padding: var(--nw-space-2) var(--nw-space-3);
 	min-height: var(--nw-touch);
 	display: flex;
@@ -690,8 +722,8 @@
 	cursor: pointer;
 }
 
-#app-content.nw-app .nw-picker__result:hover,
-#app-content.nw-app .nw-picker__result:focus {
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result:hover,
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result:focus {
 	background: var(--nw-tint-info);
 	outline: none;
 }
@@ -809,9 +841,9 @@ dialog.nw-dialog form {
 	#app-content.nw-app .nw-hero__deadline { width: 100%; }
 	#app-content.nw-app .nw-dl__row { flex-direction: column; gap: 0; }
 	#app-content.nw-app .nw-dl__row dt { flex-basis: auto; }
-	#app-content.nw-app .nw-inline-form { flex-direction: column; align-items: stretch; }
-	#app-content.nw-app .nw-inline-form .nw-input,
-	#app-content.nw-app .nw-inline-form .nw-select { width: 100%; max-width: 100%; }
+	:is(#app-content.nw-app, .nw-dialog) .nw-inline-form { flex-direction: column; align-items: stretch; }
+	:is(#app-content.nw-app, .nw-dialog) .nw-inline-form .nw-input,
+	:is(#app-content.nw-app, .nw-dialog) .nw-inline-form .nw-select { width: 100%; max-width: 100%; }
 }
 
 /* ── Forced colors + reduced motion ────────────────────────── */
@@ -820,21 +852,21 @@ dialog.nw-dialog form {
 	#app-content.nw-app .nw-panel,
 	#app-content.nw-app .nw-stat,
 	#app-content.nw-app .nw-hero,
-	#app-content.nw-app .nw-check,
-	#app-content.nw-app .nw-chip,
+	:is(#app-content.nw-app, .nw-dialog) .nw-check,
+	:is(#app-content.nw-app, .nw-dialog) .nw-chip,
 	#app-content.nw-app .nw-callout,
-	#app-content.nw-app .nw-picker__results {
+	:is(#app-content.nw-app, .nw-dialog) .nw-picker__results {
 		border: 1px solid ButtonBorder;
 	}
-	#app-content.nw-app .nw-check:has(input:checked) {
+	:is(#app-content.nw-app, .nw-dialog) .nw-check:has(input:checked) {
 		outline: 2px solid Highlight;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	#app-content.nw-app .nw-deadline-list__link,
-	#app-content.nw-app .nw-picker__result,
-	#app-content.nw-app .nw-chip__remove {
+	:is(#app-content.nw-app, .nw-dialog) .nw-picker__result,
+	:is(#app-content.nw-app, .nw-dialog) .nw-chip__remove {
 		transition: none;
 	}
 }
@@ -926,7 +958,7 @@ dialog.nw-dialog--wide {
 	color: var(--nw-muted);
 }
 
-#app-content.nw-app .nw-chip--filter {
+:is(#app-content.nw-app, .nw-dialog) .nw-chip--filter {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--nw-space-1);
@@ -940,7 +972,7 @@ dialog.nw-dialog--wide {
 	cursor: pointer;
 }
 
-#app-content.nw-app .nw-chip--filter:hover { background: var(--nw-bg-hover, var(--color-background-hover)); }
+:is(#app-content.nw-app, .nw-dialog) .nw-chip--filter:hover { background: var(--nw-bg-hover, var(--color-background-hover)); }
 
 @media (max-width: 768.98px) {
 	.nw-dialog__actions { flex-direction: column-reverse; align-items: stretch; }
