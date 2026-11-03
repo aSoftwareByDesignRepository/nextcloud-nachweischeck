@@ -141,7 +141,18 @@ class UpgradeBackupService
 				$this->rotateSnapshots($rotationExcludeIds);
 			}
 		} catch (\Throwable $e) {
-			$this->deleteSnapshotFolderIfExists($id);
+			try {
+				$this->deleteSnapshotFolderIfExists($id);
+			} catch (\Throwable $cleanup) {
+				// Best-effort rollback: a partial snapshot that cannot be
+				// removed (e.g. foreign-owned appdata) must not mask the
+				// original failure.
+				$this->logger->warning('NachweisCheck: failed to remove partial upgrade backup snapshot', [
+					'app' => UpgradeBackupCatalog::APP_ID,
+					'snapshot' => $id,
+					'exception' => $cleanup,
+				]);
+			}
 			if ($e instanceof UpgradeBackupException) {
 				throw $e;
 			}
@@ -411,9 +422,11 @@ class UpgradeBackupService
 	private function deleteSnapshotFolderIfExists(string $snapshotId): void
 	{
 		try {
-			$this->getSnapshotFolder($snapshotId)->delete();
+			$snapshot = $this->getSnapshotFolder($snapshotId);
 		} catch (\Throwable) {
+			return;
 		}
+		$snapshot->delete();
 	}
 
 	/**
@@ -615,8 +628,12 @@ class UpgradeBackupService
 
 		$destPath = $this->getAppDataPath($folderName);
 		try {
-			$this->rootFolder->get($destPath)->delete();
+			$existing = $this->rootFolder->get($destPath);
 		} catch (NotFoundException) {
+			$existing = null;
+		}
+		if ($existing !== null) {
+			$existing->delete();
 		}
 
 		try {
@@ -844,7 +861,17 @@ class UpgradeBackupService
 			if ($id === '' || isset($exclude[$id])) {
 				continue;
 			}
-			$this->deleteSnapshotFolderIfExists($id);
+			try {
+				$this->deleteSnapshotFolderIfExists($id);
+			} catch (\Throwable $e) {
+				// Retention is best-effort: one unreadable/foreign-owned
+				// snapshot must not abort the sweep or the caller's backup.
+				$this->logger->warning('NachweisCheck: failed to rotate upgrade backup snapshot', [
+					'app' => UpgradeBackupCatalog::APP_ID,
+					'snapshot' => $id,
+					'exception' => $e,
+				]);
+			}
 		}
 	}
 
@@ -915,7 +942,15 @@ class UpgradeBackupService
 					'folder' => $snapshotId,
 					'exception' => $e,
 				]);
-				$this->deleteSnapshotFolderIfExists($snapshotId);
+				try {
+					$this->deleteSnapshotFolderIfExists($snapshotId);
+				} catch (\Throwable $deleteFailure) {
+					$this->logger->warning('NachweisCheck: corrupt upgrade backup folder could not be removed', [
+						'app' => UpgradeBackupCatalog::APP_ID,
+						'folder' => $snapshotId,
+						'exception' => $deleteFailure,
+					]);
+				}
 			}
 		}
 	}

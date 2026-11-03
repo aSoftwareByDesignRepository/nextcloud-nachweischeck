@@ -118,6 +118,28 @@ trait NwFixture
 			$this->nwDelete('nw_project', 'id', $pid);
 		}
 		$this->nwProjects = [];
+		$this->nwPurgeGlobalFixtures();
+	}
+
+	/**
+	 * Global (non-project-scoped) tables: purge only fixture-marker rows.
+	 * nw_license_state is the instance license singleton — a blanket delete
+	 * would nuke the lab license, so rows go only when the actor column
+	 * carries a fixture prefix (__nw_it_*, nw_e2e_*, nwt-*).
+	 */
+	private function nwPurgeGlobalFixtures(): void
+	{
+		foreach (['nw_mobile_seat' => 'uid', 'nw_license_state' => 'applied_by', 'nw_template' => 'tpl_key'] as $table => $col) {
+			if (!$this->nwDb->tableExists($table)) {
+				continue;
+			}
+			$qb = $this->nwDb->getQueryBuilder();
+			$or = $qb->expr()->orX();
+			foreach (['__nw\_it\_%', 'nw\_e2e\_%', 'nwt-%'] as $pattern) {
+				$or->add($qb->expr()->like($col, $qb->createNamedParameter($pattern)));
+			}
+			$qb->delete($table)->where($or)->executeStatement();
+		}
 	}
 
 	/** @return list<int> */
