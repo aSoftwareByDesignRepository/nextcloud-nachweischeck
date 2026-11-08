@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Tests\Unit;
 
+use OCA\NachweisCheck\Db\ProjectMember;
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\TimeEntryMapper;
 use OCA\NachweisCheck\Db\Timesheet;
 use OCA\NachweisCheck\Db\TimesheetMapper;
@@ -14,6 +16,8 @@ use OCA\NachweisCheck\Service\AuditService;
 use OCA\NachweisCheck\Service\ConcurrencyGuard;
 use OCA\NachweisCheck\Service\TimesheetService;
 use OCA\NachweisCheck\Service\WorkPackageService;
+use OCP\IUser;
+use OCP\IUserManager;
 use OCP\Lock\ILockingProvider;
 use Test\TestCase;
 
@@ -26,7 +30,13 @@ class TimesheetServiceTest extends TestCase
 		$aps = $aps ?? $this->createMock(WorkPackageService::class);
 		$audit = $this->createMock(AuditService::class);
 		$guard = new ConcurrencyGuard($this->createMock(ILockingProvider::class));
-		return [new TimesheetService($m, $em, $aps, $audit, $guard), $m, $em];
+		$user = $this->createMock(IUser::class);
+		$user->method('isEnabled')->willReturn(true);
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn($user);
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$mm->method('findByProjectAndUid')->willReturn(new ProjectMember());
+		return [new TimesheetService($m, $em, $aps, $audit, $guard, $um, $mm), $m, $em];
 	}
 
 	private function ts(string $state, string $uid = 'u1'): Timesheet
@@ -91,5 +101,24 @@ class TimesheetServiceTest extends TestCase
 		[$svc] = $this->svc();
 		$this->expectException(ForbiddenException::class);
 		$svc->submit($this->ts('draft', 'u1'), 'someone-else');
+	}
+
+	public function testGenerateRejectsUnknownUid(): void
+	{
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn(null); // ghost uid
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$m = $this->createMock(TimesheetMapper::class);
+		$em = $this->createMock(TimeEntryMapper::class);
+		$audit = $this->createMock(AuditService::class);
+		$guard = new ConcurrencyGuard($this->createMock(ILockingProvider::class));
+		$svc = new TimesheetService($m, $em, $this->createMock(WorkPackageService::class), $audit, $guard, $um, $mm);
+		$m->expects($this->never())->method('insert');
+		try {
+			$svc->generate(1, 'ghost', '2026-03', null, 'u1');
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertSame('Unknown user.', $e->getFields()['uid'] ?? null);
+		}
 	}
 }

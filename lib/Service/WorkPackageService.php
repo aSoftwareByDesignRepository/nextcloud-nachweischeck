@@ -14,6 +14,7 @@ namespace OCA\NachweisCheck\Service;
 use OCA\NachweisCheck\Db\ApPosition;
 use OCA\NachweisCheck\Db\ApPositionMapper;
 use OCA\NachweisCheck\Db\PositionMapper;
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\WorkPackage;
 use OCA\NachweisCheck\Db\WorkPackageMapper;
 use OCA\NachweisCheck\Exception\ConflictException;
@@ -21,6 +22,7 @@ use OCA\NachweisCheck\Exception\NotFoundException;
 use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Support\PeriodUtil;
 use OCP\IDBConnection;
+use OCP\IUserManager;
 
 class WorkPackageService
 {
@@ -31,6 +33,8 @@ class WorkPackageService
 		private readonly FinplanService $finplan,
 		private readonly AuditService $audit,
 		private readonly IDBConnection $db,
+		private readonly IUserManager $userManager,
+		private readonly ProjectMemberMapper $memberMapper,
 	) {
 	}
 
@@ -53,6 +57,16 @@ class WorkPackageService
 		}
 		if ($startYmd !== null && $endYmd !== null && $endYmd < $startYmd) {
 			$fields['end_date'] = 'End must not precede start.';
+		}
+		if ($ownerUid !== null) {
+			// An Arbeitsfeld owner must be a live project member: the uid
+			// must exist, be enabled, and be a member of this project —
+			// all three misses collapse into one code (no existence oracle).
+			$target = $this->userManager->get($ownerUid);
+			if ($target === null || !$target->isEnabled()
+				|| $this->memberMapper->findByProjectAndUid($projectId, $ownerUid) === null) {
+				$fields['owner_uid'] = 'Unknown user.';
+			}
 		}
 		if ($fields !== []) {
 			throw new ValidationException($fields);

@@ -69,6 +69,36 @@ final class DisabledAccountGuardContractTest extends TestCase
 		);
 	}
 
+	public function testTimeEntryCreateEnforcesLiveMembership(): void
+	{
+		$src = $this->src('lib/Service/TimeEntryService.php');
+		$this->assertMatchesRegularExpression(
+			'/function create[\s\S]{0,2500}userManager->get\(\$uid\)[\s\S]{0,400}!\$target->isEnabled\(\)[\s\S]{0,300}findByProjectAndUid[\s\S]{0,300}Unknown user\./',
+			$src,
+			'TimeEntryService::create must require uid existence + enabled + project membership, collapsed into "Unknown user." (covers web create and the CSV import row path)'
+		);
+	}
+
+	public function testTimesheetGenerateEnforcesLiveMembership(): void
+	{
+		$src = $this->src('lib/Service/TimesheetService.php');
+		$this->assertMatchesRegularExpression(
+			'/function generateLocked[\s\S]{0,2000}userManager->get\(\$uid\)[\s\S]{0,400}!\$target->isEnabled\(\)[\s\S]{0,300}findByProjectAndUid[\s\S]{0,300}Unknown user\./',
+			$src,
+			'TimesheetService::generateLocked must require uid existence + enabled + project membership, collapsed into "Unknown user."'
+		);
+	}
+
+	public function testWorkPackageCreateEnforcesLiveMembership(): void
+	{
+		$src = $this->src('lib/Service/WorkPackageService.php');
+		$this->assertMatchesRegularExpression(
+			'/function create[\s\S]{0,2500}userManager->get\(\$ownerUid\)[\s\S]{0,400}!\$target->isEnabled\(\)[\s\S]{0,300}findByProjectAndUid[\s\S]{0,300}Unknown user\./',
+			$src,
+			'WorkPackageService::create must require owner_uid existence + enabled + project membership, collapsed into "Unknown user." (null owner passes)'
+		);
+	}
+
 	public function testSaveAccessConfigWriteValidatesUids(): void
 	{
 		$src = $this->src('lib/Service/AccessDoorService.php');

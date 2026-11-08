@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Service;
 
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\TimeEntry;
 use OCA\NachweisCheck\Db\TimeEntryMapper;
 use OCA\NachweisCheck\Db\WorkPackage;
@@ -21,6 +22,7 @@ use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Support\DbErrors;
 use OCA\NachweisCheck\Support\Money;
 use OCA\NachweisCheck\Support\PeriodUtil;
+use OCP\IUserManager;
 
 class TimeEntryService
 {
@@ -29,6 +31,8 @@ class TimeEntryService
 		private readonly WorkPackageService $apService,
 		private readonly RateService $rates,
 		private readonly AuditService $audit,
+		private readonly IUserManager $userManager,
+		private readonly ProjectMemberMapper $memberMapper,
 	) {
 	}
 
@@ -37,6 +41,16 @@ class TimeEntryService
 		$ap = $this->apService->getOrFail($projectId, $apId);
 		$this->apService->requireBookable($ap);
 		$this->validate($dateYmd, $minutes);
+
+		// Time rows belong to live project members only: the uid must
+		// exist, be enabled, and be a member of this project — all three
+		// misses collapse into one code (no existence oracle). Covers the
+		// web create AND the CSV-import row path alike.
+		$target = $this->userManager->get($uid);
+		if ($target === null || !$target->isEnabled()
+			|| $this->memberMapper->findByProjectAndUid($projectId, $uid) === null) {
+			throw new ValidationException(['uid' => 'Unknown user.']);
+		}
 
 		// Idempotency key (I-03): '' normalizes to null so the unique index
 		// sees NULL (uncollided), never an empty-string sentinel.

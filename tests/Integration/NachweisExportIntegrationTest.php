@@ -30,24 +30,30 @@ class NachweisExportIntegrationTest extends TestCase
 	use NwFixture;
 
 	private const RATE_UID = '__nw_it_export__';
+	private const NORATE_UID = '__nw_it_norate__';
 
 	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->nwInit();
-		// RateService::addRate enforces existence+enabled+membership — the
-		// priced-entry leg needs a real live account, not a fixture string.
+		// RateService::addRate + TimeEntryService::create enforce
+		// existence+enabled+membership — the priced/unpriced entry legs
+		// need real live accounts, not fixture strings.
 		$um = \OCP\Server::get(IUserManager::class);
-		if ($um->userExists(self::RATE_UID)) {
-			$um->get(self::RATE_UID)?->delete();
+		foreach ([self::RATE_UID, self::NORATE_UID] as $fixtureUid) {
+			if ($um->userExists($fixtureUid)) {
+				$um->get($fixtureUid)?->delete();
+			}
+			$um->createUser($fixtureUid, 'NwIt-Export-' . bin2hex(random_bytes(4)) . '!');
 		}
-		$um->createUser(self::RATE_UID, 'NwIt-Export-' . bin2hex(random_bytes(4)) . '!');
 	}
 
 	protected function tearDown(): void
 	{
 		try {
-			\OCP\Server::get(IUserManager::class)->get(self::RATE_UID)?->delete();
+			$um = \OCP\Server::get(IUserManager::class);
+			$um->get(self::RATE_UID)?->delete();
+			$um->get(self::NORATE_UID)?->delete();
 		} catch (\Throwable) {
 		}
 		$this->nwPurge();
@@ -73,9 +79,17 @@ class NachweisExportIntegrationTest extends TestCase
 		self::assertSame(6000, $entry->getRateMinor());
 		self::assertSame(9000, $entry->getAmountMinor());
 
-		// Unpriced entry (no rate for this uid) → must land in the gaps, not vanish.
+		// Unpriced entry (no rate for this uid) → must land in the gaps, not
+		// vanish. The uid write-path guard requires a live member — a real
+		// second account seated on the project, rate-free.
+		$member = new \OCA\NachweisCheck\Db\ProjectMember();
+		$member->setProjectId($p->getId());
+		$member->setUid(self::NORATE_UID);
+		$member->setRole(\OCA\NachweisCheck\Service\PermissionService::ROLE_MEMBER);
+		$member->setCreatedAt(new \DateTime());
+		\OCP\Server::get(\OCA\NachweisCheck\Db\ProjectMemberMapper::class)->insert($member);
 		$ghost = \OCP\Server::get(TimeEntryService::class)->create(
-			$p->getId(), $ap->getId(), '__nw_it_norate__', '2026-03-11', 30, 'unpriced', null, $uid);
+			$p->getId(), $ap->getId(), self::NORATE_UID, '2026-03-11', 30, 'unpriced', null, $uid);
 		self::assertNull($ghost->getRateMinor());
 
 		// Receipt, split across both positions, WITHOUT file attachment → gap.

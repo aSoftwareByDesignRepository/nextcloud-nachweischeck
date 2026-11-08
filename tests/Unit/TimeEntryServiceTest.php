@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Tests\Unit;
 
+use OCA\NachweisCheck\Db\ProjectMember;
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\TimeEntryMapper;
 use OCA\NachweisCheck\Db\WorkPackage;
 use OCA\NachweisCheck\Exception\ConflictException;
@@ -13,6 +15,8 @@ use OCA\NachweisCheck\Service\AuditService;
 use OCA\NachweisCheck\Service\RateService;
 use OCA\NachweisCheck\Service\TimeEntryService;
 use OCA\NachweisCheck\Service\WorkPackageService;
+use OCP\IUser;
+use OCP\IUserManager;
 use Test\TestCase;
 
 class TimeEntryServiceTest extends TestCase
@@ -23,8 +27,27 @@ class TimeEntryServiceTest extends TestCase
 		$apService = $mocks['apService'] ?? $this->createMock(WorkPackageService::class);
 		$rates = $mocks['rates'] ?? $this->createMock(RateService::class);
 		$audit = $mocks['audit'] ?? $this->createMock(AuditService::class);
-		return [new TimeEntryService($entryMapper, $apService, $rates, $audit),
-			$entryMapper, $apService, $rates, $audit];
+		$userManager = $mocks['userManager'] ?? $this->liveUserManager();
+		$memberMapper = $mocks['memberMapper'] ?? $this->liveMemberMapper();
+		return [new TimeEntryService($entryMapper, $apService, $rates, $audit,
+			$userManager, $memberMapper),
+			$entryMapper, $apService, $rates, $audit, $userManager, $memberMapper];
+	}
+
+	private function liveUserManager(): IUserManager
+	{
+		$user = $this->createMock(IUser::class);
+		$user->method('isEnabled')->willReturn(true);
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn($user);
+		return $um;
+	}
+
+	private function liveMemberMapper(): ProjectMemberMapper
+	{
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$mm->method('findByProjectAndUid')->willReturn(new ProjectMember());
+		return $mm;
 	}
 
 	private function ap(int $id, string $state = 'active'): WorkPackage
@@ -130,5 +153,35 @@ class TimeEntryServiceTest extends TestCase
 		[$svc] = $this->svc(['entryMapper' => $entryMapper]);
 		$this->expectException(NotFoundException::class);
 		$svc->getOrFail(1, 7);
+	}
+
+	public function testCreateRejectsUnknownUid(): void
+	{
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn(null); // ghost uid
+		[$svc, $entryMapper, $apService] = $this->svc(['userManager' => $um]);
+		$apService->method('getOrFail')->willReturn($this->ap(5));
+		$entryMapper->expects($this->never())->method('insert');
+		try {
+			$svc->create(1, 5, 'ghost', '2026-03-10', 60, '', null, 'u1');
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertSame('Unknown user.', $e->getFields()['uid'] ?? null);
+		}
+	}
+
+	public function testCreateRejectsNonMemberUid(): void
+	{
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$mm->method('findByProjectAndUid')->willReturn(null); // live account, no seat
+		[$svc, $entryMapper, $apService] = $this->svc(['memberMapper' => $mm]);
+		$apService->method('getOrFail')->willReturn($this->ap(5));
+		$entryMapper->expects($this->never())->method('insert');
+		try {
+			$svc->create(1, 5, 'u2', '2026-03-10', 60, '', null, 'u1');
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertSame('Unknown user.', $e->getFields()['uid'] ?? null);
+		}
 	}
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Service;
 
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\Timesheet;
 use OCA\NachweisCheck\Db\TimesheetMapper;
 use OCA\NachweisCheck\Db\TimeEntryMapper;
@@ -21,6 +22,7 @@ use OCA\NachweisCheck\Exception\ForbiddenException;
 use OCA\NachweisCheck\Exception\NotFoundException;
 use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Support\PeriodUtil;
+use OCP\IUserManager;
 
 class TimesheetService
 {
@@ -30,6 +32,8 @@ class TimesheetService
 		private readonly WorkPackageService $apService,
 		private readonly AuditService $audit,
 		private readonly ConcurrencyGuard $guard,
+		private readonly IUserManager $userManager,
+		private readonly ProjectMemberMapper $memberMapper,
 	) {
 	}
 
@@ -49,6 +53,14 @@ class TimesheetService
 		}
 		if ($apId !== null) {
 			$this->apService->getOrFail($projectId, $apId);
+		}
+		// A Stundenzettel is a fiscal record — it may only exist for a live
+		// project member: the uid must exist, be enabled, and be a member of
+		// this project — all three misses collapse into one code (no oracle).
+		$target = $this->userManager->get($uid);
+		if ($target === null || !$target->isEnabled()
+			|| $this->memberMapper->findByProjectAndUid($projectId, $uid) === null) {
+			throw new ValidationException(['uid' => 'Unknown user.']);
 		}
 		$from = PeriodUtil::periodFirstDay($period);
 		$to = PeriodUtil::periodLastDay($period);

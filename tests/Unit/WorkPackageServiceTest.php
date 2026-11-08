@@ -9,6 +9,8 @@ use OCA\NachweisCheck\Db\ApPositionMapper;
 use OCA\NachweisCheck\Db\FinplanVersion;
 use OCA\NachweisCheck\Db\Position;
 use OCA\NachweisCheck\Db\PositionMapper;
+use OCA\NachweisCheck\Db\ProjectMember;
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\WorkPackage;
 use OCA\NachweisCheck\Db\WorkPackageMapper;
 use OCA\NachweisCheck\Exception\ConflictException;
@@ -18,12 +20,20 @@ use OCA\NachweisCheck\Service\AuditService;
 use OCA\NachweisCheck\Service\FinplanService;
 use OCA\NachweisCheck\Service\WorkPackageService;
 use OCP\IDBConnection;
+use OCP\IUser;
+use OCP\IUserManager;
 use Test\TestCase;
 
 class WorkPackageServiceTest extends TestCase
 {
 	private function svc(array $over = []): array
 	{
+		$user = $this->createMock(IUser::class);
+		$user->method('isEnabled')->willReturn(true);
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn($user);
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$mm->method('findByProjectAndUid')->willReturn(new ProjectMember());
 		$m = [
 			'mapper' => $this->createMock(WorkPackageMapper::class),
 			'apPos' => $this->createMock(ApPositionMapper::class),
@@ -31,12 +41,14 @@ class WorkPackageServiceTest extends TestCase
 			'finplan' => $this->createMock(FinplanService::class),
 			'audit' => $this->createMock(AuditService::class),
 			'db' => $this->createMock(IDBConnection::class),
+			'userManager' => $um,
+			'memberMapper' => $mm,
 		];
 		foreach ($over as $k => $v) {
 			$m[$k] = $v;
 		}
 		return ['svc' => new WorkPackageService($m['mapper'], $m['apPos'], $m['pos'],
-			$m['finplan'], $m['audit'], $m['db'])] + $m;
+			$m['finplan'], $m['audit'], $m['db'], $m['userManager'], $m['memberMapper'])] + $m;
 	}
 
 	private function ap(int $id, string $state = 'active'): WorkPackage
@@ -129,6 +141,38 @@ class WorkPackageServiceTest extends TestCase
 		$this->assertSame('active', $ap->getState());
 		$this->assertSame('Work', $ap->getTitle());
 		$this->assertSame('owner1', $ap->getOwnerUid());
+	}
+
+	public function testCreateRejectsUnknownOwner(): void
+	{
+		$um = $this->createMock(IUserManager::class);
+		$um->method('get')->willReturn(null); // ghost uid
+		$mapper = $this->createMock(WorkPackageMapper::class);
+		$mapper->method('findByProjectAndCode')->willReturn(null);
+		$mapper->expects($this->never())->method('insert');
+		$m = $this->svc(['mapper' => $mapper, 'userManager' => $um]);
+		try {
+			$m['svc']->create(1, 'AP1', 'Title', 'ghost', null, null, 'u1');
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertSame('Unknown user.', $e->getFields()['owner_uid'] ?? null);
+		}
+	}
+
+	public function testCreateRejectsNonMemberOwner(): void
+	{
+		$mm = $this->createMock(ProjectMemberMapper::class);
+		$mm->method('findByProjectAndUid')->willReturn(null); // live account, no seat
+		$mapper = $this->createMock(WorkPackageMapper::class);
+		$mapper->method('findByProjectAndCode')->willReturn(null);
+		$mapper->expects($this->never())->method('insert');
+		$m = $this->svc(['mapper' => $mapper, 'memberMapper' => $mm]);
+		try {
+			$m['svc']->create(1, 'AP1', 'Title', 'u2', null, null, 'u1');
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertSame('Unknown user.', $e->getFields()['owner_uid'] ?? null);
+		}
 	}
 
 	// ---- booking guard ----------------------------------------------------
