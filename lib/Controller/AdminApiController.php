@@ -355,6 +355,10 @@ class AdminApiController extends NwApiController
 		$out = [];
 		if (strlen($q) >= 2) {
 			foreach ($this->userManager->search($q, 8) as $u) {
+				// Deactivated accounts can never sign in — do not offer them.
+				if (!$u->isEnabled()) {
+					continue;
+				}
 				$out[] = ['id' => $u->getUID(), 'label' => $u->getDisplayName() . ' (' . $u->getUID() . ')'];
 			}
 		}
