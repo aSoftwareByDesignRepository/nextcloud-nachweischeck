@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Service;
 
+use OCA\NachweisCheck\Exception\ValidationException;
 use OCP\App\IAppManager;
 use OCP\IAppConfig;
 use OCP\IGroupManager;
 use OCP\IUser;
+use OCP\IUserManager;
 
 class AccessDoorService
 {
@@ -35,6 +37,7 @@ class AccessDoorService
 		private readonly IAppConfig $appConfig,
 		private readonly IGroupManager $groupManager,
 		private readonly IAppManager $appManager,
+		private readonly IUserManager $userManager,
 	) {
 	}
 
@@ -116,6 +119,11 @@ class AccessDoorService
 	public function saveConfig(string $mode, array $groups, array $users, array $admins): void
 	{
 		$mode = $mode === 'restricted' ? 'restricted' : 'open';
+		// uid write-validation BEFORE any state changes: a stored allowlist
+		// must never hold ghosts. Nonexistent and deactivated accounts
+		// collapse into the same code — no existence oracle.
+		$this->assertLiveUids($users, 'users');
+		$this->assertLiveUids($admins, 'admins');
 		$this->appConfig->setValueString(self::APP_ID, 'nw_access_mode', $mode);
 		$this->appConfig->setValueString(self::APP_ID, 'nw_access_users', json_encode(array_values($users)));
 		$this->appConfig->setValueString(self::APP_ID, 'nw_admin_uids', json_encode(array_values($admins)));
@@ -134,6 +142,17 @@ class AccessDoorService
 		} else {
 			// Open or no groups ⇒ clear the platform restriction.
 			$this->appManager->enableApp(self::APP_ID);
+		}
+	}
+
+	/** @param array<int|string, mixed> $uids */
+	private function assertLiveUids(array $uids, string $field): void
+	{
+		foreach ($uids as $uid) {
+			$u = $this->userManager->get((string)$uid);
+			if ($u === null || !$u->isEnabled()) {
+				throw new ValidationException([$field => 'Unknown user.']);
+			}
 		}
 	}
 

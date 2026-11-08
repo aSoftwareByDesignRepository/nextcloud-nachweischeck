@@ -19,6 +19,7 @@ use OCA\NachweisCheck\Exception\NotFoundException;
 use OCA\NachweisCheck\Exception\NwException;
 use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Support\DbErrors;
+use OCP\IUserManager;
 use OCP\Lock\ILockingProvider;
 use OCP\Lock\LockedException;
 
@@ -31,6 +32,7 @@ class MobileSeatService
 		private readonly LicenseService $license,
 		private readonly AuditService $audit,
 		private readonly ILockingProvider $locking,
+		private readonly IUserManager $userManager,
 	) {
 	}
 
@@ -62,6 +64,12 @@ class MobileSeatService
 		$this->license->requireFeature(LicenseService::FEATURE_MOBILE_SEATS);
 		if ($uid === '') {
 			throw new ValidationException(['uid' => 'User is required.']);
+		}
+		$target = $this->userManager->get($uid);
+		if ($target === null || !$target->isEnabled()) {
+			// uid existence gate — a paid seat must never burn on a ghost;
+			// deactivated collapses into the same code (no existence oracle).
+			throw new ValidationException(['uid' => 'Unknown user.']);
 		}
 		$existing = $this->mapper->findByUid($uid);
 		if ($existing !== null) {

@@ -22,27 +22,41 @@ use OCA\NachweisCheck\Service\NachweisService;
 use OCA\NachweisCheck\Service\RateService;
 use OCA\NachweisCheck\Service\ReceiptService;
 use OCA\NachweisCheck\Service\TimeEntryService;
+use OCP\IUserManager;
 use Test\TestCase;
 
 class NachweisExportIntegrationTest extends TestCase
 {
 	use NwFixture;
 
+	private const RATE_UID = '__nw_it_export__';
+
 	protected function setUp(): void
 	{
 		parent::setUp();
 		$this->nwInit();
+		// RateService::addRate enforces existence+enabled+membership — the
+		// priced-entry leg needs a real live account, not a fixture string.
+		$um = \OCP\Server::get(IUserManager::class);
+		if ($um->userExists(self::RATE_UID)) {
+			$um->get(self::RATE_UID)?->delete();
+		}
+		$um->createUser(self::RATE_UID, 'NwIt-Export-' . bin2hex(random_bytes(4)) . '!');
 	}
 
 	protected function tearDown(): void
 	{
+		try {
+			\OCP\Server::get(IUserManager::class)->get(self::RATE_UID)?->delete();
+		} catch (\Throwable) {
+		}
 		$this->nwPurge();
 		parent::tearDown();
 	}
 
 	public function testPackageCompletenessGapsAndImmutableVersioning(): void
 	{
-		$uid = '__nw_it_export__';
+		$uid = self::RATE_UID;
 		$p = $this->nwProject($uid);
 		$ver = $this->nwActivatePlan($p, [
 			['code' => 'PK', 'title' => 'Personal', 'kind' => 'personal', 'budget_minor' => 10000000],

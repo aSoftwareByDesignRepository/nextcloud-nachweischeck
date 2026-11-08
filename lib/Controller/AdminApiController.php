@@ -85,8 +85,9 @@ class AdminApiController extends NwApiController
 			throw new ValidationException(['role' => 'Invalid role.']);
 		}
 		$target = $this->userManager->get($uid);
-		if ($target === null) {
-			// uid existence gate: stale member rows must never accept ghosts
+		if ($target === null || !$target->isEnabled()) {
+			// uid existence gate: stale member rows must never accept ghosts;
+			// deactivated collapses into the same code — no existence oracle.
 			throw new ValidationException(['uid' => 'Unknown user.']);
 		}
 		if ($this->memberMapper->findByProjectAndUid($projectId, $uid) !== null) {
@@ -165,7 +166,10 @@ class AdminApiController extends NwApiController
 		$this->license->requireFeature(LicenseService::FEATURE_AUDITOR_SEAT);
 		$in = $this->params();
 		$ncUid = trim((string)($in['nc_uid'] ?? ''));
-		if ($ncUid !== '' && $this->userManager->get($ncUid) === null) {
+		$ncUser = $ncUid === '' ? null : $this->userManager->get($ncUid);
+		if ($ncUid !== '' && ($ncUser === null || !$ncUser->isEnabled())) {
+			// deactivated collapses into the existence code — a dead account
+			// must never receive a license-gated auditor grant.
 			throw new ValidationException(['nc_uid' => 'Unknown user.']);
 		}
 		$scope = null;

@@ -12,17 +12,21 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Service;
 
+use OCA\NachweisCheck\Db\ProjectMemberMapper;
 use OCA\NachweisCheck\Db\RateHistory;
 use OCA\NachweisCheck\Db\RateHistoryMapper;
 use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Support\PeriodUtil;
 use OCA\NachweisCheck\Support\RateResolver;
+use OCP\IUserManager;
 
 class RateService
 {
 	public function __construct(
 		private readonly RateHistoryMapper $mapper,
 		private readonly AuditService $audit,
+		private readonly IUserManager $userManager,
+		private readonly ProjectMemberMapper $memberMapper,
 	) {
 	}
 
@@ -37,6 +41,15 @@ class RateService
 		}
 		if ($uid === '') {
 			$fields['uid'] = 'Person is required.';
+		} else {
+			// Salary rows belong to live project members only: the uid must
+			// exist, be enabled, and be a member of this project — all three
+			// misses collapse into one code (no existence oracle).
+			$target = $this->userManager->get($uid);
+			if ($target === null || !$target->isEnabled()
+				|| $this->memberMapper->findByProjectAndUid($projectId, $uid) === null) {
+				$fields['uid'] = 'Unknown user.';
+			}
 		}
 		if ($fields !== []) {
 			throw new ValidationException($fields);

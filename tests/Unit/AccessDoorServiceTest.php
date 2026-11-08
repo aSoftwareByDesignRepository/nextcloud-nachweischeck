@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Tests\Unit;
 
+use OCA\NachweisCheck\Exception\ValidationException;
 use OCA\NachweisCheck\Service\AccessDoorService;
 use OCP\App\IAppManager;
 use OCP\IAppConfig;
 use OCP\IGroup;
 use OCP\IGroupManager;
 use OCP\IUser;
+use OCP\IUserManager;
 use Test\TestCase;
 
 class AccessDoorServiceTest extends TestCase
@@ -33,7 +35,8 @@ class AccessDoorServiceTest extends TestCase
 		);
 		$appManager = $this->createMock(IAppManager::class);
 		$appManager->method('getAppRestriction')->willReturn($restriction);
-		return ['svc' => new AccessDoorService($appConfig, $groups, $appManager),
+		$users = $this->createMock(IUserManager::class);
+		return ['svc' => new AccessDoorService($appConfig, $groups, $appManager, $users),
 			'cfg' => $appConfig, 'groups' => $groups, 'apps' => $appManager];
 	}
 
@@ -42,6 +45,29 @@ class AccessDoorServiceTest extends TestCase
 		$u = $this->createMock(IUser::class);
 		$u->method('getUID')->willReturn($uid);
 		return $u;
+	}
+
+	/**
+	 * Directory stub: every uid in $live resolves to an enabled account,
+	 * $dead resolves to a disabled account, anything else to null.
+	 */
+	private function userManager(array $live, array $dead = []): IUserManager
+	{
+		$users = $this->createMock(IUserManager::class);
+		$users->method('get')->willReturnCallback(function (string $uid) use ($live, $dead): ?IUser {
+			if (in_array($uid, $live, true)) {
+				$u = $this->createMock(IUser::class);
+				$u->method('isEnabled')->willReturn(true);
+				return $u;
+			}
+			if (in_array($uid, $dead, true)) {
+				$u = $this->createMock(IUser::class);
+				$u->method('isEnabled')->willReturn(false);
+				return $u;
+			}
+			return null;
+		});
+		return $users;
 	}
 
 	public function testAnonymousDenied(): void
@@ -146,7 +172,7 @@ class AccessDoorServiceTest extends TestCase
 		$apps->expects($this->once())->method('enableAppForGroups')
 			->with('nachweischeck', [$groupObj]);
 		$apps->expects($this->never())->method('enableApp');
-		$svc = new AccessDoorService($cfg, $groups, $apps);
+		$svc = new AccessDoorService($cfg, $groups, $apps, $this->userManager(['alice', 'appadmin']));
 		// 'ghost' resolves to null → dropped from the platform mirror
 		$svc->saveConfig('restricted', ['staff', 'ghost', 'staff', ''], ['alice'], ['appadmin']);
 		$this->assertSame('restricted', $writes['nw_access_mode']);
@@ -162,7 +188,7 @@ class AccessDoorServiceTest extends TestCase
 		$apps = $this->createMock(IAppManager::class);
 		$apps->expects($this->once())->method('enableApp')->with('nachweischeck');
 		$apps->expects($this->never())->method('enableAppForGroups');
-		$svc = new AccessDoorService($cfg, $groups, $apps);
+		$svc = new AccessDoorService($cfg, $groups, $apps, $this->userManager([]));
 		$svc->saveConfig('open', [], [], []);
 	}
 
@@ -173,7 +199,46 @@ class AccessDoorServiceTest extends TestCase
 		$groups = $this->createMock(IGroupManager::class);
 		$apps = $this->createMock(IAppManager::class);
 		$apps->expects($this->once())->method('enableApp')->with('nachweischeck');
-		$svc = new AccessDoorService($cfg, $groups, $apps);
+		$svc = new AccessDoorService($cfg, $groups, $apps, $this->userManager(['alice']));
 		$svc->saveConfig('restricted', [], ['alice'], []);
+	}
+
+	public function testSaveConfigRejectsUnknownUserWithoutWrites(): void
+	{
+		// A uid that resolves to null must never reach the allowlists —
+		// and the reject fires before ANY state changes (mode included).
+		$cfg = $this->createMock(IAppConfig::class);
+		$cfg->expects($this->never())->method('setValueString');
+		$apps = $this->createMock(IAppManager::class);
+		$apps->expects($this->never())->method('enableApp');
+		$apps->expects($this->never())->method('enableAppForGroups');
+		$svc = new AccessDoorService($cfg, $this->createMock(IGroupManager::class), $apps,
+			$this->userManager(['alice']));
+		try {
+			$svc->saveConfig('restricted', [], ['alice', 'ghost'], []);
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertArrayHasKey('users', $e->getFields());
+			$this->assertSame('Unknown user.', $e->getFields()['users']);
+		}
+	}
+
+	public function testSaveConfigRejectsDeactivatedAdminWithoutWrites(): void
+	{
+		// Deactivated collapses into the same 'Unknown user.' code — a dead
+		// account must not be distinguishable from a missing one (no oracle).
+		$cfg = $this->createMock(IAppConfig::class);
+		$cfg->expects($this->never())->method('setValueString');
+		$apps = $this->createMock(IAppManager::class);
+		$apps->expects($this->never())->method('enableApp');
+		$svc = new AccessDoorService($cfg, $this->createMock(IGroupManager::class), $apps,
+			$this->userManager(['alice'], ['exadmin']));
+		try {
+			$svc->saveConfig('restricted', [], ['alice'], ['exadmin']);
+			$this->fail('expected ValidationException');
+		} catch (ValidationException $e) {
+			$this->assertArrayHasKey('admins', $e->getFields());
+			$this->assertSame('Unknown user.', $e->getFields()['admins']);
+		}
 	}
 }
