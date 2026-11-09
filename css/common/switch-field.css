@@ -118,6 +118,18 @@
 	line-height: var(--nw-line-base, 1.45);
 }
 
+/* Helper line under the switch label — DESIGN-SYSTEM §3.6.6 canonical
+   markup (`__text` wraps the title text + a `__hint` child). Block + own
+   top margin or the hint renders inline-jammed against the title. */
+#content.app-nachweischeck #app-content.nw-app .nw-switch-field__hint,
+.nw-nc-admin-settings .nw-switch-field__hint {
+	display: block;
+	margin-block-start: var(--nw-space-1, 0.25rem);
+	font-size: var(--nw-fs-sm, 0.875rem);
+	font-weight: 400;
+	color: var(--nw-muted, var(--color-text-maxcontrast));
+}
+
 @media (prefers-reduced-motion: reduce) {
 	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track,
 	#content.app-nachweischeck #app-content.nw-app .nw-switch-field__track::after,

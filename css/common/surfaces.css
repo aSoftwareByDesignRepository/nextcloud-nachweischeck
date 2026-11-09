@@ -9,7 +9,8 @@
  * (DESIGN-SYSTEM §3: NC `section { display:block }` and flex utilities win).
  * One scoped guard keeps every toggle honest.
  */
-#app-content.nw-app [hidden] {
+#app-content.nw-app [hidden],
+.nw-dialog [hidden] {
 	display: none !important;
 }
 

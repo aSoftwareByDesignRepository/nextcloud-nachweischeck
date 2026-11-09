@@ -9,6 +9,24 @@
  * nw-dialog, nw-filter-*, nw-stat-strip/tile, nw-callout, nw-picker/nw-chip.
  */
 
+/* ── Form rhythm helpers ──────────────────────────────────────────────
+   .nw-form owns the field rhythm (flex column, gap space-3) — dialog
+   bodies and settings forms carry it on their wrapper. Two guards keep
+   that rhythm honest:
+   1. .nw-fieldset's own bottom margin double-spaces inside a gap-driven
+      stack — inside .nw-form the gap wins.
+   2. Empty JS mount points (preview/result regions) must not consume a
+      gap slot — same contract as .nw-card__body > :empty. */
+
+:is(#app-content.nw-app, .nw-dialog) .nw-form > .nw-fieldset {
+	margin-block-end: 0;
+}
+
+:is(#app-content.nw-app, .nw-dialog) .nw-form > :empty,
+.nw-dialog__body > :empty {
+	display: none;
+}
+
 /* ── Soll-Ist position bars ──────────────────────────────────────────
    A position is budget + spend + a threshold verdict. The verdict is
    carried by the badge TEXT next to the bar (never colour alone). */

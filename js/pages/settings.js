@@ -152,7 +152,7 @@
 				selected: (cfg.admins || []).map(function (id) { return { id: id, label: id }; })
 			});
 
-			var restrictedPanel = el('div');
+			var restrictedPanel = el('div', { class: 'nw-form' });
 			var modeOpen = inputEl('mode', { type: 'radio', value: 'open' });
 			modeOpen.id = 'nw-access-open';
 			modeOpen.checked = cfg.mode !== 'restricted';
@@ -173,16 +173,16 @@
 			}));
 			paintMode();
 
-			var form = el('form', { novalidate: 'novalidate' }, [
+			var form = el('form', { novalidate: 'novalidate', class: 'nw-form' }, [
 				el('fieldset', { class: 'nw-fieldset' }, [
 					el('legend', { class: 'nw-fieldset__legend', text: t('Who may open NachweisCheck?') }),
 					el('div', { class: 'nw-choice-group' }, [
-						el('div', { class: 'nw-check-row' }, [
+						el('div', { class: 'nw-checkbox-row' }, [
 							el('label', { 'for': 'nw-access-open' }, [
 								modeOpen, document.createTextNode(' ' + t('Open — every Nextcloud user'))
 							])
 						]),
-						el('div', { class: 'nw-check-row' }, [
+						el('div', { class: 'nw-checkbox-row' }, [
 							el('label', { 'for': 'nw-access-restricted' }, [
 								modeRestricted, document.createTextNode(' ' + t('Restricted — only the people below'))
 							])
@@ -339,7 +339,7 @@
 		var addSk = el('button', { type: 'button', class: 'nw-btn nw-btn--small nw-btn--secondary', text: t('Add position') });
 		addSk.addEventListener('click', addRow);
 
-		var flagBox = el('div');
+		var flagBox = el('div'); /* form-rhythm:ok — nw-checkbox-row children self-space */
 		RULE_FLAGS.forEach(function (f) {
 			var id = 'nw-flag-' + f[0];
 			var cb = inputEl('flag_' + f[0], { type: 'checkbox', value: '1' });
@@ -357,7 +357,7 @@
 
 		var keyIn = inputEl('pack_key', { required: true, pattern: '[a-z0-9][a-z0-9-]{1,62}', placeholder: 'mein-geber' });
 		var nameIn = inputEl('pack_name', { required: true });
-		var form = el('form', { novalidate: 'novalidate' }, [
+		var form = el('form', { novalidate: 'novalidate', class: 'nw-form' }, [
 			el('div', { class: 'nw-filter-grid' }, [
 				fieldEl(t('Pack key'), keyIn, { hint: t('lowercase letters, digits, dashes') }),
 				fieldEl(t('Pack name'), nameIn)
@@ -523,6 +523,7 @@
 			var cb = inputEl('notify_deadlines', { type: 'checkbox', value: '1' });
 			cb.className = 'nw-switch-field__input';
 			cb.id = 'nw-notify-deadlines';
+			cb.setAttribute('role', 'switch');
 			cb.checked = cfg.notify_deadlines !== false;
 			cb.addEventListener('change', function () {
 				NW.api('/settings/notify', { method: 'PUT', json: {
@@ -540,8 +541,8 @@
 					el('label', { class: 'nw-switch-field__label', 'for': 'nw-notify-deadlines' }, [
 						el('span', { class: 'nw-switch-field__track', 'aria-hidden': 'true' }),
 						el('span', { class: 'nw-switch-field__text' }, [
-							el('strong', { text: t('Deadline reminders') }),
-							el('span', { class: 'nw-muted', text: t('Notify me before funding deadlines — report due dates, period-end warnings, interim reports.') })
+							t('Deadline reminders'),
+							el('span', { class: 'nw-switch-field__hint', text: t('Notify me before funding deadlines — report due dates, period-end warnings, interim reports.') })
 						])
 					])
 				])

@@ -533,7 +533,7 @@
 
 		(initial || [{}]).forEach(addRow);
 		var addBtn = smallBtn(t('Add split'), function () { addRow(); });
-		var wrap = el('div', {}, [grid, addBtn, sum]);
+		var wrap = el('div', { class: 'nw-form' }, [grid, addBtn, sum]);
 		refresh();
 		return {
 			node: wrap,
@@ -566,7 +566,7 @@
 		loadTemplates().then(function (templates) {
 			var tplOpts = (templates || []).map(function (x) { return [x.key, x.name]; });
 			if (!tplOpts.length) { tplOpts = [['anbest-p', 'ANBest-P']]; }
-			var body = el('div', {}, [
+			var body = el('div', { class: 'nw-form' }, [
 				fieldEl(t('Project name'), inputEl('name', { required: true })),
 				fieldEl(t('Funder'), inputEl('funder_name', { required: true })),
 				moreDetails(t('More options'), [
@@ -636,7 +636,7 @@
 			}
 			NW.openDialog({
 				title: t('Book time'),
-				body: el('div', {}, fields),
+				body: el('div', { class: 'nw-form' }, fields),
 				submitLabel: t('Book'),
 				onSubmit: function (fd) {
 					var minutes = parseDuration(fd.get('minutes'));
@@ -748,7 +748,7 @@
 			}
 			NW.openDialog({
 				title: isEdit ? t('Edit receipt') : t('File receipt'),
-				body: el('div', {}, children),
+				body: el('div', { class: 'nw-form' }, children),
 				submitLabel: isEdit ? t('Save') : t('File'),
 				wide: true,
 				onSubmit: function (fd, api2, form) {
@@ -813,7 +813,7 @@
 			var editor = splitEditor(res[0] || [], res[1] || [], receipt.splits, null);
 			NW.openDialog({
 				title: t('Edit splits'),
-				body: el('div', {}, [
+				body: el('div', { class: 'nw-form' }, [
 					el('p', { class: 'nw-dialog__text', text: t('Splits must add up to %s.', [fmtMoney(receipt.total_minor)]) }),
 					editor.node
 				]),
@@ -856,7 +856,7 @@
 			});
 			NW.openDialog({
 				title: t('Record deviation'),
-				body: el('div', {}, [
+				body: el('div', { class: 'nw-form' }, [
 					fieldEl(t('Scope'), scopeSel),
 					refField,
 					fieldEl(t('Kind'), selectEl('kind', [
@@ -1193,7 +1193,7 @@
 					}), { empty: t('No positions.') })
 			]}));
 			if (ver.state === 'draft' && caps.can_admin) {
-				wrap.appendChild(el('div', { class: 'nw-btn-row' }, [
+				wrap.appendChild(el('div', { class: 'nw-btn-row nw-form-actions' }, [
 					btn(t('Activate this version'), function () { activateFinplan(ver); }, 'nw-btn--primary')
 				]));
 			}
@@ -1339,7 +1339,7 @@
 	}
 
 	function openApDialog(members) {
-		var body = el('div', {}, [
+		var body = el('div', { class: 'nw-form' }, [
 			fieldEl(t('Code'), inputEl('code', { required: true, placeholder: 'AP1' })),
 			fieldEl(t('Title'), inputEl('title', { required: true })),
 			moreDetails(t('More options'), [
@@ -1578,7 +1578,7 @@
 			}
 			NW.openDialog({
 				title: t('Generate timesheet'),
-				body: el('div', {}, fields),
+				body: el('div', { class: 'nw-form' }, fields),
 				submitLabel: t('Generate'),
 				onSubmit: function (fd) {
 					var body = { period: fd.get('period') };
@@ -1597,7 +1597,7 @@
 		// rebooking to another AP means delete + re-book, so no AP field.
 		NW.openDialog({
 			title: t('Edit time entry'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Date'), inputEl('entry_date', { type: 'date', value: entry.entry_date, required: true })),
 				fieldEl(t('Minutes'), inputEl('minutes', { type: 'number', min: '1', step: '1', value: entry.minutes, required: true })),
 				fieldEl(t('Short note'), inputEl('note', { value: entry.note || '' }))
@@ -1748,7 +1748,7 @@
 				}, false, null, true);
 			});
 		}
-		var body = el('div', {}, [
+		var body = el('div', { class: 'nw-form' }, [
 			fieldEl(t('Invoice file'), { node: el('div', { class: 'nw-file-row' },
 				[fileIn, pickBtn].filter(Boolean)), focusEl: fileIn }, {
 				hint: t('Pick the ZUGFeRD/XRechnung file — or paste its file id.')
@@ -1844,7 +1844,7 @@
 			}
 			NW.openDialog({
 				title: t('New work report'),
-				body: el('div', {}, [
+				body: el('div', { class: 'nw-form' }, [
 					fieldEl(t('Work package'), selectEl('ap_id', apOptions(open), null, { required: true })),
 					fieldEl(t('Period (YYYY-MM)'), inputEl('period', { type: 'month', required: true })),
 					fieldEl(t('Summary'), textareaEl('summary', { required: true })),
@@ -2146,8 +2146,8 @@
 
 	function openNachweisDialog() {
 		loadProject().then(function (p) {
-			var previewRegion = el('div');
-			var body = el('div', {}, [
+			var previewRegion = el('div'); /* form-rhythm:ok — async mount; :empty guard hides the gap slot */
+			var body = el('div', { class: 'nw-form' }, [
 				fieldEl(t('Kind'), selectEl('kind', [
 					['final', t('Final report')],
 					['zwischen', t('Interim report')]
@@ -2227,7 +2227,7 @@
 				renderDeadlineList(p.deadlines || [])
 			]}));
 			if (caps.can_admin) {
-				var feedRegion = el('div', {}, [loading()]);
+				var feedRegion = el('div', { class: 'nw-form' }, [loading()]);
 				host.appendChild(card(t('Calendar feed (ICS)'), { children: [feedRegion] }));
 				NW.api('/projects/' + pid + '/ics-feed').then(function (feed) {
 					feedRegion.innerHTML = '';
@@ -2318,8 +2318,8 @@
 
 			// Rates (can_see_rates)
 			if (caps.can_see_rates) {
-				var rateRegion = el('div');
-				var selWrap = el('div', {}, [
+				var rateRegion = el('div'); /* form-rhythm:ok — async mount inside card body */
+				var selWrap = el('div', { class: 'nw-form' }, [
 					fieldEl(t('Member'), memberSelect('rate_member', members, null, { blank: t('— choose —') }))
 				]);
 				var rateSel = selWrap.querySelector('select');
@@ -2488,7 +2488,7 @@
 			var latest = (payments || [])[0];
 			NW.openDialog({
 				title: t('Mark drawdown received'),
-				body: el('div', {}, [
+				body: el('div', { class: 'nw-form' }, [
 					fieldEl(t('Incoming payment'), selectEl('payment_id',
 						(payments || []).map(function (p) {
 							return [p.id, NW.fmtDate(p.received_date) + ' — ' + fmtMoney(p.amount_minor) + (p.call_ref ? ' · ' + p.call_ref : '')];
@@ -2510,7 +2510,7 @@
 	function openDrawdownDialog() {
 		NW.openDialog({
 			title: t('Record drawdown'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Requested date'), inputEl('requested_date', { type: 'date', required: true, value: NW.todayYmd() })),
 				fieldEl(t('Amount (EUR)'), moneyEl('amount_minor')),
 				fieldEl(t('Call reference'), inputEl('call_ref')),
@@ -2535,7 +2535,7 @@
 	function openCofunderDialog() {
 		NW.openDialog({
 			title: t('Add co-funder'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Name'), inputEl('name', { required: true })),
 				fieldEl(t('Reference'), inputEl('ref')),
 				fieldEl(t('Contact'), inputEl('contact')),
@@ -2571,7 +2571,7 @@
 		}
 		kindSel.addEventListener('change', paintKind);
 		paintKind();
-		var body = el('div', {}, [
+		var body = el('div', { class: 'nw-form' }, [
 			fieldEl(t('Kind'), kindSel),
 			fieldEl(t('Title'), inputEl('title', { required: true })),
 			fieldEl(t('Date'), inputEl('occurred_date', { type: 'date', required: true, value: NW.todayYmd() })),
@@ -2602,7 +2602,7 @@
 	function openPaymentDialog() {
 		NW.openDialog({
 			title: t('Record payment'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Received date'), inputEl('received_date', { type: 'date', required: true, value: NW.todayYmd() })),
 				fieldEl(t('Amount (EUR)'), moneyEl('amount_minor')),
 				fieldEl(t('Call reference'), inputEl('call_ref')),
@@ -2632,7 +2632,7 @@
 	function openRateDialog(members) {
 		NW.openDialog({
 			title: t('Add rate'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Member'), memberSelect('uid', members, null, { blank: t('— choose —'), required: true })),
 				fieldEl(t('Role key'), inputEl('role_key', { required: true, placeholder: 'sachbearbeiter' })),
 				fieldEl(t('Rate per hour (EUR)'), moneyEl('rate_minor')),
@@ -2671,7 +2671,7 @@
 		}
 		NW.openDialog({
 			title: t('Request reallocation'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('From position'), selectEl('from_position_id', positionOptions(positions), null, { required: true })),
 				fieldEl(t('To position'), selectEl('to_position_id', positionOptions(positions), null, { required: true })),
 				fieldEl(t('Amount (EUR)'), moneyEl('amount_minor')),
@@ -2703,7 +2703,7 @@
 		var thisYear = new Date().getFullYear();
 		NW.openDialog({
 			title: t('Record carryover'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('From year'), inputEl('from_year', { type: 'number', min: '2000', max: '2100', step: '1', value: thisYear - 1, required: true })),
 				fieldEl(t('To year'), inputEl('to_year', { type: 'number', min: '2000', max: '2100', step: '1', value: thisYear, required: true })),
 				fieldEl(t('Amount (EUR)'), moneyEl('amount_minor')),
@@ -2819,7 +2819,7 @@
 		var uid = uidControl('uid', { required: true });
 		NW.openDialog({
 			title: t('Add member'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('User'), uid, {
 					hint: role.isAppAdmin ? t('Search by name — pick from results.') : t('Enter the exact Nextcloud user id.')
 				}),
@@ -2844,7 +2844,7 @@
 
 	function openGrantDialog() {
 		var uid = uidControl('nc_uid');
-		var scopeBox = el('div');
+		var scopeBox = el('div'); /* form-rhythm:ok — nw-checkbox-row children self-space */
 		GRANT_SCOPES.forEach(function (s) {
 			var id = 'nw-scope-' + s[0] + '-' + (++fieldSeq);
 			var cb = inputEl('scope', { type: 'checkbox', value: s[0] });
@@ -2855,7 +2855,7 @@
 		});
 		NW.openDialog({
 			title: t('Grant auditor access'),
-			body: el('div', {}, [
+			body: el('div', { class: 'nw-form' }, [
 				fieldEl(t('Auditor account'), uid, {
 					hint: t('Optional — an external auditor without an NC account reads via the grant token.')
 				}),
