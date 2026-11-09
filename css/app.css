@@ -423,7 +423,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.2);
 	color: var(--color-main-text);
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 }
 
 .nw-support-us__intro {
@@ -474,7 +474,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.25);
 	color: var(--color-main-text);
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 }
 
 .nw-support-us__benefit,
@@ -546,7 +546,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	font-weight: 700;
 	line-height: var(--nw-line-tight, 1.25);
 	color: var(--color-main-text);
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 }
 
 .nw-support-us__option-hint {
@@ -570,7 +570,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	text-decoration: none;
 	box-sizing: border-box;
 	white-space: normal;
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 	max-width: 100%;
 }
 
