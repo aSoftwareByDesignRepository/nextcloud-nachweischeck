@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-11-09
+
+### Added
+
+- Eleven new locale catalogs: da, es, fr, it, nb, nl, pl, pt, pt_BR, sv, tr.
+
+### Fixed
+
+- API uid-target write paths now reject nonexistent/deactivated accounts and require live project members.
+- Directory user picker skips deactivated accounts.
+- Dialog-scoped edit grids, fieldsets and split-sum controls reach the top layer; receipt flags no longer clipped.
+- Projects-first sidebar order restored.
+- App URLs routed through `OC.generateUrl` with index.php fallback.
+- l10n coverage for the filter panel; hover-first row-action clicks.
+
 ## [0.4.1] - 2026-11-01
 
 ### Fixed
