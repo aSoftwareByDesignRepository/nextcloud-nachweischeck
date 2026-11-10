@@ -428,7 +428,7 @@ OC.L10N.register(
 	"Positions for %s" : "Posten voor %s",
 	"Positions saved." : "Posten opgeslagen.",
 	"Possible duplicate — flagged for review (vendor + date + amount match an existing receipt)." : "Mogelijk duplicaat — gemarkeerd voor controle (begunstigde + datum + bedrag komen overeen met een bestaande bon).",
-	"Preset" : "Preset",
+	"Preset" : "Voorinstelling",
 	"Principal" : "Hoofdsom",
 	"Principal (EUR)" : "Hoofdsom (EUR)",
 	"Pro features and mobile seats stop working immediately. Your data stays untouched." : "Pro-functies en mobiele seats stoppen direct met werken. Uw gegevens blijven ongemoeid.",
