@@ -65,7 +65,7 @@ class DeadlineServiceTest extends TestCase
 		$apMapper->method('findByProject')->willReturn([$ap]);
 		$templates = $this->createMock(TemplateService::class);
 		$templates->method('ruleFlags')->with('anbest-p')->willReturn(
-			TemplateService::BUILTIN[TemplateService::KEY_ANBEST_P]['rule_flags']
+			TemplateService::BUILTIN[TemplateService::TPL_ANBEST_P]['rule_flags']
 		);
 		$mapper = $this->createMock(DeadlineMapper::class);
 		// one already-known row → NOT re-inserted; obsolete unnotified → deleted;
@@ -99,7 +99,7 @@ class DeadlineServiceTest extends TestCase
 		$apMapper->method('findByProject')->willReturn([]);
 		$templates = $this->createMock(TemplateService::class);
 		$templates->method('ruleFlags')->willReturn(
-			TemplateService::BUILTIN[TemplateService::KEY_ANBEST_P]['rule_flags']
+			TemplateService::BUILTIN[TemplateService::TPL_ANBEST_P]['rule_flags']
 		);
 		$mapper = $this->createMock(DeadlineMapper::class);
 		$mapper->method('findByProject')->willReturn([
@@ -120,7 +120,7 @@ class DeadlineServiceTest extends TestCase
 		$apMapper->method('findByProject')->willReturn([]);
 		$templates = $this->createMock(TemplateService::class);
 		$templates->method('ruleFlags')->willReturn(
-			array_merge(TemplateService::BUILTIN[TemplateService::KEY_ANBEST_P]['rule_flags'],
+			array_merge(TemplateService::BUILTIN[TemplateService::TPL_ANBEST_P]['rule_flags'],
 				['zwischen_enabled' => false])
 		);
 		$mapper = $this->createMock(DeadlineMapper::class);
@@ -144,7 +144,7 @@ class DeadlineServiceTest extends TestCase
 		$apMapper->method('findByProject')->willReturn([]);
 		$templates = $this->createMock(TemplateService::class);
 		$templates->method('ruleFlags')->willReturn(
-			TemplateService::BUILTIN[TemplateService::KEY_ANBEST_P]['rule_flags']
+			TemplateService::BUILTIN[TemplateService::TPL_ANBEST_P]['rule_flags']
 		);
 		$mapper = $this->createMock(DeadlineMapper::class);
 		$mapper->method('findByProject')->willReturn([]);

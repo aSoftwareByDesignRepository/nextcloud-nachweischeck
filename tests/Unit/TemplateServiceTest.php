@@ -24,7 +24,7 @@ class TemplateServiceTest extends TestCase
 	public function testBuiltinAnbestPDefinition(): void
 	{
 		[$svc] = $this->svc();
-		$def = $svc->definition(TemplateService::KEY_ANBEST_P);
+		$def = $svc->definition(TemplateService::TPL_ANBEST_P);
 		$this->assertSame('builtin', $def['source']);
 		$this->assertTrue($def['rule_flags']['einzelansatz_20pct']);
 		$this->assertFalse($def['rule_flags']['festbetrag']);

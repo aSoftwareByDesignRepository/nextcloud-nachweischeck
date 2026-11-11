@@ -131,6 +131,13 @@ return [
 		['name' => 'calendarApi#feed', 'url' => '/api/v1/projects/{projectId}/ics-feed', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'calendarApi#rotateFeed', 'url' => '/api/v1/projects/{projectId}/ics-feed/rotate', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+']],
 
+		// ── Config & data transfer (test → production) ──────────────────
+		['name' => 'transfer_api#status', 'url' => '/api/admin/transfer/status', 'verb' => 'GET'],
+		['name' => 'transfer_api#export', 'url' => '/api/admin/transfer/export', 'verb' => 'POST'],
+		['name' => 'transfer_api#preview', 'url' => '/api/admin/transfer/preview', 'verb' => 'POST'],
+		['name' => 'transfer_api#apply', 'url' => '/api/admin/transfer/apply', 'verb' => 'POST'],
+		['name' => 'transfer_api#reconcile', 'url' => '/api/admin/transfer/reconcile', 'verb' => 'POST'],
+
 		// Settings pages (one page per topic — family settings standard)
 		['name' => 'page#settings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'page#settingsSection', 'url' => '/settings/{section}', 'verb' => 'GET', 'requirements' => ['section' => '[a-z-]+']],

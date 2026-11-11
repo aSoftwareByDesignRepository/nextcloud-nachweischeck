@@ -19,7 +19,10 @@ use OCA\NachweisCheck\Exception\NotFoundException;
 
 class TemplateService
 {
-	public const KEY_ANBEST_P = 'anbest-p';
+	// TPL_ prefix, not KEY_*: this is a funder-template identifier, never an
+	// appconfig key — KEY_* consts are reserved for config keys (the
+	// config-transfer manifest gate resolves them as appconfig literals).
+	public const TPL_ANBEST_P = 'anbest-p';
 
 	/** Installable pack definitions shipped with the app (Pro, V1-13). */
 	public const PACKS = [
@@ -60,7 +63,7 @@ class TemplateService
 
 	/** Built-in template definitions — always available, source 'builtin'. */
 	public const BUILTIN = [
-		self::KEY_ANBEST_P => [
+		self::TPL_ANBEST_P => [
 			'name' => 'ANBest-P (Bund, Ausgabenfinanzierung)',
 			'rule_flags' => [
 				'einzelansatz_20pct' => true,
@@ -131,7 +134,7 @@ class TemplateService
 		return [
 			'key' => $tplKey,
 			'name' => $row->getName(),
-			'rule_flags' => $flags + self::BUILTIN[self::KEY_ANBEST_P]['rule_flags'],
+			'rule_flags' => $flags + self::BUILTIN[self::TPL_ANBEST_P]['rule_flags'],
 			'skeleton' => $skeleton,
 			'source' => $row->getSource(),
 		];
@@ -143,8 +146,8 @@ class TemplateService
 	public function listTemplates(bool $pro): array
 	{
 		$out = [[
-			'key' => self::KEY_ANBEST_P,
-			'name' => self::BUILTIN[self::KEY_ANBEST_P]['name'],
+			'key' => self::TPL_ANBEST_P,
+			'name' => self::BUILTIN[self::TPL_ANBEST_P]['name'],
 			'source' => 'builtin',
 		]];
 		foreach ($this->mapper->findAll() as $row) {
@@ -171,7 +174,7 @@ class TemplateService
 		if (isset(self::BUILTIN[$key])) {
 			throw new \OCA\NachweisCheck\Exception\ValidationException(['tpl_key' => 'Built-in keys cannot be replaced.']);
 		}
-		$allowed = array_fill_keys(array_keys(self::BUILTIN[self::KEY_ANBEST_P]['rule_flags']), true);
+		$allowed = array_fill_keys(array_keys(self::BUILTIN[self::TPL_ANBEST_P]['rule_flags']), true);
 		$flags = array_intersect_key($ruleFlags, $allowed);
 		$cleanSkeleton = [];
 		foreach ($skeleton as $p) {

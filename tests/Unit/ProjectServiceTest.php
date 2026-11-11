@@ -121,7 +121,7 @@ class ProjectServiceTest extends TestCase
 	public function testCreateSeedsMemberDraftPlanAndSkeleton(): void
 	{
 		$templates = $this->createMock(TemplateService::class);
-		$templates->method('definition')->willReturn(TemplateService::BUILTIN[TemplateService::KEY_ANBEST_P]
+		$templates->method('definition')->willReturn(TemplateService::BUILTIN[TemplateService::TPL_ANBEST_P]
 			+ ['key' => 'anbest-p', 'source' => 'builtin']);
 		$license = $this->createMock(LicenseService::class);
 		$license->expects($this->never())->method('requireFeature'); // builtin key skips the gate

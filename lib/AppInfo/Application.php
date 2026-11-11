@@ -95,6 +95,61 @@ class Application extends App implements IBootstrap
 			);
 		});
 
+		// ── Config & data transfer (test → production) ──────────────────
+		$context->registerService(\OCA\NachweisCheck\ConfigTransfer\TransferManifest::class, fn () => new \OCA\NachweisCheck\ConfigTransfer\TransferManifest());
+		$context->registerService(\OCA\NachweisCheck\ConfigTransfer\TransferHooks::class, function ($c): \OCA\NachweisCheck\ConfigTransfer\TransferHooks {
+			return new \OCA\NachweisCheck\ConfigTransfer\TransferHooks(
+				$c->get(AccessDoorService::class),
+				$c->get(UpgradeBackupService::class),
+				$c->get(\OCA\NachweisCheck\Service\AuditService::class),
+				$c->get(\OCP\IUserManager::class),
+				$c->get(\OCP\IGroupManager::class),
+				$c->get(\Psr\Log\LoggerInterface::class),
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\ConfigTransfer\TransferPendingStore::class, fn ($c) => new \OCA\NachweisCheck\ConfigTransfer\TransferPendingStore($c->get(IRootFolder::class), $c->get(\OCP\IConfig::class), self::APP_ID));
+		$context->registerService(\OCA\NachweisCheck\ConfigTransfer\TransferReceiptStore::class, fn ($c) => new \OCA\NachweisCheck\ConfigTransfer\TransferReceiptStore($c->get(\OCP\IConfig::class), self::APP_ID));
+		$context->registerService(\OCA\NachweisCheck\ConfigTransfer\TransferService::class, function ($c): \OCA\NachweisCheck\ConfigTransfer\TransferService {
+			return new \OCA\NachweisCheck\ConfigTransfer\TransferService(
+				$c->get(IDBConnection::class),
+				$c->get(\OCP\IConfig::class),
+				$c->get(\OCP\IUserManager::class),
+				$c->get(\OCP\IGroupManager::class),
+				$c->get(IRootFolder::class),
+				$c->get(IAppManager::class),
+				$c->get(ILockingProvider::class),
+				$c->get(\OCP\IURLGenerator::class),
+				$c->get(\Psr\Log\LoggerInterface::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferManifest::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferHooks::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferPendingStore::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferReceiptStore::class),
+				self::APP_ID,
+				$c->get(IAppConfig::class),
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\BackgroundJob\TransferApplyJob::class, function ($c): \OCA\NachweisCheck\BackgroundJob\TransferApplyJob {
+			return new \OCA\NachweisCheck\BackgroundJob\TransferApplyJob(
+				$c->get(\OCP\AppFramework\Utility\ITimeFactory::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferService::class),
+				$c->get(ILockingProvider::class),
+				$c->get(\OCP\BackgroundJob\IJobList::class),
+				$c->get(\Psr\Log\LoggerInterface::class),
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\Controller\TransferApiController::class, function ($c): \OCA\NachweisCheck\Controller\TransferApiController {
+			return new \OCA\NachweisCheck\Controller\TransferApiController(
+				self::APP_ID,
+				$c->get(\OCP\IRequest::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferHooks::class),
+				$c->get(\OCA\NachweisCheck\ConfigTransfer\TransferService::class),
+				$c->get(\OCP\BackgroundJob\IJobList::class),
+				$c->get(\OCP\Security\Bruteforce\IThrottler::class),
+				$c->get(\OCP\IGroupManager::class),
+				$c->get(\OCP\IUserSession::class),
+			);
+		});
+
 		// I-10 Activity provider — registered explicitly so the Activity app
 		// resolves it through this app's container (dutycheck pattern).
 		$context->registerService(\OCA\NachweisCheck\Activity\Provider::class, function ($c): \OCA\NachweisCheck\Activity\Provider {

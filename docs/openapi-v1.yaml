@@ -199,6 +199,17 @@ paths:
     post: {tags: [mobile], summary: 'Book receipt; splits must sum to total; external_ref idempotent'}
   /mobile/projects/{projectId}/timesheets:
     get: {tags: [mobile], summary: 'Own Stundenzettel (state mirror), seat-gated'}
+  # ---- Config & data transfer (admin API, OUTSIDE the /api/v1 prefix) -----
+  /api/admin/transfer/status:
+    get: {tags: [admin], summary: 'Transfer job state + last receipt (app admin)'}
+  /api/admin/transfer/export:
+    post: {tags: [admin], summary: 'Export all settings + data as one passphrase-encrypted .nctransfer download (app admin)'}
+  /api/admin/transfer/preview:
+    post: {tags: [admin], summary: 'Multipart upload (file, passphrase, mode) → dry-run report; nothing is written (app admin)'}
+  /api/admin/transfer/apply:
+    post: {tags: [admin], summary: 'Queue the reviewed apply job; merge for app admins, replace requires system admin + REPLACE confirmation'}
+  /api/admin/transfer/reconcile:
+    post: {tags: [admin], summary: 'Re-run the mirrored-key writer (access door / platform mirror) after a raw occ config:import'}
 components:
   securitySchemes:
     basicAuth: {type: http, scheme: basic}

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace OCA\NachweisCheck\Controller;
 
+use OCA\NachweisCheck\ConfigTransfer\TransferReceiptStore;
 use OCA\NachweisCheck\Db\ProjectMapper;
 use OCA\NachweisCheck\Service\AccessDoorService;
 use OCA\NachweisCheck\Service\LicenseService;
@@ -23,10 +24,12 @@ use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Services\IInitialState;
+use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use OCP\Util;
 
 class PageController extends Controller
 {
@@ -41,6 +44,8 @@ class PageController extends Controller
 		private readonly IInitialState $initialState,
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IL10N $l10n,
+		private readonly TransferReceiptStore $transferReceipts,
+		private readonly IGroupManager $groupManager,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -137,7 +142,15 @@ class PageController extends Controller
 			'view' => 'settings',
 			'section' => $section,
 		]);
-		AssetRegistrar::register('settings');
+		AssetRegistrar::register($section === 'transfer' ? '' : 'settings');
+		if ($section === 'transfer') {
+			// Synced transfer page (test → production): server-rendered
+			// partial, its own stylesheet + bridge script — the settings
+			// SPA renderer is not involved.
+			Util::addStyle('nachweischeck', 'common/transfer');
+			Util::addScript('nachweischeck', 'transfer-bridge');
+			Util::addScript('nachweischeck', 'transfer');
+		}
 		$params = [
 			'appAllowed' => true,
 			'pageTitle' => Chrome::sectionLabel($this->l10n, $section),
@@ -145,6 +158,11 @@ class PageController extends Controller
 			'settingsSection' => $section,
 			'roleLabel' => $this->l10n->t('App admin'),
 		];
+		if ($section === 'transfer') {
+			$params['isSystemAdmin'] = $this->groupManager->isAdmin($user->getUID());
+			$params['transferLastReceipt'] = $this->transferReceipts->lastReceipt();
+			$params['pageHelp'] = $this->l10n->t('Export all settings and data as one encrypted file, then import it on your production instance. Review the preview before confirming.');
+		}
 		Chrome::apply($params, 'settings-' . $section, $projects, null);
 		return new TemplateResponse('nachweischeck', 'settings', $params);
 	}

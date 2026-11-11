@@ -32,6 +32,9 @@
 	</dependencies>
 	<commands>
 		<command>OCA\NachweisCheck\Command\UpgradeBackupCommand</command>
+		<command>OCA\NachweisCheck\Command\ConfigExportCommand</command>
+		<command>OCA\NachweisCheck\Command\ConfigImportCommand</command>
+		<command>OCA\NachweisCheck\Command\ConfigReconcileCommand</command>
 	</commands>
 
 	<activity>

@@ -87,7 +87,7 @@ class ProjectService
 		} catch (NotFoundException) {
 			throw new ValidationException(['template_key' => 'Unknown template.']);
 		}
-		if ($templateKey !== TemplateService::KEY_ANBEST_P) {
+		if ($templateKey !== TemplateService::TPL_ANBEST_P) {
 			$this->license->requireFeature(LicenseService::FEATURE_TEMPLATES);
 		}
 
