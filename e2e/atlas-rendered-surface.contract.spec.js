@@ -82,11 +82,16 @@ test.describe('ATLAS_RENDERED_SURFACE_CONTRACT', () => {
 		});
 	}
 
-	for (const section of ['access', 'templates', 'notifications', 'license']) {
+	for (const section of ['access', 'templates', 'notifications', 'license', 'transfer']) {
 		test(`settings ${section}`, async () => {
 			await adminPage.goto(`${BASE}${APP}/settings/${section}`, { waitUntil: 'domcontentloaded' });
-			await adminPage.waitForSelector('#nw-settings .nw-card, #nw-settings .nw-empty-state', { timeout: 45_000 });
-			await assertAtlasRenderedSurface(adminPage, CONTRACT_OPTS);
+			// The transfer section is server-rendered (no #nw-settings SPA
+			// mount) — its cards live in a bare .nw-page-stack instead.
+			await adminPage.waitForSelector('#nw-settings .nw-card, #nw-settings .nw-empty-state, #nw-transfer-export-card', { timeout: 45_000 });
+			const opts = section === 'transfer'
+				? { ...CONTRACT_OPTS, content: '#app-content.nw-app .nw-page-stack' }
+				: CONTRACT_OPTS;
+			await assertAtlasRenderedSurface(adminPage, opts);
 		});
 	}
 
