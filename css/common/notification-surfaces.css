@@ -627,6 +627,18 @@
 	border-radius: var(--nw-radius-md, 12px);
 }
 
+/* Body-mounted overlay armor: core repaints bare <button> width/border/
+   padding/min-height/margin (button:not(.button-vue,…) 0-1-1) — a bare
+   class selector loses on body-mounted #nw-toasts. */
+#nw-toasts button.nw-toast__close {
+	width: auto !important;
+	margin-inline-start: auto !important;
+	padding: var(--nw-space-2, 8px) !important;
+	border: 0 !important;
+	min-width: 44px !important;
+	min-height: 44px !important;
+}
+
 .nw-toast__close:hover {
 	background: var(--color-background-hover);
 }

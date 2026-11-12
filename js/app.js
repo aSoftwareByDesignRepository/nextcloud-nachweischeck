@@ -27,9 +27,9 @@
 		var out = (window.OC && OC.L10N && OC.L10N.translate)
 			? OC.L10N.translate('nachweischeck', text) : text;
 		if (Array.isArray(vars)) {
-			// sprintf-style: each array item replaces the next %s in order.
+			// sprintf-style: each array item replaces the next %s/%d in order.
 			var i = 0;
-			out = out.replace(/%s/g, function () { return String(vars[i++]); });
+			out = out.replace(/%[sd]/g, function () { return String(vars[i++]); });
 		} else if (vars) {
 			Object.keys(vars).forEach(function (k) {
 				out = out.split('{' + k + '}').join(String(vars[k]));
@@ -678,7 +678,7 @@
 		role: role,
 		t: t,
 		// tf: sprintf-substituting translate (farm gate convention — keeps
-		// t('%s…', [vars]) call sites distinct from raw OC.L10N.translate).
+		// tf('<key>', [vars]) call sites distinct from raw OC.L10N.translate).
 		tf: t,
 		esc: esc,
 		el: el,

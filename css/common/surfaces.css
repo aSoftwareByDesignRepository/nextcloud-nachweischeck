@@ -906,6 +906,18 @@ dialog.nw-dialog form {
 	cursor: pointer;
 }
 
+/* Body-mounted overlay armor: core repaints bare <button> width/border/
+   padding/min-height/margin — dialogs appended to document.body lose the
+   bare-class rules above to button:not(.button-vue,…) (0-1-1). */
+dialog.nw-dialog button.nw-dialog__close {
+	width: auto !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 1px solid transparent !important;
+	min-width: var(--nw-touch, 44px) !important;
+	min-height: var(--nw-touch, 44px) !important;
+}
+
 .nw-dialog__close:hover {
 	background: var(--nw-bg-soft);
 	color: var(--nw-text);
