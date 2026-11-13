@@ -802,7 +802,11 @@
 
 /* ── Native dialog (party modal) ───────────────────────────── */
 
-dialog.nw-dialog {
+/* Scoped to body-mounted dialogs (NW.openDialog appends to <body>):
+   pack dialogs inside .nw-page-stack keep the config-transfer pack's own
+   chrome — this width/padding would otherwise out-specify the pack
+   ≤480px full-bleed sheet (native_dialog_margin_reset_uncentered). */
+body > dialog.nw-dialog {
 	border: 1px solid var(--nw-border-strong);
 	border-radius: var(--nw-radius-lg);
 	padding: var(--nw-space-5);
@@ -951,7 +955,7 @@ dialog.nw-dialog button.nw-dialog__close {
 	border-top: 1px solid var(--nw-border);
 }
 
-dialog.nw-dialog--wide {
+body > dialog.nw-dialog--wide {
 	width: min(52rem, calc(100vw - 2 * var(--nw-space-4)));
 }
 

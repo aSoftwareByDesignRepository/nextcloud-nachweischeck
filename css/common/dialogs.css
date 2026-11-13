@@ -54,13 +54,18 @@
    UNSCOPED on purpose: NW.openDialog appends the element to <body>
    (it renders in the top layer), so any #content/#app-content prefix
    here is a dead selector — the dialog ships unstyled. Sizing lives in
-   common/surfaces.css (dialog.nw-dialog width + --wide); never cap
+   common/surfaces.css (body > dialog.nw-dialog width + --wide); never cap
    max-width here or it silently clamps --wide. */
 dialog.nw-dialog:not([open]) {
 	display: none !important;
 }
 
-dialog.nw-dialog[open] {
+/* Scoped to body-mounted dialogs (NW.openDialog appends to <body>):
+   the static config-transfer pack dialogs live inside .nw-page-stack and
+   MUST NOT inherit this margin:auto/inset pin — it out-specifies the
+   pack's ≤480px full-bleed sheet (native_dialog_margin_reset_uncentered
+   second-order cascade). Pack dialogs center via pack .nw-dialog alone. */
+body > dialog.nw-dialog[open] {
 	display: flex;
 	margin: auto;
 	position: fixed;

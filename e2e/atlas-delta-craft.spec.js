@@ -9,6 +9,10 @@
  *   7a8de62 — Projects-first sidebar order restored.
  *   1f70620 — filter-panel l10n coverage + hover-first row-action clicks.
  *   c90b044 — OC.generateUrl routing (functional, covered by web_api lanes).
+ *   5fbdab0 — pack .nw-dialog margin:auto + page-stack >:not(:modal)
+ *     carve-out: painted-geometry proof that the static transfer pack
+ *     dialogs (report/progress) center in the top layer at 1280px and
+ *     full-bleed at ≤480px (native_dialog_margin_reset_uncentered).
  *
  * Every leg pairs an executable assertion with its PNG so the craft is a
  * proof, not a picture: computed-style checks prove the re-scoped rules
@@ -23,6 +27,7 @@
 const { test, expect, devices } = require('@playwright/test');
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { BASE, APP, USERS, loginAs, nwApi } = require('./helpers/auth-guard');
 
@@ -56,6 +61,71 @@ async function shot(page, name, meta) {
 async function goto(page, route) {
 	await page.goto(`${BASE}${APP}${route}`, { waitUntil: 'domcontentloaded' });
 	await page.waitForSelector(READY, { timeout: 45_000 });
+}
+
+const TRANSFER_PASS = `Atlas-Xfer-${MARK}-secret`;
+let transferFilePath = null;
+
+/**
+ * Real .nctransfer fixture: produced by the app's own export endpoint, so the
+ * import preview decrypts honestly (no hand-crafted JSON). Cached per run.
+ */
+async function ensureTransferFile(page) {
+	if (transferFilePath) {
+		return transferFilePath;
+	}
+	const token = await page.evaluate(
+		() => (typeof window.OC !== 'undefined' && window.OC.requestToken)
+			|| document.querySelector('head[data-requesttoken]')?.getAttribute('data-requesttoken')
+			|| '',
+	);
+	const resp = await page.request.post(`${BASE}${APP}/api/admin/transfer/export`, {
+		data: { passphrase: TRANSFER_PASS },
+		headers: { requesttoken: token, 'OCS-APIRequest': 'true' },
+	});
+	expect(resp.ok(), `transfer export failed: ${resp.status()}`).toBeTruthy();
+	const buf = await resp.body();
+	expect(buf.byteLength, 'transfer export returned a tiny body').toBeGreaterThan(200);
+	transferFilePath = path.join(os.tmpdir(), `nw-delta-${MARK}.nctransfer`);
+	fs.writeFileSync(transferFilePath, buf);
+	return transferFilePath;
+}
+
+/** native_dialog_margin_reset_uncentered: NC core's html,body,…,dialog
+ * reset zeroes the UA 'margin:auto' that centers a top-layer <dialog> —
+ * a pack dialog without a margin re-declaration anchors to the viewport
+ * top-left. mode 'centered' proves the pack margin:auto restored both-axis
+ * centering over the dimmed backdrop; mode 'fullbleed' proves the ≤480px
+ * media query margin:0 sheet still wins at narrow widths. */
+async function assertDialogTopLayerGeometry(dialog, mode, where) {
+	const m = await dialog.evaluate((d) => {
+		const r = d.getBoundingClientRect();
+		return { l: r.left, t: r.top, w: r.width, h: r.height, vpW: window.innerWidth, vpH: window.innerHeight };
+	});
+	if (mode === 'centered') {
+		const expL = Math.max(0, (m.vpW - m.w) / 2);
+		const expT = Math.max(0, (m.vpH - m.h) / 2);
+		expect(Math.abs(m.l - expL),
+			`${where}: dialog left ${Math.round(m.l)} ≠ centered ${Math.round(expL)} — margin:auto did not survive the NC reset`)
+			.toBeLessThanOrEqual(2);
+		expect(Math.abs(m.t - expT),
+			`${where}: dialog top ${Math.round(m.t)} ≠ centered ${Math.round(expT)}`)
+			.toBeLessThanOrEqual(2);
+		expect(m.l, `${where}: flush-left top-left anchor regression`).toBeGreaterThan(1);
+	} else {
+		expect(Math.abs(m.l), `${where}: ≤480 full-bleed sheet must pin to the left edge`).toBeLessThanOrEqual(1);
+		expect(m.w, `${where}: ≤480 full-bleed sheet must span viewport width`).toBeGreaterThanOrEqual(m.vpW - 1);
+		expect(m.t, `${where}: ≤480 full-bleed sheet must pin to the top edge`).toBeLessThanOrEqual(1);
+	}
+}
+
+async function assertTransferDialogGeometry(page, selector, where) {
+	const vpW = page.viewportSize()?.width ?? 0;
+	await assertDialogTopLayerGeometry(
+		page.locator(selector),
+		vpW <= 480 ? 'fullbleed' : 'centered',
+		`${where} @${vpW}px`,
+	);
 }
 
 test.describe('ATLAS_DELTA_CRAFT', () => {
@@ -311,5 +381,41 @@ test.describe('ATLAS_DELTA_CRAFT', () => {
 		await shot(page, 'nw-delta-grant-dialog-fieldset-desktop.png', { surface: 'team', dialog: 'grant-auditor', delta: '260e635' });
 		await page.keyboard.press('Escape');
 		await expect(page.locator(DIALOG)).toHaveCount(0, { timeout: 10_000 });
+	});
+
+	test('transfer pack dialogs: margin:auto centers the top layer inside .nw-page-stack (5fbdab0 + >:not(:modal))', async () => {
+		// Both pack <dialog>s are static children of .nw-page-stack on
+		// /settings/transfer — without the pack margin:auto re-declaration
+		// AND the >:not(:modal) carve-out on the stack reset they anchor
+		// flush top-left (native_dialog_margin_reset_uncentered).
+		await page.goto(`${BASE}${APP}/settings/transfer`, { waitUntil: 'domcontentloaded' });
+		await page.waitForSelector('#nw-transfer-export-card', { timeout: 45_000 });
+		const file = await ensureTransferFile(page);
+
+		// Import preview = report dialog (same element hosts the
+		// replace-confirm footer gate in replace mode).
+		await page.setViewportSize({ width: 1280, height: 768 });
+		await page.locator('#nw-transfer-import-passphrase').fill(TRANSFER_PASS);
+		await page.locator('#nw-transfer-file').setInputFiles(file);
+		const report = page.locator('#nw-transfer-report[open]');
+		await expect(report).toBeVisible({ timeout: 30_000 });
+		await assertTransferDialogGeometry(page, '#nw-transfer-report[open]', 'report');
+		await shot(page, 'nw-delta-transfer-report-dialog-desktop.png', { surface: 'settings-transfer', dialog: 'report', viewport: '1280x768', delta: '5fbdab0' });
+
+		// Same open dialog re-measured at ≤480px: the donor-qualified
+		// 'dialog.nw-dialog' media rule must still win — full-bleed sheet.
+		await page.setViewportSize({ width: 375, height: 320 });
+		await assertTransferDialogGeometry(page, '#nw-transfer-report[open]', 'report');
+		await shot(page, 'nw-delta-transfer-report-dialog-mobile.png', { surface: 'settings-transfer', dialog: 'report', viewport: '375x320', delta: '5fbdab0' });
+		await page.setViewportSize({ width: 1280, height: 768 });
+
+		// Confirm queues a real merge apply → progress dialog opens in the
+		// same top layer. It self-closes + reloads on job done, so capture
+		// immediately — no settle delay.
+		await page.locator('#nw-transfer-confirm').click();
+		const progress = page.locator('#nw-transfer-progress[open]');
+		await expect(progress).toBeVisible({ timeout: 15_000 });
+		await assertTransferDialogGeometry(page, '#nw-transfer-progress[open]', 'progress');
+		await shot(page, 'nw-delta-transfer-progress-dialog-desktop.png', { surface: 'settings-transfer', dialog: 'progress', viewport: '1280x768', delta: '5fbdab0' });
 	});
 });
