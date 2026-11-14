@@ -45,6 +45,7 @@ class PageController extends Controller
 		private readonly IURLGenerator $urlGenerator,
 		private readonly IL10N $l10n,
 		private readonly TransferReceiptStore $transferReceipts,
+		private readonly \OCA\NachweisCheck\Db\MobileSeatMapper $seatMapper,
 		private readonly IGroupManager $groupManager,
 	) {
 		parent::__construct($appName, $request);
@@ -142,7 +143,13 @@ class PageController extends Controller
 			'view' => 'settings',
 			'section' => $section,
 		]);
-		AssetRegistrar::register($section === 'transfer' ? '' : 'settings');
+		AssetRegistrar::register(($section === 'transfer' || $section === 'license') ? '' : 'settings');
+		if ($section === 'license') {
+			// Shared license page (synced pack): server-rendered partial, its
+			// own stylesheet + script — the settings SPA is not involved.
+			Util::addStyle('nachweischeck', 'common/license-page');
+			Util::addScript('nachweischeck', 'common/license-page');
+		}
 		if ($section === 'transfer') {
 			// Synced transfer page (test → production): server-rendered
 			// partial, its own stylesheet + bridge script — the settings
@@ -158,6 +165,19 @@ class PageController extends Controller
 			'settingsSection' => $section,
 			'roleLabel' => $this->l10n->t('App admin'),
 		];
+		if ($section === 'license') {
+			$params['licenseStatus'] = $this->license->status();
+			$seatRows = [];
+			foreach ($this->seatMapper->findAllRanked() as $s) {
+				$seatRows[] = [
+					'uid' => $s->getUid(),
+					'assigned_at' => $s->getAssignedAt()?->format(\DateTime::ATOM),
+				];
+			}
+			$params['licenseSeatsList'] = ['data' => $seatRows];
+			$params['urlGenerator'] = $this->urlGenerator;
+			$params['requesttoken'] = \OCP\Util::callRegister();
+		}
 		if ($section === 'transfer') {
 			$params['isSystemAdmin'] = $this->groupManager->isAdmin($user->getUID());
 			$params['transferLastReceipt'] = $this->transferReceipts->lastReceipt();

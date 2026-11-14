@@ -71,16 +71,24 @@ $lastReceipt = is_array($_['transferLastReceipt'] ?? null) ? $_['transferLastRec
 	</p>
 	<?php endif; ?>
 	<form id="nw-transfer-import-form" class="nw-form" novalidate>
-		<fieldset class="nw-form-row nw-fieldset">
+		<fieldset class="nw-form-row nw-fieldset" aria-describedby="nw-transfer-replace-hint">
 			<legend><?php p($l->t('Mode')); ?></legend>
-			<label class="nw-radio">
-				<input type="radio" name="mode" value="merge" checked>
-				<span><strong><?php p($l->t('Merge')); ?></strong> — <?php p($l->t('add and update; nothing is deleted')); ?></span>
-			</label>
-			<label class="nw-radio nw-radio--danger">
-				<input type="radio" name="mode" value="replace" <?php if (!$isSystemAdmin): ?>disabled<?php endif; ?>>
-				<span><strong><?php p($l->t('Replace')); ?></strong> — <?php p($l->t('make identical to the file; prod-only rows are deleted')); ?></span>
-			</label>
+			<div class="nw-choice-cards">
+				<label class="nw-choice-card">
+					<input type="radio" name="mode" value="merge" checked>
+					<span class="nw-choice-card__copy">
+						<span class="nw-choice-card__title"><?php p($l->t('Merge')); ?></span>
+						<span class="nw-choice-card__hint"><?php p($l->t('add and update; nothing is deleted')); ?></span>
+					</span>
+				</label>
+				<label class="nw-choice-card nw-choice-card--danger">
+					<input type="radio" name="mode" value="replace" <?php if (!$isSystemAdmin): ?>disabled<?php endif; ?>>
+					<span class="nw-choice-card__copy">
+						<span class="nw-choice-card__title"><?php p($l->t('Replace')); ?></span>
+						<span class="nw-choice-card__hint"><?php p($l->t('make identical to the file; prod-only rows are deleted')); ?></span>
+					</span>
+				</label>
+			</div>
 			<p class="nw-form-row__hint" id="nw-transfer-replace-hint">
 				<?php if ($isSystemAdmin): ?>
 					<?php p($l->t('Replace needs maintenance mode ON (occ maintenance:mode --on) — you will type REPLACE in the preview to confirm.')); ?>

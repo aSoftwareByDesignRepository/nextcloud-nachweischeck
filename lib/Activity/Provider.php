@@ -37,7 +37,7 @@ class Provider implements IProvider
 		}
 		// Every parsed event must carry an icon — an empty icon string makes
 		// the Activity app's ActivityModel throw and fails the whole stream.
-		$event->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app.svg')));
+		$event->setIcon($this->url->getAbsoluteURL($this->url->imagePath(Application::APP_ID, 'app-dark.svg')));
 		$l = $this->l10nFactory->get(Application::APP_ID, $language);
 		$p = $event->getSubjectParameters();
 		$project = (string)($p[0] ?? '');

@@ -243,7 +243,7 @@ button.nw-stat-tile:hover, button.nw-stat-tile:focus-visible {
 	margin: var(--nw-space-4, 16px) 0 0;
 }
 .nw-pagination__info { font-variant-numeric: var(--nw-tab-num, tabular-nums); color: var(--nw-muted, var(--color-text-maxcontrast)); }
-@media (max-width: 479.98px) {
+@media (max-width: 480px) {
 	.nw-pagination { flex-wrap: wrap; }
 	.nw-pagination > * { flex: 1 1 auto; }
 	.nw-pagination__info { text-align: center; order: -1; flex-basis: 100%; }

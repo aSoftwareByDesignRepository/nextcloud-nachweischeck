@@ -124,6 +124,7 @@ return [
 		['name' => 'adminApi#notifyPref', 'url' => '/api/v1/settings/notify', 'verb' => 'GET'],
 		['name' => 'adminApi#saveNotifyPref', 'url' => '/api/v1/settings/notify', 'verb' => 'PUT'],
 		['name' => 'adminApi#installTemplate', 'url' => '/api/v1/templates/install', 'verb' => 'POST'],
+		['name' => 'adminApi#freeSeatPost', 'url' => '/api/v1/settings/seats/remove', 'verb' => 'POST'],
 		['name' => 'adminApi#freeSeat', 'url' => '/api/v1/settings/seats/{uid}', 'verb' => 'DELETE'],
 
 		// ICS deadline feed (I-08): public token-bound route + admin mgmt

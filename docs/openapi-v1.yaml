@@ -132,6 +132,8 @@ paths:
   /settings/seats:
     get: {tags: [admin]}
     post: {tags: [admin]}
+  /settings/seats/remove:
+    post: {tags: [admin], summary: 'Free a mobile seat by uid in the request body (shared license page)'}
   /settings/seats/{uid}:
     delete: {tags: [admin]}
   /settings/notify:

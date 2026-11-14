@@ -271,6 +271,22 @@ class AdminApiController extends NwApiController
 	}
 
 	#[NoAdminRequired]
+	public function freeSeatPost(): JSONResponse
+	{
+		$user = $this->user();
+		if (!$this->door->isAppAdmin($user)) {
+			throw new ForbiddenException('App admin required.');
+		}
+		$in = $this->params();
+		$target = (string)($in['uid'] ?? $in['userId'] ?? '');
+		if ($target === '') {
+			throw new ValidationException(['uid' => 'User required.']);
+		}
+		$this->seats->free($target, $user->getUID());
+		return $this->ok(['freed' => true]);
+	}
+
+	#[NoAdminRequired]
 	public function freeSeat(string $uid): JSONResponse
 	{
 		$user = $this->user();

@@ -92,6 +92,6 @@ class ActivityProviderTest extends TestCase
 		$this->provider()->parse('en', $event);
 		$this->assertIsString($icon);
 		$this->assertNotSame('', $icon);
-		$this->assertStringContainsString('app.svg', $icon);
+		$this->assertStringContainsString('app-dark.svg', $icon);
 	}
 }

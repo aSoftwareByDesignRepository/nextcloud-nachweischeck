@@ -5,7 +5,13 @@
 include __DIR__ . '/common/page-start.php';
 $section = (string)($_['settingsSection'] ?? 'access');
 ?>
-<?php if ($section === 'transfer'): ?>
+<?php if ($section === 'license'): ?>
+	<!-- Server-rendered shared license page (apps/_shared/license-page) —
+	     the settings SPA renderer does not run on this section. -->
+	<div class="nw-page-stack">
+		<?php include __DIR__ . '/parts/settings/license.php'; ?>
+	</div>
+<?php elseif ($section === 'transfer'): ?>
 	<!-- Server-rendered synced page (apps/_shared/config-transfer) — the
 	     settings SPA renderer does not run on this section. -->
 	<div class="nw-page-stack">

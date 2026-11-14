@@ -760,6 +760,11 @@ OC.L10N.register(
 	"—" : "—",
 	"— choose —" : "— choose —",
 	"— none —" : "— none —",
-	"…or paste CSV" : "…or paste CSV"
+	"…or paste CSV" : "…or paste CSV",
+	"Could not generate a pairing code." : "Could not generate a pairing code.",
+	"Generate a new pairing code for this device? The old code stops working immediately." : "Generate a new pairing code for this device? The old code stops working immediately.",
+	"Generate code" : "Generate code",
+	"New pairing code" : "New pairing code",
+	"New pairing code generated." : "New pairing code generated."
 	}
 );

@@ -26,7 +26,6 @@ final class SettingsNavLabelContractTest extends TestCase
 			}
 		};
 		$m = new \ReflectionMethod(Chrome::class, 'sectionLabel');
-		$m->setAccessible(true);
 		foreach (SettingsCatalog::SECTIONS as $section) {
 			$label = $m->invoke(null, $l10n, $section);
 			self::assertNotSame($section, $label, "section '$section' renders its raw key as the nav label");

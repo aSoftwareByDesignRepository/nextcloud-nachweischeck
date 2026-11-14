@@ -214,57 +214,6 @@
 		});
 	}
 
-	function renderSeats(host) {
-		var region = el('div');
-		region.appendChild(loading());
-		host.appendChild(region);
-		var seatPicker = directoryPicker('seat_uid', 'users', {});
-		var addBtn = el('button', { type: 'button', class: 'nw-btn nw-btn--secondary', text: t('Assign seat') });
-		var listRegion = el('div');
-
-		function paint() {
-			NW.api('/settings/seats').then(function (seats) {
-				listRegion.innerHTML = '';
-				listRegion.appendChild(tableEl([t('User'), t('Assigned'), t('Status'), ''],
-					(seats || []).map(function (s) {
-						var rm = el('button', { type: 'button', class: 'nw-btn nw-btn--small nw-btn--ghost', text: t('Free') });
-						rm.addEventListener('click', function () {
-							NW.api('/settings/seats/' + encodeURIComponent(s.uid), { method: 'DELETE' })
-								.then(function () { NW.toast('success', t('Seat freed.')); paint(); })
-								.catch(NW.handleError);
-						});
-						var badge = s.within_limit
-							? el('span', { class: 'nw-badge nw-badge--success' }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Active') })])
-							: el('span', { class: 'nw-badge nw-badge--warn', title: t('This seat exceeds the current license limit. It stays assigned but has no mobile access until you free a seat or upgrade.') }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Over limit') })]);
-						return [s.uid, NW.fmtDateTime(s.assigned_at), badge, rm];
-					}), t('No seats assigned.')));
-			}).catch(function (e) {
-				listRegion.innerHTML = '';
-				listRegion.appendChild(el('p', { class: 'nw-muted', text: t('Seats unavailable.') }));
-			});
-		}
-
-		addBtn.addEventListener('click', function () {
-			var ids = seatPicker.ids();
-			if (!ids.length) {
-				NW.toast('warn', t('Pick a user first.'));
-				return;
-			}
-			NW.api('/settings/seats', { method: 'POST', json: { uid: ids[0] } })
-				.then(function () { NW.toast('success', t('Seat assigned.')); paint(); })
-				.catch(NW.handleError);
-		});
-
-		region.innerHTML = '';
-		region.appendChild(card(t('Mobile seats'), [
-			el('p', { class: 'nw-muted', text: t('Seats control which users may sign in from the mobile companion.') }),
-			fieldEl(t('User'), seatPicker.node),
-			el('div', { class: 'nw-btn-row' }, [addBtn]),
-			listRegion
-		]));
-		paint();
-	}
-
 	/* ---------- templates ---------- */
 
 	var SKELETON_KINDS = [
@@ -415,105 +364,6 @@
 		return h;
 	}
 
-	/* ---------- license (Pro + mobile seats) ---------- */
-
-	function licenseBadge(st) {
-		var s = st.state;
-		var tier = st.tier;
-		if (tier !== 'pro' && (!s || !s.valid)) {
-			if (s && !s.valid) {
-				return el('span', { class: 'nw-badge nw-badge--danger' }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Expired') })]);
-			}
-			return el('span', { class: 'nw-badge nw-badge--neutral' }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Not configured') })]);
-		}
-		if (s && s.expiresSoon) {
-			return el('span', { class: 'nw-badge nw-badge--warn' }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Active — renew soon') })]);
-		}
-		return el('span', { class: 'nw-badge nw-badge--success' }, [el('span', { class: 'nw-badge__dot' }), el('span', { text: t('Active') })]);
-	}
-
-	function renderLicense(host) {
-		host.appendChild(loading());
-		NW.api('/license').then(function (st) {
-			host.innerHTML = '';
-			var s = st.state || null;
-
-			var rows = [
-				el('div', { class: 'nw-field' }, [
-					el('span', { class: 'nw-field__label', text: t('License') }),
-					licenseBadge(st)
-				])
-			];
-			if (s) {
-				rows.push(el('div', { class: 'nw-field' }, [
-					el('span', { class: 'nw-field__label', text: t('Valid until') }),
-					el('span', { text: s.validUntil + (s.daysRemaining !== null && s.daysRemaining >= 0 ? ' (' + s.daysRemaining + ' ' + t('day(s) remaining') + ')' : '') })
-				]));
-			}
-			rows.push(el('div', { class: 'nw-field' }, [
-				el('span', { class: 'nw-field__label', text: t('Mobile seats used') }),
-				el('span', { text: (st.seats ? st.seats.assigned : 0) + ' / ' + (st.seats ? st.seats.limit : 0) })
-			]));
-			if (st.override) {
-				rows.push(el('p', { class: 'nw-field__hint', text: t('A dev override (nw_license_mode=%s) is active and takes precedence over the stored license.').replace('%s', st.override) }));
-			}
-
-			var keyInput = el('textarea', {
-				class: 'nw-input nw-license-key',
-				name: 'license_key', rows: '3', spellcheck: 'false',
-				'aria-label': t('License key'),
-				placeholder: 'NWC2.…'
-			});
-			var applyBtn = el('button', { type: 'button', class: 'nw-btn nw-btn--primary', text: t('Save license') });
-			applyBtn.addEventListener('click', function () {
-				var key = keyInput.value.trim();
-				if (!key) {
-					NW.toast('warn', t('Paste an NWC2 license key.'));
-					return;
-				}
-				applyBtn.disabled = true;
-				NW.api('/license', { method: 'POST', json: { key: key } })
-					.then(function () { NW.toast('success', t('License saved.')); renderLicense(hostClear()); })
-					.catch(NW.handleError)
-					.finally(function () { applyBtn.disabled = false; });
-			});
-			var actions = [applyBtn];
-			if (s) {
-				var rmBtn = el('button', { type: 'button', class: 'nw-btn nw-btn--danger', text: t('Remove license') });
-				rmBtn.addEventListener('click', function () {
-					NW.confirmDialog(
-						t('Remove this license?'),
-						t('Pro features and mobile seats stop working immediately. Your data stays untouched.'),
-						{ confirmLabel: t('Remove license'), danger: true }
-					).then(function (yes) {
-						if (!yes) { return; }
-						NW.api('/license', { method: 'DELETE' })
-							.then(function () { NW.toast('success', t('License removed.')); renderLicense(hostClear()); })
-							.catch(NW.handleError);
-					});
-				});
-				actions.push(rmBtn);
-			}
-			actions.push(el('a', { class: 'nw-btn nw-btn--secondary', href: st.purchaseUrl || '#', target: '_blank', rel: 'noopener noreferrer', text: t('Purchase or renew') }));
-
-			host.appendChild(card(t('NachweisCheck Pro'), rows.concat([
-				el('p', { class: 'nw-muted', text: t('Pro unlocks multiple active projects, all funder templates, e-invoice parsing, the timesheet sign-off chain, auditor seats and mobile companion seats.') }),
-				el('div', { class: 'nw-field' }, [
-					el('label', { 'for': 'nw-license-key', text: t('License key') }),
-					keyInput,
-					el('p', { class: 'nw-field__hint', text: t('Paste the full key from your license email. Line breaks are OK.') })
-				]),
-				el('div', { class: 'nw-btn-row' }, actions)
-			])));
-			keyInput.id = 'nw-license-key';
-
-			renderSeats(host);
-		}).catch(function (e) {
-			host.innerHTML = '';
-			NW.handleError(e);
-		});
-	}
-
 	/* ---------- notifications ---------- */
 
 	function renderNotifications(host) {
@@ -559,7 +409,6 @@
 		access: renderAccess,
 		templates: renderTemplates,
 		notifications: renderNotifications,
-		license: renderLicense
 	};
 
 	function init() {
