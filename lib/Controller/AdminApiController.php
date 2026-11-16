@@ -374,13 +374,30 @@ class AdminApiController extends NwApiController
 		$q = trim((string)($in['q'] ?? ''));
 		$out = [];
 		if (strlen($q) >= 2) {
-			foreach ($this->userManager->search($q, 8) as $u) {
-				// Deactivated accounts can never sign in — do not offer them.
-				if (!$u->isEnabled()) {
-					continue;
-				}
-				$out[] = ['id' => $u->getUID(), 'label' => $u->getDisplayName() . ' (' . $u->getUID() . ')'];
+			// search() only matches the user id on some backends (uid may be an
+			// e-mail/UUID while admins type names) — merge with display-name
+			// search so people are found either way.
+			$byName = [];
+			try {
+				$byName = (array)$this->userManager->searchDisplayName($q, 16, 0);
+			} catch (\Throwable) {
+				$byName = [];
 			}
+			$merged = [];
+			foreach ([(array)$this->userManager->search($q, 16, 0), $byName] as $batch) {
+				foreach ($batch as $u) {
+					if (!$u->isEnabled()) {
+						// Deactivated accounts can never sign in — do not offer them.
+						continue;
+					}
+					$uid = (string)$u->getUID();
+					if ($uid === '' || isset($merged[$uid])) {
+						continue;
+					}
+					$merged[$uid] = ['id' => $uid, 'label' => $u->getDisplayName() . ' (' . $uid . ')'];
+				}
+			}
+			$out = array_slice(array_values($merged), 0, 8);
 		}
 		return $this->ok($out);
 	}

@@ -729,6 +729,16 @@
 	outline: none;
 }
 
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result--empty {
+	cursor: default;
+	color: var(--nw-muted);
+}
+
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result--empty:hover,
+:is(#app-content.nw-app, .nw-dialog) .nw-picker__result--empty:focus {
+	background: none;
+}
+
 /* ── Callouts (reuses tint tokens; border + icon, not color-only) ── */
 
 #app-content.nw-app .nw-callout {

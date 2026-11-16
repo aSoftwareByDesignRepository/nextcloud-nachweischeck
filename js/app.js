@@ -234,11 +234,24 @@
 			input.focus();
 		}
 
+		function showState(message) {
+			results.innerHTML = '';
+			var li = el('li', { class: 'nw-picker__result nw-picker__result--empty', role: 'presentation', text: message });
+			results.appendChild(li);
+			results.hidden = false;
+			input.setAttribute('aria-expanded', 'true');
+		}
+
 		var doSearch = debounce(function () {
 			var term = input.value.trim();
-			if (term.length < 2) { hideResults(); return; }
+			if (term.length < 2) {
+				if (state.aborter) { state.aborter.abort(); state.aborter = null; }
+				hideResults();
+				return;
+			}
 			if (state.aborter) state.aborter.abort();
 			state.aborter = new AbortController();
+			showState(t('Searching…'));
 			cfg.search(term, state.aborter.signal).then(function (items) {
 				state.items = items;
 				results.innerHTML = '';
@@ -255,11 +268,15 @@
 					});
 					results.appendChild(li);
 				});
-				results.hidden = !items.length;
-				input.setAttribute('aria-expanded', items.length ? 'true' : 'false');
+				if (!items.length) {
+					showState(t('No matching people found.'));
+					return;
+				}
+				results.hidden = false;
+				input.setAttribute('aria-expanded', 'true');
 			}).catch(function (e) {
 				if (e && e.name === 'AbortError') return;
-				hideResults();
+				showState(t('Search failed. Please try again.'));
 			});
 		}, 250);
 

@@ -111,8 +111,7 @@
 			input: input, results: results, chips: chips,
 			selected: opts.selected || [],
 			search: function (term, signal) {
-				return NW.api('/directory/' + endpoint + '?q=' + encodeURIComponent(term), { signal: signal })
-					.catch(function () { return []; });
+				return NW.api('/directory/' + endpoint + '?q=' + encodeURIComponent(term), { signal: signal });
 			},
 			onChange: function () {}
 		});
