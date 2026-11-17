@@ -47,6 +47,7 @@ class PageController extends Controller
 		private readonly TransferReceiptStore $transferReceipts,
 		private readonly \OCA\NachweisCheck\Db\MobileSeatMapper $seatMapper,
 		private readonly IGroupManager $groupManager,
+		private readonly \OCP\IUserManager $userManager,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -169,8 +170,10 @@ class PageController extends Controller
 			$params['licenseStatus'] = $this->license->status();
 			$seatRows = [];
 			foreach ($this->seatMapper->findAllRanked() as $s) {
+				$uid = $s->getUid();
 				$seatRows[] = [
-					'uid' => $s->getUid(),
+					'uid' => $uid,
+					'displayName' => $this->userManager->get($uid)?->getDisplayName() ?: $uid,
 					'assigned_at' => $s->getAssignedAt()?->format(\DateTime::ATOM),
 				];
 			}

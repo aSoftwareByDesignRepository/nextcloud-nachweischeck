@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "%1$d slot dispositivo su %2$d in uso.",
 		"%1$d of %2$d seats assigned": "%1$d di %2$d posti assegnati",
 		"%d open audit items": "%d punti di audit aperti",
-		"%d row(s) need a value on this instance": "%d riga/e richiedono un valore su questa istanza",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d riga/e saltata/e e %d riferimento/i non risolto/i — vedi i gruppi sotto.",
 		"%s due %s": "%s in scadenza il %s",
 		"%s gaps must be closed before submission": "%s lacune devono essere chiuse prima dell'invio",
 		"%s of %s receipts": "%s giustificativi su %s",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s punti richiedono attenzione",
 		"%s — %d open audit items": "%s — %d punti di audit aperti",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d valori legati all’istanza svuotati)",
-		"(%d filtered)": "(%d filtrate)",
-		"(%d secret(s) redacted)": "(%d segreti oscurati)",
-		"(%d unresolved ref)": "(%d riferimenti non risolti)",
 		"(opens in a new tab)": "(si apre in una nuova scheda)",
 		"(unknown — skipped)": "(sconosciuto — saltato)",
 		"20 % tolerance per budget position": "Tolleranza del 20 % per voce di bilancio",
@@ -764,7 +758,6 @@
 		"Viewer": "Visualizzatore",
 		"Waiting for the job…": "In attesa del processo…",
 		"Warning": "Avviso",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Attenzione: %d riga/e verranno eliminate definitivamente, quindi verranno caricati i dati del file.",
 		"What changes in this version?": "Cosa cambia in questa versione?",
 		"Who may open NachweisCheck?": "Chi può aprire NachweisCheck?",
 		"Within plan": "Nel piano",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Hai selezionato %1$d persone ma rimangono solo %2$d posti. Verranno assegnati solo i posti liberi.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Il suo account non può usare NachweisCheck. Chieda a un amministratore di concedere l'accesso.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "La Sua licenza scade entro 30 giorni. Contatti il fornitore per rinnovare.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 valore legato all’istanza svuotato)",
+			"(%n valori legati all’istanza svuotati)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrata)",
+			"(%n filtrate)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 segreto oscurato)",
+			"(%n segreti oscurati)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 riferimento non risolto)",
+			"(%n riferimenti non risolti)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 riferimento non risolto — vedi i gruppi sotto.",
+			"%n riferimenti non risolti — vedi i gruppi sotto."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 riga richiede un valore su questa istanza",
+			"%n righe richiedono un valore su questa istanza"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 riga saltata.",
+			"%n righe saltate."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Attenzione: 1 riga verrà eliminata definitivamente, quindi verranno caricati i dati del file.",
+			"Attenzione: %n righe verranno eliminate definitivamente, quindi verranno caricati i dati del file."
+		],
 		"accepted": "accettato",
 		"active": "attivo",
 		"add and update; nothing is deleted": "aggiungi e aggiorna; niente viene eliminato",
@@ -794,7 +819,6 @@
 		"builtin": "integrato",
 		"closed": "chiuso",
 		"closing": "in chiusura",
-		"day(s) remaining": "giorno/i rimanente/i",
 		"draft": "bozza",
 		"duplicate": "duplicato",
 		"e.g. 1:30, 1,5 h or 90": "p. es. 1:30, 1,5 h o 90",

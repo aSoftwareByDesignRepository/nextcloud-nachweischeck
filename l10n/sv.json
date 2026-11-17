@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "%1$d av %2$d enhetsplatser används.",
 		"%1$d of %2$d seats assigned": "%1$d av %2$d platser tilldelade",
 		"%d open audit items": "%d öppna revisionspunkter",
-		"%d row(s) need a value on this instance": "%d rad(er) behöver ett värde på den här instansen",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d rad(er) hoppades över och %d referens(er) är olösta — se grupperna nedan.",
 		"%s due %s": "%s förfaller %s",
 		"%s gaps must be closed before submission": "%s brister måste åtgärdas före inskickandet",
 		"%s of %s receipts": "%s av %s kvitton",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s punkter kräver uppmärksamhet",
 		"%s — %d open audit items": "%s — %d öppna revisionspunkter",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d instansbundna värden tömda)",
-		"(%d filtered)": "(%d filtrerade)",
-		"(%d secret(s) redacted)": "(%d hemligheter maskerade)",
-		"(%d unresolved ref)": "(%d olösta referenser)",
 		"(opens in a new tab)": "(öppnas i en ny flik)",
 		"(unknown — skipped)": "(okänd — hoppades över)",
 		"20 % tolerance per budget position": "20-%-tolerans per budgetpost",
@@ -167,7 +161,7 @@
 		"Create project": "Skapa projekt",
 		"Create your first funded project — the financing plan comes first, then times and receipts can be booked.": "Skapa ditt första beviljade projekt — finansieringsplanen kommer först, sedan kan tid och kvitton bokföras.",
 		"Currency": "Valuta",
-		"Current license": "Aktuell licens",
+		"Current license": "Nuvarande licens",
 		"Customer ID": "Kund-ID",
 		"DATEV export": "DATEV-export",
 		"Dashboard": "Översikt",
@@ -535,7 +529,7 @@
 		"Project created.": "Projekt skapat.",
 		"Project name": "Projektnamn",
 		"Projects": "Projekt",
-		"Provide this ID when ordering a license so the key can be bound to this server.": "Ange detta ID när beställer en licens så att nyckeln kan bindas till den här servern.",
+		"Provide this ID when ordering a license so the key can be bound to this server.": "Ange detta ID vid licensorder så att nyckeln kan bindas till den här servern.",
 		"Purchase or renew": "Köp eller förnya",
 		"Purchase or renew license": "Köp eller förnya licens",
 		"Purpose": "Ändamål",
@@ -588,7 +582,7 @@
 		"Remove filter": "Ta bort filter",
 		"Remove license": "Ta bort licens",
 		"Remove member": "Ta bort medlem",
-		"Remove mobile seat": "Ta bort mobil plats",
+		"Remove mobile seat": "Ta bort mobilplats",
 		"Remove mobile seat for this person?": "Ta bort mobilplatsen för den här personen?",
 		"Remove position": "Ta bort post",
 		"Remove row": "Ta bort rad",
@@ -764,7 +758,6 @@
 		"Viewer": "Läsare",
 		"Waiting for the job…": "Väntar på arbetet…",
 		"Warning": "Varning",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Varning: %d rad(er) raderas permanent, sedan läses filens data in.",
 		"What changes in this version?": "Vad ändras i denna version?",
 		"Who may open NachweisCheck?": "Vem får öppna NachweisCheck?",
 		"Within plan": "Inom plan",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Du valde %1$d personer men endast %2$d platser återstår. Endast lediga platser tilldelas.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Ditt konto får inte använda NachweisCheck. Be en administratör om åtkomst.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Din licens går ut inom 30 dagar. Kontakta din leverantör för att förnya.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 instansbundet värde tömt)",
+			"(%n instansbundna värden tömda)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrerad)",
+			"(%n filtrerade)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 hemlighet maskerad)",
+			"(%n hemligheter maskerade)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 olöst referens)",
+			"(%n olösta referenser)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 referens är olöst — se grupperna nedan.",
+			"%n referenser är olösta — se grupperna nedan."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 rad behöver ett värde på den här instansen",
+			"%n rader behöver ett värde på den här instansen"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 rad hoppades över.",
+			"%n rader hoppades över."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Varning: 1 rad raderas permanent, sedan läses filens data in.",
+			"Varning: %n rader raderas permanent, sedan läses filens data in."
+		],
 		"accepted": "accepterad",
 		"active": "aktiv",
 		"add and update; nothing is deleted": "lägg till och uppdatera; inget raderas",
@@ -794,7 +819,6 @@
 		"builtin": "inbyggd",
 		"closed": "stängd",
 		"closing": "under avslut",
-		"day(s) remaining": "dag(ar) kvar",
 		"draft": "utkast",
 		"duplicate": "dubblett",
 		"e.g. 1:30, 1,5 h or 90": "t.ex. 1:30, 1,5 h eller 90",

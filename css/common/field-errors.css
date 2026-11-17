@@ -2,14 +2,14 @@
    (CheckFieldErrors.markValidationFields) from the server's localized
    `fields` map (WCAG 3.3.1/3.3.3). Synced from
    apps/_shared/field-errors/field-errors.css — nw = app prefix. */
-#app-content.nw-app .nw-input[aria-invalid="true"],
-#app-content.nw-app input[aria-invalid="true"],
-#app-content.nw-app select[aria-invalid="true"],
-#app-content.nw-app textarea[aria-invalid="true"] {
+:is(#app-content.nw-app, .nw-dialog) .nw-input[aria-invalid="true"],
+:is(#app-content.nw-app, .nw-dialog) input[aria-invalid="true"],
+:is(#app-content.nw-app, .nw-dialog) select[aria-invalid="true"],
+:is(#app-content.nw-app, .nw-dialog) textarea[aria-invalid="true"] {
 	border-color: var(--color-error-text, var(--nw-danger-ink, var(--color-error)));
 	box-shadow: 0 0 0 1px var(--color-error-text, var(--nw-danger-ink, var(--color-error)));
 }
-#app-content.nw-app .nw-field-error {
+:is(#app-content.nw-app, .nw-dialog) .nw-field-error {
 	margin: 0.25rem 0 0;
 	font-size: 0.875rem;
 	font-weight: 600;

@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "%1$d de %2$d espacios para dispositivos en uso.",
 		"%1$d of %2$d seats assigned": "%1$d de %2$d plazas asignadas",
 		"%d open audit items": "%d puntos de auditoría abiertos",
-		"%d row(s) need a value on this instance": "%d fila(s) necesitan un valor en esta instancia",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d fila(s) omitida(s) y %d referencia(s) sin resolver — consulta los grupos siguientes.",
 		"%s due %s": "%s vence el %s",
 		"%s gaps must be closed before submission": "%s carencias deben cerrarse antes de la presentación",
 		"%s of %s receipts": "%s justificantes de %s",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s puntos necesitan atención",
 		"%s — %d open audit items": "%s — %d puntos de auditoría abiertos",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d valor(es) ligados a la instancia vaciados)",
-		"(%d filtered)": "(%d filtrada(s))",
-		"(%d secret(s) redacted)": "(%d secreto(s) ocultado(s))",
-		"(%d unresolved ref)": "(%d referencia(s) sin resolver)",
 		"(opens in a new tab)": "(se abre en una pestaña nueva)",
 		"(unknown — skipped)": "(desconocido — omitido)",
 		"20 % tolerance per budget position": "Tolerancia del 20 % por partida presupuestaria",
@@ -270,7 +264,7 @@
 		"Flat rate — threshold not applicable": "Tarifa fija — umbral no aplicable",
 		"Flat-rate funding": "Financiación a tanto alzado",
 		"For user": "Para el usuario",
-		"Format: %1$s followed by a signed payload. One key per organisation.": "Formato: %1$s seguido de una carga firmada. Una clave por organización.",
+		"Format: %1$s followed by a signed payload. One key per organisation.": "Formato: %1$s seguido de una carga útil firmada. Una clave por organización.",
 		"Free": "Liberar",
 		"From": "Desde",
 		"From position": "Partida de origen",
@@ -764,7 +758,6 @@
 		"Viewer": "Lector",
 		"Waiting for the job…": "Esperando el trabajo…",
 		"Warning": "Aviso",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Advertencia: %d fila(s) se eliminarán permanentemente y después se cargarán los datos del archivo.",
 		"What changes in this version?": "¿Qué cambia en esta versión?",
 		"Who may open NachweisCheck?": "¿Quién puede abrir NachweisCheck?",
 		"Within plan": "Dentro del plan",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Seleccionaste %1$d personas pero solo quedan %2$d plazas. Solo se asignarán las plazas libres.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Su cuenta no puede usar NachweisCheck. Pida a un administrador que conceda el acceso.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Su licencia caduca en 30 días. Contacte con su proveedor para renovarla.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 valor ligado a la instancia vaciado)",
+			"(%n valores ligados a la instancia vaciados)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrada)",
+			"(%n filtradas)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 secreto ocultado)",
+			"(%n secretos ocultados)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 referencia sin resolver)",
+			"(%n referencias sin resolver)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 referencia sin resolver — consulta los grupos siguientes.",
+			"%n referencias sin resolver — consulta los grupos siguientes."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 fila necesita un valor en esta instancia",
+			"%n filas necesitan un valor en esta instancia"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 fila omitida.",
+			"%n filas omitidas."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Advertencia: 1 fila se eliminará permanentemente y después se cargarán los datos del archivo.",
+			"Advertencia: %n filas se eliminarán permanentemente y después se cargarán los datos del archivo."
+		],
 		"accepted": "aceptado",
 		"active": "activo",
 		"add and update; nothing is deleted": "añadir y actualizar; nada se elimina",
@@ -794,7 +819,6 @@
 		"builtin": "integrado",
 		"closed": "cerrado",
 		"closing": "en cierre",
-		"day(s) remaining": "día(s) restante(s)",
 		"draft": "borrador",
 		"duplicate": "duplicado",
 		"e.g. 1:30, 1,5 h or 90": "p. ej. 1:30, 1,5 h o 90",

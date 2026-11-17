@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "已使用 %2$d 個裝置名額中的 %1$d 個。",
 		"%1$d of %2$d seats assigned": "已指派 %2$d 個席位中的 %1$d 個",
 		"%d open audit items": "%d 個待處理稽核項",
-		"%d row(s) need a value on this instance": "%d 列需要在此實例上填寫值",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "已略過 %d 列，%d 個參照未能解析——請查看下方群組。",
 		"%s due %s": "%s 於 %s 到期",
 		"%s gaps must be closed before submission": "提交前須補齊 %s 處缺漏",
 		"%s of %s receipts": "%s / %s 張票據",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s 項需要處理",
 		"%s — %d open audit items": "%s——%d 個待處理稽核項",
 		"%s — %s (%s)": "%s——%s（%s）",
-		"(%d env-bound value(s) emptied)": "（已清空 %d 個實例綁定值）",
-		"(%d filtered)": "（已篩選 %d 項）",
-		"(%d secret(s) redacted)": "（已遮蔽 %d 個密鑰）",
-		"(%d unresolved ref)": "（%d 個參照未解析）",
 		"(opens in a new tab)": "（在新標籤頁中開啟）",
 		"(unknown — skipped)": "（未知——已跳過）",
 		"20 % tolerance per budget position": "每個預算職位 20% 容差",
@@ -764,7 +758,6 @@
 		"Viewer": "檢視者",
 		"Waiting for the job…": "正在等待任務……",
 		"Warning": "警告",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "警告：%d 列將被永久刪除，然後載入檔案資料。",
 		"What changes in this version?": "此版本有何變化？",
 		"Who may open NachweisCheck?": "誰可以開啟 NachweisCheck？",
 		"Within plan": "計劃內",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "您選擇了 %1$d 人，但僅剩 %2$d 個席位。只會指派空閒席位。",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "您的帳號無權使用 NachweisCheck。請聯絡管理員授予訪問授權。",
 		"Your license expires within 30 days. Contact your vendor to renew.": "您的授權將在 30 天內到期。請聯絡供應商續訂。",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"（已清空 1 個實例綁定值）",
+			"（已清空 %n 個實例綁定值）"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"（已篩選 1 項）",
+			"（已篩選 %n 項）"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"（已遮蔽 1 個密鑰）",
+			"（已遮蔽 %n 個密鑰）"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"（1 個參照未解析）",
+			"（%n 個參照未解析）"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 個參照未能解析——請查看下方群組。",
+			"%n 個參照未能解析——請查看下方群組。"
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 列需要在此實例上填寫值",
+			"%n 列需要在此實例上填寫值"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"已略過 1 列。",
+			"已略過 %n 列。"
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"警告：1 列將被永久刪除，然後載入檔案資料。",
+			"警告：%n 列將被永久刪除，然後載入檔案資料。"
+		],
 		"accepted": "已接受",
 		"active": "生效中",
 		"add and update; nothing is deleted": "新增並更新；不刪除任何內容",
@@ -794,7 +819,6 @@
 		"builtin": "內建",
 		"closed": "已關閉",
 		"closing": "關閉中",
-		"day(s) remaining": "剩餘天數",
 		"draft": "草稿",
 		"duplicate": "重複",
 		"e.g. 1:30, 1,5 h or 90": "例如 1:30、1.5 小時或 90",

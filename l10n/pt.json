@@ -1,10 +1,8 @@
 {
 	"translations": {
-		"%1$d of %2$d device slots in use.": "%1$d de %2$d espaços para dispositivos em uso.",
+		"%1$d of %2$d device slots in use.": "%1$d de %2$d lugares para dispositivos em uso.",
 		"%1$d of %2$d seats assigned": "%1$d de %2$d lugares atribuídos",
 		"%d open audit items": "%d pontos de auditoria em aberto",
-		"%d row(s) need a value on this instance": "%d linha(s) precisam de um valor nesta instância",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d linha(s) ignorada(s) e %d referência(s) por resolver — vê os grupos abaixo.",
 		"%s due %s": "%s vence em %s",
 		"%s gaps must be closed before submission": "%s lacunas têm de ser fechadas antes da submissão",
 		"%s of %s receipts": "%s comprovativos de %s",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s pontos precisam de atenção",
 		"%s — %d open audit items": "%s — %d pontos de auditoria em aberto",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d valor(es) ligados à instância esvaziados)",
-		"(%d filtered)": "(%d filtrada(s))",
-		"(%d secret(s) redacted)": "(%d segredo(s) ocultado(s))",
-		"(%d unresolved ref)": "(%d referência(s) por resolver)",
 		"(opens in a new tab)": "(abre num novo separador)",
 		"(unknown — skipped)": "(desconhecido — ignorado)",
 		"20 % tolerance per budget position": "Tolerância de 20 % por posição orçamental",
@@ -52,7 +46,7 @@
 		"Additional invoiceable options": "Opções faturáveis adicionais",
 		"Admin": "Administração do projeto",
 		"All": "Todos",
-		"All device slots are in use. Revoke a device or upgrade your license.": "Todos os espaços para dispositivos estão em uso. Revoga um dispositivo ou aumenta a tua licença.",
+		"All device slots are in use. Revoke a device or upgrade your license.": "Todos os lugares para dispositivos estão em uso. Revoga um dispositivo ou aumenta a tua licença.",
 		"All mobile seats are assigned. Remove a user or upgrade your license.": "Todos os lugares móveis são atribuídos. Remova um utilizador ou atualize a sua licença.",
 		"Allocated": "Atribuído",
 		"Allowed groups": "Grupos permitidos",
@@ -482,7 +476,7 @@
 		"Pack key": "Chave do pacote",
 		"Pack name": "Nome do pacote",
 		"Packages and terms:": "Pacotes e condições:",
-		"Pair devices from the linked administration area. Each paired device uses one license slot.": "Emparelha dispositivos a partir da área de administração ligada. Cada dispositivo emparelhado usa um espaço de licença.",
+		"Pair devices from the linked administration area. Each paired device uses one license slot.": "Emparelha dispositivos a partir da área de administração ligada. Cada dispositivo emparelhado usa um lugar de licença.",
 		"Parse": "Ler",
 		"Parse e-invoice": "Ler fatura eletrónica",
 		"Passphrase generated and copied.": "Frase-passe gerada e copiada.",
@@ -764,7 +758,6 @@
 		"Viewer": "Leitor",
 		"Waiting for the job…": "À espera da tarefa…",
 		"Warning": "Aviso",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Aviso: %d linha(s) serão eliminadas permanentemente e, depois, os dados do ficheiro serão carregados.",
 		"What changes in this version?": "O que muda nesta versão?",
 		"Who may open NachweisCheck?": "Quem pode abrir o NachweisCheck?",
 		"Within plan": "Dentro do plano",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Selecionou %1$d pessoas mas restam apenas %2$d lugares. Apenas os lugares livres serão atribuídos.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "A sua conta não pode usar o NachweisCheck. Peça a um administrador para conceder acesso.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "A sua licença expira em 30 dias. Entre em contacto com seu fornecedor para renovar.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 valor ligado à instância esvaziado)",
+			"(%n valores ligados à instância esvaziados)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrada)",
+			"(%n filtradas)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 segredo ocultado)",
+			"(%n segredos ocultados)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 referência por resolver)",
+			"(%n referências por resolver)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 referência por resolver — vê os grupos abaixo.",
+			"%n referências por resolver — vê os grupos abaixo."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 linha precisa de um valor nesta instância",
+			"%n linhas precisam de um valor nesta instância"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 linha ignorada.",
+			"%n linhas ignoradas."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Aviso: 1 linha será eliminada permanentemente e, depois, os dados do ficheiro serão carregados.",
+			"Aviso: %n linhas serão eliminadas permanentemente e, depois, os dados do ficheiro serão carregados."
+		],
 		"accepted": "aceite",
 		"active": "ativo",
 		"add and update; nothing is deleted": "adicionar e atualizar; nada é eliminado",
@@ -794,7 +819,6 @@
 		"builtin": "integrado",
 		"closed": "fechado",
 		"closing": "em encerramento",
-		"day(s) remaining": "dia(s) restante(s)",
 		"draft": "rascunho",
 		"duplicate": "duplicado",
 		"e.g. 1:30, 1,5 h or 90": "p. ex. 1:30, 1,5 h ou 90",

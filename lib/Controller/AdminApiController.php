@@ -278,7 +278,7 @@ class AdminApiController extends NwApiController
 			throw new ForbiddenException('App admin required.');
 		}
 		$in = $this->params();
-		$target = (string)($in['uid'] ?? $in['userId'] ?? '');
+		$target = trim((string)($in['uid'] ?? $in['userId'] ?? ''));
 		if ($target === '') {
 			throw new ValidationException(['uid' => 'User required.']);
 		}

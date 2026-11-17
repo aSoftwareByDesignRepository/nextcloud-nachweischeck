@@ -1,10 +1,8 @@
 {
 	"translations": {
-		"%1$d of %2$d device slots in use.": "Użyto %1$d z %2$d miejsc na urządzenia.",
+		"%1$d of %2$d device slots in use.": "Użyto %1$d z %2$d miejsc dla urządzeń.",
 		"%1$d of %2$d seats assigned": "%1$d z %2$d miejsc przypisanych",
 		"%d open audit items": "%d otwartych punktów audytowych",
-		"%d row(s) need a value on this instance": "%d wierszy wymaga wartości na tej instancji",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "Pominięto %d wierszy i nierozwiązano %d odwołań — zobacz grupy poniżej.",
 		"%s due %s": "%s — termin %s",
 		"%s gaps must be closed before submission": "%s luk trzeba zamknąć przed złożeniem",
 		"%s of %s receipts": "%s z %s dowodów",
@@ -16,16 +14,12 @@
 		"%s things need attention": "%s pozycji wymaga uwagi",
 		"%s — %d open audit items": "%s — %d otwartych punktów audytowych",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d opróżnione wartości związane z instancją)",
-		"(%d filtered)": "(%d odfiltrowane)",
-		"(%d secret(s) redacted)": "(%d ukryte sekrety)",
-		"(%d unresolved ref)": "(%d nierozwiązane odwołania)",
 		"(opens in a new tab)": "(otwiera w nowej karcie)",
 		"(unknown — skipped)": "(nieznane — pominięto)",
 		"20 % tolerance per budget position": "Tolerancja 20 % na pozycję budżetową",
 		"A dev override (nw_license_mode=%s) is active and takes precedence over the stored license.": "Aktywne jest deweloperskie nadpisanie (nw_license_mode=%s), które ma pierwszeństwo przed zapisaną licencją.",
 		"A justification is required.": "Wymagane jest uzasadnienie.",
-		"A license key is stored, but this server cannot verify its signature with the vendor public key. The companion apps will reject the license until the key was signed with the matching vendor signing key. Re-apply a correctly signed license, or contact support if this persists after an app update.": "Klucz licencyjny jest zapisany, ale ten serwer nie może zweryfikować jego podpisu kluczem publicznym dostawcy. Aplikacje towarzyszące odrzucą licencję, dopóki klucz nie zostanie podpisany pasującym kluczem podpisującym dostawcy. Zastosuj ponownie poprawnie podpisaną licencję albo skontaktuj się z pomocą, jeśli problem nadal występuje po aktualizacji aplikacji.",
+		"A license key is stored, but this server cannot verify its signature with the vendor public key. The companion apps will reject the license until the key was signed with the matching vendor signing key. Re-apply a correctly signed license, or contact support if this persists after an app update.": "Klucz licencyjny jest zapisany, ale ten serwer nie może zweryfikować jego podpisu kluczem publicznym dostawcy. Aplikacje towarzyszące odrzucą licencję, dopóki klucz nie zostanie podpisany pasującym kluczem podpisującym dostawcy. Zastosuj ponownie poprawnie podpisaną licencję albo skontaktuj się ze wsparciem, jeśli problem nadal występuje po aktualizacji aplikacji.",
 		"A pre-flight check failed — see the report for details.": "Kontrola wstępna nie powiodła się — szczegóły w raporcie.",
 		"A scoped change with acceptance criteria and a delivery date — billed as project work.": "Wydzielona zmiana z kryteriami akceptacji i datą dostarczenia — rozliczana jako praca projektowa.",
 		"A transfer started by %s is already running.": "Transfer uruchomiony przez %s jest już w toku.",
@@ -52,7 +46,7 @@
 		"Additional invoiceable options": "Dodatkowe opcje fakturowane",
 		"Admin": "Administracja projektu",
 		"All": "Wszystkie",
-		"All device slots are in use. Revoke a device or upgrade your license.": "Wszystkie miejsca na urządzenia są zajęte. Odwołaj urządzenie albo rozszerz licencję.",
+		"All device slots are in use. Revoke a device or upgrade your license.": "Wszystkie miejsca dla urządzeń są zajęte. Odwołaj urządzenie albo rozszerz licencję.",
 		"All mobile seats are assigned. Remove a user or upgrade your license.": "Wszystkie miejsca mobilne są przypisane. Usuń użytkownika lub uaktualnij licencję.",
 		"Allocated": "Przydzielone",
 		"Allowed groups": "Dozwolone grupy",
@@ -167,7 +161,7 @@
 		"Create project": "Utwórz projekt",
 		"Create your first funded project — the financing plan comes first, then times and receipts can be booked.": "Utwórz pierwszy projekt grantowy — najpierw plan finansowania, potem można księgować czas i dowody.",
 		"Currency": "Waluta",
-		"Current license": "Current licencja",
+		"Current license": "Bieżąca licencja",
 		"Customer ID": "ID klienta",
 		"DATEV export": "Eksport DATEV",
 		"Dashboard": "Pulpit",
@@ -472,7 +466,7 @@
 		"Open work packages": "Otwórz pakiety robocze",
 		"Open — every Nextcloud user": "Otwarte — każdy użytkownik Nextcloud",
 		"Optional — an external auditor without an NC account reads via the grant token.": "Opcjonalnie — zewnętrzny audytor bez konta NC czyta przez token dostępu.",
-		"Organisation license": "Organisation licencja",
+		"Organisation license": "Licencja organizacji",
 		"Outcome": "Wynik",
 		"Over 120 % — funder approval required": "Ponad 120 % — wymagane zatwierdzenie grantodawcy",
 		"Over limit": "Ponad limit",
@@ -535,7 +529,7 @@
 		"Project created.": "Projekt utworzony.",
 		"Project name": "Nazwa projektu",
 		"Projects": "Projekty",
-		"Provide this ID when ordering a license so the key can be bound to this server.": "Podaj ten identyfikator przy zamawianiu licencji, aby klucz mógł zostać powiązany z tym serwerem.",
+		"Provide this ID when ordering a license so the key can be bound to this server.": "Podaj ten identyfikator przy zamówieniu licencji, aby klucz mógł zostać powiązany z tym serwerem.",
 		"Purchase or renew": "Kup lub odnów",
 		"Purchase or renew license": "Kup lub odnów licencję",
 		"Purpose": "Cel",
@@ -634,10 +628,10 @@
 		"Salary period (YYYY-MM)": "Okres stawki (RRRR-MM)",
 		"Salary receipt": "Dowód płacowy",
 		"Save": "Zapisz",
-		"Save license": "Zapisz licencja",
+		"Save license": "Zapisz licencję",
 		"Save positions": "Zapisz pozycje",
 		"Saved.": "Zapisano.",
-		"Saving…": "Zapisz…",
+		"Saving…": "Zapisywanie…",
 		"Schedule": "Harmonogram",
 		"Scope": "Zakres",
 		"Search by name or login…": "Szukaj po nazwisku lub loginie…",
@@ -681,7 +675,7 @@
 		"Start closing": "Rozpocznij zamykanie",
 		"Starting…": "Rozpoczynanie…",
 		"State": "Stan",
-		"Status": "Stan",
+		"Status": "Status",
 		"Strong passphrase.": "Silne hasło.",
 		"Submit": "Złóż",
 		"Subscribe in any calendar client — deadlines only, token-bound.": "Subskrybuj w dowolnym kliencie kalendarza — tylko terminy, związane z tokenem.",
@@ -704,7 +698,7 @@
 		"This file was exported from a newer app version. Update this app first.": "Ten plik pochodzi z nowszej wersji aplikacji. Najpierw zaktualizuj aplikację.",
 		"This file was exported from this instance.": "Ten plik pochodzi z tej instancji.",
 		"This seat exceeds the current license limit. It stays assigned but has no mobile access until you free a seat or upgrade.": "To miejsce przekracza bieżący limit licencji. Pozostaje przydzielone, ale bez dostępu mobilnego, dopóki nie zwolnisz miejsca lub nie rozszerzysz licencji.",
-		"This server’s Nextcloud instance ID (for support / sales reference). Licenses are not instance-bound.": "ID instancji Nextcloud tego serwera (dla pomocy technicznej / sprzedaży). Licencje nie są powiązane z instancją.",
+		"This server’s Nextcloud instance ID (for support / sales reference). Licenses are not instance-bound.": "ID instancji Nextcloud tego serwera (dla wsparcia / sprzedaży). Licencje nie są powiązane z instancją.",
 		"This token is shown only once. Paste it into the companion app on the device.": "Ten token jest wyświetlany tylko raz. Wklej go w aplikacji towarzyszącej na urządzeniu.",
 		"This will update %d settings and %d rows — nothing is deleted.": "Spowoduje to aktualizację %d ustawień i %d wierszy — nic nie zostanie usunięte.",
 		"Time": "Czas",
@@ -764,7 +758,6 @@
 		"Viewer": "Obserwator",
 		"Waiting for the job…": "Oczekiwanie na zadanie…",
 		"Warning": "Ostrzeżenie",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Ostrzeżenie: %d wierszy zostanie trwale usuniętych, a następnie dane z pliku zostaną wczytane.",
 		"What changes in this version?": "Co się zmienia w tej wersji?",
 		"Who may open NachweisCheck?": "Kto może otwierać NachweisCheck?",
 		"Within plan": "W ramach planu",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Wybrano %1$d osób, ale pozostało tylko %2$d miejsc. Przypisane zostaną tylko wolne miejsca.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "To konto nie może używać NachweisCheck. Poproś administratora o przyznanie dostępu.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Licencja wygaśnie w ciągu 30 dni. Skontaktuj się z dostawcą w sprawie odnowienia.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 opróżniona wartość związana z instancją)",
+			"(%n opróżnionych wartości związanych z instancją)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 odfiltrowane)",
+			"(%n odfiltrowanych)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 ukryty sekret)",
+			"(%n ukrytych sekretów)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 nierozwiązane odwołanie)",
+			"(%n nierozwiązanych odwołań)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"Nierozwiązano 1 odwołanie — zobacz grupy poniżej.",
+			"Nierozwiązano %n odwołań — zobacz grupy poniżej."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 wiersz wymaga wartości na tej instancji",
+			"%n wierszy wymaga wartości na tej instancji"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"Pominięto 1 wiersz.",
+			"Pominięto %n wierszy."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Ostrzeżenie: 1 wiersz zostanie trwale usunięty, a następnie dane z pliku zostaną wczytane.",
+			"Ostrzeżenie: %n wierszy zostanie trwale usuniętych, a następnie dane z pliku zostaną wczytane."
+		],
 		"accepted": "przyjęte",
 		"active": "aktywny",
 		"add and update; nothing is deleted": "dodaj i zaktualizuj; nic nie jest usuwane",
@@ -794,7 +819,6 @@
 		"builtin": "wbudowane",
 		"closed": "zamknięte",
 		"closing": "w zamykaniu",
-		"day(s) remaining": "dni pozostało",
 		"draft": "wersja robocza",
 		"duplicate": "duplikat",
 		"e.g. 1:30, 1,5 h or 90": "np. 1:30, 1,5 h lub 90",

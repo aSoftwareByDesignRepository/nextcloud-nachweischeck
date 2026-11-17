@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "%1$d av %2$d enhetsplasser i bruk.",
 		"%1$d of %2$d seats assigned": "%1$d av %2$d plasser tildelt",
 		"%d open audit items": "%d åpne revisjonspunkter",
-		"%d row(s) need a value on this instance": "%d rad(er) trenger en verdi på denne instansen",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d rad(er) hoppet over og %d referanse(r) uløst — se gruppene nedenfor.",
 		"%s due %s": "%s forfaller %s",
 		"%s gaps must be closed before submission": "%s hull må lukkes før innsending",
 		"%s of %s receipts": "%s av %s bilag",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s punkter trenger oppmerksomhet",
 		"%s — %d open audit items": "%s — %d åpne revisjonspunkter",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d instansbundne verdier tømt)",
-		"(%d filtered)": "(%d filtrert)",
-		"(%d secret(s) redacted)": "(%d hemmeligheter sladdet)",
-		"(%d unresolved ref)": "(%d uløste referanser)",
 		"(opens in a new tab)": "(åpnes i en ny fane)",
 		"(unknown — skipped)": "(ukjent — hoppet over)",
 		"20 % tolerance per budget position": "20-%-toleranse per budsjettpost",
@@ -167,7 +161,7 @@
 		"Create project": "Opprett prosjekt",
 		"Create your first funded project — the financing plan comes first, then times and receipts can be booked.": "Opprett ditt første bevilgede prosjekt — finansieringsplanen kommer først, deretter kan tid og bilag bokføres.",
 		"Currency": "Valuta",
-		"Current license": "Gjeldende lisens",
+		"Current license": "Nåværende lisens",
 		"Customer ID": "Kunde-ID",
 		"DATEV export": "DATEV-eksport",
 		"Dashboard": "Oversikt",
@@ -535,7 +529,7 @@
 		"Project created.": "Prosjekt opprettet.",
 		"Project name": "Prosjektnavn",
 		"Projects": "Prosjekter",
-		"Provide this ID when ordering a license so the key can be bound to this server.": "Oppgi denne ID-en når bestiller en lisens, så nøkkelen kan knyttes til denne serveren.",
+		"Provide this ID when ordering a license so the key can be bound to this server.": "Oppgi denne ID-en når du bestiller en lisens, så nøkkelen kan knyttes til denne serveren.",
 		"Purchase or renew": "Kjøp eller forny",
 		"Purchase or renew license": "Kjøp eller forny lisens",
 		"Purpose": "Formål",
@@ -764,7 +758,6 @@
 		"Viewer": "Leser",
 		"Waiting for the job…": "Venter på jobben…",
 		"Warning": "Advarsel",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Advarsel: %d rad(er) slettes permanent, deretter lastes fildataene inn.",
 		"What changes in this version?": "Hva endres i denne versjonen?",
 		"Who may open NachweisCheck?": "Hvem kan åpne NachweisCheck?",
 		"Within plan": "Innenfor plan",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Du valgte %1$d personer, men bare %2$d plasser gjenstår. Kun ledige plasser tildeles.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Kontoen din kan ikke bruke NachweisCheck. Be en administrator om tilgang.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Lisensen din utløper innen 30 dager. Kontakt leverandøren for å fornye.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 instansbunden verdi tømt)",
+			"(%n instansbundne verdier tømt)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrert)",
+			"(%n filtrert)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 hemmelighet sladdet)",
+			"(%n hemmeligheter sladdet)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 uløst referanse)",
+			"(%n uløste referanser)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 referanse uløst — se gruppene nedenfor.",
+			"%n referanser uløst — se gruppene nedenfor."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 rad trenger en verdi på denne instansen",
+			"%n rader trenger en verdi på denne instansen"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 rad hoppet over.",
+			"%n rader hoppet over."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Advarsel: 1 rad slettes permanent, deretter lastes fildataene inn.",
+			"Advarsel: %n rader slettes permanent, deretter lastes fildataene inn."
+		],
 		"accepted": "akseptert",
 		"active": "aktiv",
 		"add and update; nothing is deleted": "legg til og oppdater; ingenting slettes",
@@ -794,7 +819,6 @@
 		"builtin": "innebygd",
 		"closed": "lukket",
 		"closing": "under avslutning",
-		"day(s) remaining": "dag(er) igjen",
 		"draft": "utkast",
 		"duplicate": "duplikat",
 		"e.g. 1:30, 1,5 h or 90": "f.eks. 1:30, 1,5 t eller 90",

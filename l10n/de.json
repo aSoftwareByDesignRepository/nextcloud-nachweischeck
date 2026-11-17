@@ -1,10 +1,8 @@
 {
 	"translations": {
 		"%1$d of %2$d device slots in use.": "%1$d von %2$d Geräteplätzen belegt.",
-		"%1$d of %2$d seats assigned": "%1$d von %2$d Sitzen belegt",
+		"%1$d of %2$d seats assigned": "%1$d von %2$d Plätzen belegt",
 		"%d open audit items": "%d offene Prüfpunkte",
-		"%d row(s) need a value on this instance": "%d Zeile(n) benötigen einen Wert auf dieser Instanz",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d Zeile(n) übersprungen und %d Verweis(e) unaufgelöst — siehe die Gruppen unten.",
 		"%s due %s": "%s fällig %s",
 		"%s gaps must be closed before submission": "%s Lücken müssen vor der Einreichung geschlossen werden",
 		"%s of %s receipts": "%s von %s Belegen",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s Punkte brauchen Aufmerksamkeit",
 		"%s — %d open audit items": "%s — %d offene Prüfpunkte",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d instanzgebundene Werte geleert)",
-		"(%d filtered)": "(%d gefiltert)",
-		"(%d secret(s) redacted)": "(%d Geheimnis(se) geschwärzt)",
-		"(%d unresolved ref)": "(%d unaufgelöste Verweise)",
 		"(opens in a new tab)": "(öffnet in neuem Tab)",
 		"(unknown — skipped)": "(unbekannt — übersprungen)",
 		"20 % tolerance per budget position": "20-%-Toleranz je Einzelansatz",
@@ -53,7 +47,7 @@
 		"Admin": "Projektverwaltung",
 		"All": "Alle",
 		"All device slots are in use. Revoke a device or upgrade your license.": "Alle Geräteplätze sind belegt. Entferne ein Gerät oder erweitere deine Lizenz.",
-		"All mobile seats are assigned. Remove a user or upgrade your license.": "Alle Mobile-Sitze sind belegt. Entferne einen Benutzer oder erweitere die Lizenz.",
+		"All mobile seats are assigned. Remove a user or upgrade your license.": "Alle Mobile-Plätze sind belegt. Entferne einen Benutzer oder erweitere die Lizenz.",
 		"Allocated": "Zugeordnet",
 		"Allowed groups": "Erlaubte Gruppen",
 		"Allowed users": "Erlaubte Benutzer",
@@ -71,10 +65,10 @@
 		"ArbeitszeitCheck export": "ArbeitszeitCheck-Export",
 		"Ask about setup or training": "Einrichtung oder Schulung anfragen",
 		"Ask for a partner offer": "Partner-Angebot anfragen",
-		"Assign mobile seats to %1$d people? %2$d seats remaining.": "%1$d Personen mobile Sitze zuweisen? %2$d Sitze übrig.",
-		"Assign mobile seats?": "Mobile Sitze zuweisen?",
+		"Assign mobile seats to %1$d people? %2$d seats remaining.": "%1$d Personen mobile Plätze zuweisen? %2$d Plätze übrig.",
+		"Assign mobile seats?": "Mobile Plätze zuweisen?",
 		"Assign seat": "Platz zuweisen",
-		"Assign seats": "Sitze zuweisen",
+		"Assign seats": "Plätze zuweisen",
 		"Assign selected": "Auswahl zuweisen",
 		"Assign selected (%n)": "Ausgewählte zuweisen (%n)",
 		"Assigned": "Zugewiesen",
@@ -270,7 +264,7 @@
 		"Flat rate — threshold not applicable": "Festbetrag — Regel entfällt",
 		"Flat-rate funding": "Festbetragsfinanzierung",
 		"For user": "Für Benutzer",
-		"Format: %1$s followed by a signed payload. One key per organisation.": "Format: %1$s gefolgt von einer signierten Nutzlast. Ein Schlüssel pro Organisation.",
+		"Format: %1$s followed by a signed payload. One key per organisation.": "Format: %1$s gefolgt von einer signierten Payload. Ein Schlüssel pro Organisation.",
 		"Free": "Freigeben",
 		"From": "Von",
 		"From position": "Von Einzelansatz",
@@ -378,8 +372,8 @@
 		"Missing receipt or time data": "Fehlende Beleg- oder Zeitdaten",
 		"Missing receipts, unpriced time entries or unsigned timesheets — check the readiness list before the next export.": "Fehlende Belege, unbewertete Zeiteinträge oder nicht unterschriebene Stundenzettel — vor dem nächsten Export die Bereitschaftsliste prüfen.",
 		"Mobile & terminal": "Mobil & Terminal",
-		"Mobile seats": "Mobile-Sitze",
-		"Mobile seats used": "Mobile Plätze belegt",
+		"Mobile seats": "Mobile-Plätze",
+		"Mobile seats used": "Mobile-Plätze belegt",
 		"Mode": "Modus",
 		"More Check apps": "Weitere Check-Apps",
 		"More options": "Mehr Optionen",
@@ -429,7 +423,7 @@
 		"No license yet": "Noch keine Lizenz",
 		"No matching people found.": "Keine passenden Personen gefunden.",
 		"No members.": "Keine Mitglieder.",
-		"No mobile seats assigned yet.": "Noch keine Mobile-Sitze zugewiesen.",
+		"No mobile seats assigned yet.": "Noch keine Mobile-Plätze zugewiesen.",
 		"No positions.": "Keine Ansätze.",
 		"No projects yet": "Noch keine Projekte",
 		"No rates for this member yet.": "Noch keine Sätze für dieses Mitglied.",
@@ -588,7 +582,7 @@
 		"Remove filter": "Filter entfernen",
 		"Remove license": "Lizenz entfernen",
 		"Remove member": "Mitglied entfernen",
-		"Remove mobile seat": "Mobilen Sitz entfernen",
+		"Remove mobile seat": "Mobilen Platz entfernen",
 		"Remove mobile seat for this person?": "Mobilen Platz für diese Person entfernen?",
 		"Remove position": "Ansatz entfernen",
 		"Remove row": "Zeile entfernen",
@@ -645,7 +639,7 @@
 		"Search failed. Please try again.": "Suche fehlgeschlagen. Bitte versuche es erneut.",
 		"Search for a person above to grant companion app access.": "Suche oben nach einer Person, um Zugriff auf die Begleit-App zu gewähren.",
 		"Searching…": "Suche läuft…",
-		"Seat assigned.": "Sitz zugewiesen.",
+		"Seat assigned.": "Platz zugewiesen.",
 		"Seat freed.": "Platz freigegeben.",
 		"Seat removed.": "Platz entfernt.",
 		"Seats control which users may sign in from the mobile companion.": "Plätze steuern, welche Benutzer sich in der mobilen App anmelden dürfen.",
@@ -764,7 +758,6 @@
 		"Viewer": "Betrachter",
 		"Waiting for the job…": "Warte auf den Job …",
 		"Warning": "Warnung",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Warnung: %d Zeile(n) werden endgültig gelöscht, danach werden die Dateidaten geladen.",
 		"What changes in this version?": "Was ändert sich in dieser Version?",
 		"Who may open NachweisCheck?": "Wer darf NachweisCheck öffnen?",
 		"Within plan": "Im Rahmen",
@@ -782,9 +775,41 @@
 		"You can close this — the result is saved and shown under “Last transfer”.": "Sie können dies schließen — das Ergebnis wird gespeichert und unter „Letzte Übertragung“ angezeigt.",
 		"You do not have the rights for this action.": "Sie haben keine Berechtigung für diese Aktion.",
 		"You have unsaved changes in this dialog.": "Sie haben ungespeicherte Änderungen in diesem Dialog.",
-		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Du hast %1$d Personen ausgewählt, aber nur %2$d Sitze sind frei. Nur freie Sitze werden zugewiesen.",
+		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "Du hast %1$d Personen ausgewählt, aber nur %2$d Plätze sind frei. Nur freie Plätze werden zugewiesen.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Ihr Konto darf NachweisCheck nicht verwenden. Bitten Sie eine Administration um Freischaltung.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Deine Lizenz läuft innerhalb von 30 Tagen ab. Wende dich an deinen Anbieter zur Verlängerung.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 instanzgebundener Wert geleert)",
+			"(%n instanzgebundene Werte geleert)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 gefiltert)",
+			"(%n gefiltert)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 Geheimnis geschwärzt)",
+			"(%n Geheimnisse geschwärzt)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 unaufgelöster Verweis)",
+			"(%n unaufgelöste Verweise)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 Verweis unaufgelöst — siehe die Gruppen unten.",
+			"%n Verweise unaufgelöst — siehe die Gruppen unten."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 Zeile benötigt einen Wert auf dieser Instanz",
+			"%n Zeilen benötigen einen Wert auf dieser Instanz"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 Zeile übersprungen.",
+			"%n Zeilen übersprungen."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Warnung: 1 Zeile wird endgültig gelöscht, danach werden die Dateidaten geladen.",
+			"Warnung: %n Zeilen werden endgültig gelöscht, danach werden die Dateidaten geladen."
+		],
 		"accepted": "angenommen",
 		"active": "aktiv",
 		"add and update; nothing is deleted": "hinzufügen und aktualisieren; nichts wird gelöscht",
@@ -794,7 +819,6 @@
 		"builtin": "eingebaut",
 		"closed": "abgeschlossen",
 		"closing": "im Abschluss",
-		"day(s) remaining": "Tag(e) verbleibend",
 		"draft": "Entwurf",
 		"duplicate": "Duplikat",
 		"e.g. 1:30, 1,5 h or 90": "z. B. 1:30, 1,5 h oder 90",

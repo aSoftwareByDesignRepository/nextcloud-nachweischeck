@@ -3,8 +3,6 @@
 		"%1$d of %2$d device slots in use.": "%2$d cihaz yuvasından %1$d tanesi kullanımda.",
 		"%1$d of %2$d seats assigned": "%2$d lisans hakkından %1$d'i atandı",
 		"%d open audit items": "%d açık denetim öğesi",
-		"%d row(s) need a value on this instance": "%d satırın bu örnekte bir değere ihtiyacı var",
-		"%d row(s) skipped and %d reference(s) unresolved — see the groups below.": "%d satır atlandı ve %d başvuru çözümlenemedi — aşağıdaki gruplara bakın.",
 		"%s due %s": "%s için son tarih %s",
 		"%s gaps must be closed before submission": "Gönderimden önce %s eksiklik kapatılmalı",
 		"%s of %s receipts": "%s/%s belge",
@@ -16,10 +14,6 @@
 		"%s things need attention": "%s öğe dikkat gerektiriyor",
 		"%s — %d open audit items": "%s — %d açık denetim öğesi",
 		"%s — %s (%s)": "%s — %s (%s)",
-		"(%d env-bound value(s) emptied)": "(%d örneğe bağlı değer boşaltıldı)",
-		"(%d filtered)": "(%d filtrelendi)",
-		"(%d secret(s) redacted)": "(%d sır gizlendi)",
-		"(%d unresolved ref)": "(%d çözümlenemeyen başvuru)",
 		"(opens in a new tab)": "(yeni sekmede açılır)",
 		"(unknown — skipped)": "(bilinmiyor — atlandı)",
 		"20 % tolerance per budget position": "Bütçe kalemi başına yüzde 20 tolerans",
@@ -147,7 +141,7 @@
 		"Contact": "İletişim",
 		"Copied.": "Kopyalandı.",
 		"Copy URL": "URL'yi kopyala",
-		"Copy token": "Belirteci kopyala",
+		"Copy token": "Tokenı kopyala",
 		"Correct an earlier report": "Önceki bir raporu düzeltin",
 		"Cost": "Maliyet",
 		"Could not assign seat.": "Lisans hakkı atanamadı.",
@@ -589,7 +583,7 @@
 		"Remove license": "Lisansı kaldır",
 		"Remove member": "Üyeyi kaldır",
 		"Remove mobile seat": "Mobil lisansı kaldır",
-		"Remove mobile seat for this person?": "Bu kişinin mobil koltuğu kaldırılsın mı?",
+		"Remove mobile seat for this person?": "Bu kişinin mobil lisansı kaldırılsın mı?",
 		"Remove position": "Kalemi kaldır",
 		"Remove row": "Satırı kaldır",
 		"Remove split row": "Bölme satırını kaldır",
@@ -705,7 +699,7 @@
 		"This file was exported from this instance.": "Bu dosya bu ortamdan dışa aktarıldı.",
 		"This seat exceeds the current license limit. It stays assigned but has no mobile access until you free a seat or upgrade.": "Bu lisans geçerli lisans sınırını aşıyor. Atanmış kalır ancak bir lisansı serbest bırakana ya da yükseltme yapana kadar mobil erişimi olmaz.",
 		"This server’s Nextcloud instance ID (for support / sales reference). Licenses are not instance-bound.": "Bu sunucunun Nextcloud örnek kimliği (destek / satış referansı için). Lisanslar örneğe bağlı değildir.",
-		"This token is shown only once. Paste it into the companion app on the device.": "Bu belirteç yalnızca bir kez gösterilir. Cihazdaki eşlik uygulamasına yapıştır.",
+		"This token is shown only once. Paste it into the companion app on the device.": "Bu token yalnızca bir kez gösterilir. Cihazdaki eşlik uygulamasına yapıştır.",
 		"This will update %d settings and %d rows — nothing is deleted.": "Bu işlem %d ayarı ve %d satırı güncelleyecek — hiçbir şey silinmeyecek.",
 		"Time": "Zaman",
 		"Time & timesheets": "Süre ve puantajlar",
@@ -764,7 +758,6 @@
 		"Viewer": "İzleyici",
 		"Waiting for the job…": "İş bekleniyor…",
 		"Warning": "Uyarı",
-		"Warning: %d row(s) will be permanently deleted, then the file data is loaded.": "Uyarı: %d satır kalıcı olarak silinecek, ardından dosya verileri yüklenecek.",
 		"What changes in this version?": "Bu sürümde ne değişiyor?",
 		"Who may open NachweisCheck?": "NachweisCheck'i kim açabilir?",
 		"Within plan": "Plan dahilinde",
@@ -785,6 +778,38 @@
 		"You selected %1$d people but only %2$d seats remain. Only free seats will be assigned.": "%1$d kişi seçtiniz ancak yalnızca %2$d lisans hakkı kaldı. Yalnızca boş lisans hakları atanır.",
 		"Your account is not allowed to use NachweisCheck. Ask an administrator to grant access.": "Hesabınızın NachweisCheck'i kullanma izni yok. Bir yöneticiden erişim vermesini isteyin.",
 		"Your license expires within 30 days. Contact your vendor to renew.": "Lisansınız 30 gün içinde sona eriyor. Yenilemek için tedarikçinize başvurun.",
+		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
+			"(1 örneğe bağlı değer boşaltıldı)",
+			"(%n örneğe bağlı değer boşaltıldı)"
+		],
+		"_(1 filtered)_::_(%n filtered)_": [
+			"(1 filtrelendi)",
+			"(%n filtrelendi)"
+		],
+		"_(1 secret redacted)_::_(%n secrets redacted)_": [
+			"(1 sır gizlendi)",
+			"(%n sır gizlendi)"
+		],
+		"_(1 unresolved ref)_::_(%n unresolved refs)_": [
+			"(1 çözümlenemeyen başvuru)",
+			"(%n çözümlenemeyen başvuru)"
+		],
+		"_1 reference unresolved — see the groups below._::_%n references unresolved — see the groups below._": [
+			"1 başvuru çözümlenemedi — aşağıdaki gruplara bakın.",
+			"%n başvuru çözümlenemedi — aşağıdaki gruplara bakın."
+		],
+		"_1 row needs a value on this instance_::_%n rows need a value on this instance_": [
+			"1 satırın bu örnekte bir değere ihtiyacı var",
+			"%n satırın bu örnekte bir değere ihtiyacı var"
+		],
+		"_1 row skipped._::_%n rows skipped._": [
+			"1 satır atlandı.",
+			"%n satır atlandı."
+		],
+		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
+			"Uyarı: 1 satır kalıcı olarak silinecek, ardından dosya verileri yüklenecek.",
+			"Uyarı: %n satır kalıcı olarak silinecek, ardından dosya verileri yüklenecek."
+		],
 		"accepted": "kabul edildi",
 		"active": "etkin",
 		"add and update; nothing is deleted": "ekle ve güncelle; hiçbir şey silinmez",
@@ -794,7 +819,6 @@
 		"builtin": "yerleşik",
 		"closed": "kapandı",
 		"closing": "kapanıyor",
-		"day(s) remaining": "kalan gün",
 		"draft": "taslak",
 		"duplicate": "mükerrer",
 		"e.g. 1:30, 1,5 h or 90": "örn. 1:30, 1,5 h veya 90",
