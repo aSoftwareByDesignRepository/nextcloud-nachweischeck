@@ -665,7 +665,7 @@ OC.L10N.register(
 	"Rotate feed token" : "Rotera flödestoken",
 	"Rotate the feed token? Every existing subscription loses access immediately." : "Rotera flödestokenet? Alla befintliga prenumerationer förlorar åtkomsten direkt.",
 	"Rotate token" : "Rotera token",
-	"Route" : "Route",
+	"Route" : "Rutt",
 	"Row" : "Rad",
 	"Rule flags" : "Regelmarkeringar",
 	"Runway (months)" : "Räckvidd (månader)",
