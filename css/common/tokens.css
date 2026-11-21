@@ -1,6 +1,6 @@
 /* Auto-adapted from arbeitszeitcheck/css/common/tokens.css for the Check-family shell. Do not invent divergent layout rules here. */
 /*
- * NachweisCheck design tokens (--nw-*).
+ * Nachweischeck design tokens (--nw-*).
  * Colors derive from Nextcloud theme variables; no raw hex in feature CSS.
  * Spacing/typography on :root; theme colors on body + themed app surfaces
  * (NC sets --color-* on body [data-theme-*]).
@@ -69,7 +69,7 @@
 
 	/*
 	 * QR / barcode canvas must stay light for scannability in every theme.
-	 * This is the only intentional non-theme surface in NachweisCheck feature CSS.
+	 * This is the only intentional non-theme surface in Nachweischeck feature CSS.
 	 */
 	--nw-qr-canvas: #ffffff;
 }
@@ -98,6 +98,12 @@ body,
 	--nw-bg-hover: var(--color-background-hover);
 	--nw-text: var(--color-main-text);
 	--nw-muted: var(--color-text-maxcontrast);
+	/* Muted ink on tinted surfaces (callouts/badges): main-text keeps it
+	   readable where pure maxcontrast washes out on the tint fill. */
+	--nw-muted-on-tint: color-mix(in srgb, var(--color-text-maxcontrast) 55%, var(--color-main-text));
+	/* Monospace for codes/refs (claim numbers, payment refs): NC ships no mono
+	   var, so pin a platform-native stack. */
+	--nw-mono: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Liberation Mono', Menlo, Consolas, monospace;
 	--nw-border: color-mix(in srgb, var(--color-main-text) 12%, transparent);
 	/* Boundaries of cards/controls/callouts/dialogs need >=3:1 vs the adjacent
 	   surface (WCAG 1.4.11): NC's --color-border-maxcontrast is theme-tuned for
