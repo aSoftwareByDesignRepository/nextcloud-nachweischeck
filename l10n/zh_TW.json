@@ -3,6 +3,8 @@
 		"%1$d of %2$d device slots in use.": "已使用 %2$d 個裝置名額中的 %1$d 個。",
 		"%1$d of %2$d seats assigned": "已指派 %2$d 個席位中的 %1$d 個",
 		"%d open audit items": "%d 個待處理稽核項",
+		"%n rows": "%n 列",
+		"%n settings": "%n 項設定",
 		"%s due %s": "%s 於 %s 到期",
 		"%s gaps must be closed before submission": "提交前須補齊 %s 處缺漏",
 		"%s of %s receipts": "%s / %s 張票據",
@@ -16,6 +18,8 @@
 		"%s — %s (%s)": "%s——%s（%s）",
 		"(opens in a new tab)": "（在新標籤頁中開啟）",
 		"(unknown — skipped)": "（未知——已跳過）",
+		"1 row": "1 列",
+		"1 setting": "1 項設定",
 		"20 % tolerance per budget position": "每個預算職位 20% 容差",
 		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
 			"（已清空 %n 個實例綁定值）"
@@ -37,6 +41,12 @@
 		],
 		"_1 row skipped._::_%n rows skipped._": [
 			"已略過 %n 列。"
+		],
+		"_1 row_::_%n rows_": [
+			"%n 列"
+		],
+		"_1 setting_::_%n settings_": [
+			"%n 項設定"
 		],
 		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
 			"警告：%n 列將被永久刪除，然後載入檔案資料。"
@@ -339,6 +349,7 @@
 		"Hours": "小時",
 		"If you believe this is a mistake, contact your Nextcloud administrator.": "如果您認為這是誤操作，請聯絡您的 Nextcloud 管理員。",
 		"Import": "匯入",
+		"Import applied. %1$s and %2$s written.": "匯入已套用。已寫入 %1$s 與 %2$s。",
 		"Import applied. %d settings and %d rows written.": "匯入已套用。已寫入 %d 項設定與 %d 列。",
 		"Import configuration": "匯入配置",
 		"Import dedupe key — optional.": "匯入去重鍵——選填。",
@@ -769,6 +780,7 @@
 		"This seat exceeds the current license limit. It stays assigned but has no mobile access until you free a seat or upgrade.": "此席位超出當前授權上限。它保持已分配狀態，但在您釋放席位或升級前無法使用行動端。",
 		"This server’s Nextcloud instance ID (for support / sales reference). Licenses are not instance-bound.": "此伺服器的 Nextcloud 執行個體 ID（供支援/銷售參考）。授權不綁定執行個體。",
 		"This token is shown only once. Paste it into the companion app on the device.": "此權杖僅顯示一次。請將其貼上到裝置上的配套應用程式中。",
+		"This will update %1$s and %2$s — nothing is deleted.": "這將更新 %1$s 與 %2$s——不會刪除任何內容。",
 		"This will update %d settings and %d rows — nothing is deleted.": "這將更新 %d 項設定與 %d 列資料——不會刪除任何內容。",
 		"Time": "時間",
 		"Time & timesheets": "工時與工時表",
@@ -855,19 +867,7 @@
 		"—": "—",
 		"— choose —": "— 請選擇 —",
 		"— none —": "— 無 —",
-		"…or paste CSV": "……或貼上 CSV",
-		"1 setting": "1 項設定",
-		"%n settings": "%n 項設定",
-		"1 row": "1 列",
-		"%n rows": "%n 列",
-		"_1 row_::_%n rows_": [
-			"%n 列"
-		],
-		"_1 setting_::_%n settings_": [
-			"%n 項設定"
-		],
-		"This will update %1$s and %2$s — nothing is deleted.": "這將更新 %1$s 與 %2$s——不會刪除任何內容。",
-		"Import applied. %1$s and %2$s written.": "匯入已套用。已寫入 %1$s 與 %2$s。"
+		"…or paste CSV": "……或貼上 CSV"
 	},
 	"pluralForm": "nplurals=1; plural=0;"
 }

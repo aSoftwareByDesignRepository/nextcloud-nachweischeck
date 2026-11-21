@@ -3,6 +3,8 @@
 		"%1$d of %2$d device slots in use.": "%1$d de %2$d espaços para dispositivos em uso.",
 		"%1$d of %2$d seats assigned": "%1$d de %2$d vagas atribuídas",
 		"%d open audit items": "%d pontos de auditoria em aberto",
+		"%n rows": "%n linhas",
+		"%n settings": "%n configurações",
 		"%s due %s": "%s vence em %s",
 		"%s gaps must be closed before submission": "%s lacunas devem ser fechadas antes do envio",
 		"%s of %s receipts": "%s comprovantes de %s",
@@ -16,6 +18,8 @@
 		"%s — %s (%s)": "%s — %s (%s)",
 		"(opens in a new tab)": "(abre em uma nova aba)",
 		"(unknown — skipped)": "(desconhecido — ignorado)",
+		"1 row": "1 linha",
+		"1 setting": "1 configuração",
 		"20 % tolerance per budget position": "Tolerância de 20 % por posição orçamentária",
 		"_(1 env-bound value emptied)_::_(%n env-bound values emptied)_": [
 			"(1 valor vinculado à instância esvaziado)",
@@ -44,6 +48,14 @@
 		"_1 row skipped._::_%n rows skipped._": [
 			"1 linha ignorada.",
 			"%n linhas ignoradas."
+		],
+		"_1 row_::_%n rows_": [
+			"1 linha",
+			"%n linhas"
+		],
+		"_1 setting_::_%n settings_": [
+			"1 configuração",
+			"%n configurações"
 		],
 		"_Warning: 1 row will be permanently deleted, then the file data is loaded._::_Warning: %n rows will be permanently deleted, then the file data is loaded._": [
 			"Aviso: 1 linha será excluída permanentemente e, em seguida, os dados do arquivo serão carregados.",
@@ -347,6 +359,7 @@
 		"Hours": "Horas",
 		"If you believe this is a mistake, contact your Nextcloud administrator.": "Se você acredita que é um engano, fale com o administrador do Nextcloud.",
 		"Import": "Importar",
+		"Import applied. %1$s and %2$s written.": "Importação aplicada. %1$s e %2$s gravadas.",
 		"Import applied. %d settings and %d rows written.": "Importação aplicada. %d configurações e %d linhas gravadas.",
 		"Import configuration": "Importar configuração",
 		"Import dedupe key — optional.": "Chave de deduplicação da importação — opcional.",
@@ -777,6 +790,7 @@
 		"This seat exceeds the current license limit. It stays assigned but has no mobile access until you free a seat or upgrade.": "Este assento excede o limite de licença atual. Fica atribuído, mas sem acesso móvel até liberar um assento ou ampliar a licença.",
 		"This server’s Nextcloud instance ID (for support / sales reference). Licenses are not instance-bound.": "ID da instância Nextcloud deste servidor (referência para suporte / vendas). As licenças não são vinculadas à instância.",
 		"This token is shown only once. Paste it into the companion app on the device.": "Este token é exibido apenas uma vez. Cole-o no aplicativo complementar no dispositivo.",
+		"This will update %1$s and %2$s — nothing is deleted.": "Isso atualizará %1$s e %2$s — nada será excluído.",
 		"This will update %d settings and %d rows — nothing is deleted.": "Isso atualizará %d configurações e %d linhas — nada será excluído.",
 		"Time": "Tempo",
 		"Time & timesheets": "Tempo e folhas de ponto",
@@ -863,21 +877,7 @@
 		"—": "—",
 		"— choose —": "— escolher —",
 		"— none —": "— nenhum —",
-		"…or paste CSV": "…ou cole CSV",
-		"1 setting": "1 configuração",
-		"%n settings": "%n configurações",
-		"1 row": "1 linha",
-		"%n rows": "%n linhas",
-		"_1 row_::_%n rows_": [
-			"1 linha",
-			"%n linhas"
-		],
-		"_1 setting_::_%n settings_": [
-			"1 configuração",
-			"%n configurações"
-		],
-		"This will update %1$s and %2$s — nothing is deleted.": "Isso atualizará %1$s e %2$s — nada será excluído.",
-		"Import applied. %1$s and %2$s written.": "Importação aplicada. %1$s e %2$s gravadas."
+		"…or paste CSV": "…ou cole CSV"
 	},
 	"pluralForm": "nplurals=2; plural=(n > 1);"
 }
