@@ -27,7 +27,6 @@
 		<php min-version="8.2" max-version="8.5"/>
 		<nextcloud min-version="32" max-version="35"/>
 		<database>mysql</database>
-		<database>mariadb</database>
 		<database>pgsql</database>
 	</dependencies>
 	<commands>
