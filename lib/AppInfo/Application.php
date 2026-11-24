@@ -17,7 +17,7 @@ use OCP\App\IAppManager;
 // CRITICAL: composer's autoload registers itself *prepended*; a vendor tree
 // installed with dev stubs (nextcloud/ocp) would shadow the server's real OCP
 // interfaces. Re-register appended so the server autoloader always wins for
-// OCP\*/OC\* while the library still resolves here. (InvoiceCheck pattern.)
+// OCP\*/OC\* while the library still resolves here. (the invoicing app pattern.)
 $nwAutoload = __DIR__ . '/../../vendor/autoload.php';
 if (!class_exists(\horstoeko\zugferd\ZugferdDocumentReader::class, false) && is_file($nwAutoload)) {
 	$nwLoader = require $nwAutoload;
