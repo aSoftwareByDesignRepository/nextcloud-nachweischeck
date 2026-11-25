@@ -61,7 +61,7 @@ final class SimplePdfBuilder
 	 */
 	public static function buildStatement(array $doc): string
 	{
-		$brand = trim((string)($doc['brand'] ?? 'TourCheck'));
+		$brand = trim((string)($doc['brand'] ?? 'NachweisCheck'));
 		$title = trim((string)($doc['title'] ?? 'Statement'));
 		/** @var list<array{0:string,1:string}> $meta */
 		$meta = array_values($doc['meta'] ?? []);
@@ -145,7 +145,7 @@ final class SimplePdfBuilder
 
 		// Header band + titles
 		$state['ops'] .= self::drawHeaderBand();
-		$state['ops'] .= self::textAt(self::MARGIN_L, $state['y'], $brand !== '' ? $brand : 'TourCheck', 18, true);
+		$state['ops'] .= self::textAt(self::MARGIN_L, $state['y'], $brand !== '' ? $brand : 'NachweisCheck', 18, true);
 		$state['y'] -= 22.0;
 		$state['ops'] .= self::textAt(self::MARGIN_L, $state['y'], $title, 13, false);
 		$state['y'] -= 10.0;
@@ -353,7 +353,7 @@ final class SimplePdfBuilder
 		$state['pages'][] = $state['ops'];
 		$pageCount = count($state['pages']);
 		for ($i = 0; $i < $pageCount; $i++) {
-			$state['pages'][$i] .= self::footer($i + 1, $pageCount);
+			$state['pages'][$i] .= self::footer($i + 1, $pageCount, $brand !== '' ? $brand : 'NachweisCheck');
 		}
 
 		return self::assemble($state['pages']);
@@ -364,11 +364,11 @@ final class SimplePdfBuilder
 		return self::fillRect(0.0, self::PAGE_H - 18.0, self::PAGE_W, 18.0, 0.18);
 	}
 
-	private static function footer(int $page, int $of): string
+	private static function footer(int $page, int $of, string $brand): string
 	{
 		$y = 28.0;
 		return self::hline(36.0)
-			. self::textAt(self::MARGIN_L, $y, 'TourCheck', 8, false)
+			. self::textAt(self::MARGIN_L, $y, $brand, 8, false)
 			. self::textRight(self::PAGE_W - self::MARGIN_R, $y, 'Page ' . $page . ' of ' . $of, 8, false);
 	}
 
