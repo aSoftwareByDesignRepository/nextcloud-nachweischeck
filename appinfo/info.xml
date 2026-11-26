@@ -6,31 +6,33 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>nachweischeck</id>
 	<name>NachweisCheck</name>
-	<summary>Verwendungsnachweise for publicly funded projects — position-level time and receipt capture with audit-proof export</summary>
-	<summary lang="de">Verwendungsnachweise für öffentlich geförderte Projekte — positionsgenaue Zeit- und Belegerfassung mit prüfsicherem Export</summary>
+	<summary>Verwendungsnachweise for publicly funded projects: position-level time and receipt capture with audit-proof export</summary>
+	<summary lang="de">Verwendungsnachweise für öffentlich geförderte Projekte: positionsgenaue Zeit- und Belegerfassung mit prüfsicherem Export</summary>
 	<description><![CDATA[
-# NachweisCheck — from everyday entries to a clean Verwendungsnachweis
+# NachweisCheck: from everyday entries to a clean Verwendungsnachweis
 
-For publicly funded projects in Germany: NachweisCheck turns the time, receipts and payments your team captures along the way into the expenditure report a funder expects — with versioned financing plans, work packages mapped to budget lines, deadline tracking and an audit-proof export.
+For publicly funded projects in Germany: NachweisCheck turns the time, receipts and payments your team captures along the way into the expenditure report a funder expects, with versioned financing plans, work packages mapped to budget lines, deadline tracking and an audit-proof export.
 
-Ships with funder templates like anbest-p; more funders can be configured as templates. Fully standalone — no other app required.
+Ships with funder templates like anbest-p; more funders can be configured as templates. Fully standalone: no other app required.
+
+**Free web app** (AGPL-3.0-or-later). An optional Pro licence unlocks multi-project workspaces, timesheet sign-off, the read-only auditor seat, e-invoice output and mobile companion seats.
 
 ## What it does
 
-- **Versioned Finanzierungsplan** — positions with codes, kinds and budgets; draft the next version without touching the active one
-- **Work packages on budget lines** — every hour and every receipt lands on the right Einzelansatz
-- **Time capture that prices itself** — dated rates per person; timesheets from draft to signed
-- **Receipts with position splits** — one invoice, several budget lines
-- **Deviations with a mandatory reason** — including the 20-% Einzelansatz rule per funder template
-- **Deadlines and carryover** — incoming payments, carryover tracking, reminders before dates slip
-- **Audit readiness before export** — a checklist flags missing receipts, duplicates and unsigned timesheets first
-- **Immutable Nachweis package** — zahlenmäßiger Nachweis, Belegliste, Sachbericht skeleton and gaps report with a manifest hash; superseded versions stay visible
-- **Auditor access** — a read-only seat for the person who checks
+- **Versioned Finanzierungsplan**: positions with codes, kinds and budgets; draft the next version without touching the active one
+- **Work packages on budget lines**: every hour and every receipt lands on the right Einzelansatz
+- **Time capture that prices itself**: dated rates per person; timesheets from draft to signed
+- **Receipts with position splits**: one invoice, several budget lines
+- **Deviations with a mandatory reason**: including the 20-% Einzelansatz rule per funder template
+- **Deadlines and carryover**: incoming payments, carryover tracking, reminders before dates slip
+- **Audit readiness before export**: a checklist flags missing receipts, duplicates and unsigned timesheets first
+- **Immutable Nachweis package**: zahlenmäßiger Nachweis, Belegliste, Sachbericht skeleton and gaps report with a manifest hash; superseded versions stay visible
+- **Auditor access**: a read-only seat for the person who checks
 - **CSV import** for existing project data
 
 ## Clear limits
 
-- The export is a well-formed package for your funder — it does not replace the funder's own review or legal advice.
+- The export is a well-formed package for your funder. It does not replace the funder's own review or legal advice.
 - Templates target German public funding schemes; this is a German-domain app.
 - Declared databases: MySQL and PostgreSQL.
 
@@ -45,29 +47,31 @@ Hit a rough edge or miss a funder rule? Open a GitHub Issue (https://github.com/
 - MySQL or PostgreSQL
 	]]></description>
 	<description lang="de"><![CDATA[
-# NachweisCheck — aus Alltagsdaten wird ein sauberer Verwendungsnachweis
+# NachweisCheck: aus Alltagsdaten wird ein sauberer Verwendungsnachweis
 
-Für öffentlich geförderte Projekte: NachweisCheck verwandelt die Zeiten, Belege und Zahlungseingänge, die Ihr Team nebenbei erfasst, in den Verwendungsnachweis, den der Zuwendungsgeber erwartet — mit versioniertem Finanzierungsplan, Arbeitspaketen auf Einzelansätzen, Fristenverwaltung und prüfsicherem Export.
+Für öffentlich geförderte Projekte: NachweisCheck verwandelt die Zeiten, Belege und Zahlungseingänge, die Ihr Team nebenbei erfasst, in den Verwendungsnachweis, den der Zuwendungsgeber erwartet, mit versioniertem Finanzierungsplan, Arbeitspaketen auf Einzelansätzen, Fristenverwaltung und prüfsicherem Export.
 
-Ausgeliefert mit Fördervorlagen wie anbest-p; weitere Zuwendungsgeber lassen sich als Vorlage anlegen. Vollständig eigenständig — keine andere App nötig.
+Ausgeliefert mit Fördervorlagen wie anbest-p; weitere Zuwendungsgeber lassen sich als Vorlage anlegen. Vollständig eigenständig: keine andere App nötig.
+
+**Kostenlose Web-App** (AGPL-3.0-or-later). Eine optionale Pro-Lizenz schaltet Mehrprojekt-Arbeitsräume, Timesheet-Freigabe, den rein lesenden Auditor-Platz, E-Rechnungs-Ausgabe und mobile Companion-Plätze frei.
 
 ## Was es kann
 
-- **Versionierter Finanzierungsplan** — Einzelansätze mit Nummer, Art und Budget; die nächste Version als Entwurf, ohne die aktive anzufassen
-- **Arbeitspakete auf Einzelansätzen** — jede Stunde und jeder Beleg landet auf der richtigen Position
-- **Zeiterfassung, die sich selbst bepreist** — datierte Sätze pro Person; Stundenzettel vom Entwurf bis zur Unterschrift
-- **Belege mit Positionsaufteilung** — eine Rechnung, mehrere Einzelansätze
-- **Abweichungen mit Begründungszwang** — inklusive 20-%-Einzelansatz-Regel je Fördervorlage
-- **Fristen und Übertrag** — Zahlungseingänge, Mittelübertrag, Erinnerungen bevor Termine reißen
-- **Prüfbereitschaft vor dem Export** — eine Checkliste meldet fehlende Belege, Duplikate und fehlende Unterschriften zuerst
-- **Unveränderliches Nachweis-Paket** — zahlenmäßiger Nachweis, Belegliste, Sachbericht-Gerüst und Lückenbericht mit Manifest-Hash; ersetzte Versionen bleiben sichtbar
-- **Prüferzugang** — reine Leseberechtigung für die prüfende Stelle
+- **Versionierter Finanzierungsplan**: Einzelansätze mit Nummer, Art und Budget; die nächste Version als Entwurf, ohne die aktive anzufassen
+- **Arbeitspakete auf Einzelansätzen**: jede Stunde und jeder Beleg landet auf der richtigen Position
+- **Zeiterfassung, die sich selbst bepreist**: datierte Sätze pro Person; Stundenzettel vom Entwurf bis zur Unterschrift
+- **Belege mit Positionsaufteilung**: eine Rechnung, mehrere Einzelansätze
+- **Abweichungen mit Begründungszwang**: inklusive 20-%-Einzelansatz-Regel je Fördervorlage
+- **Fristen und Übertrag**: Zahlungseingänge, Mittelübertrag, Erinnerungen bevor Termine reißen
+- **Prüfbereitschaft vor dem Export**: eine Checkliste meldet fehlende Belege, Duplikate und fehlende Unterschriften zuerst
+- **Unveränderliches Nachweis-Paket**: zahlenmäßiger Nachweis, Belegliste, Sachbericht-Gerüst und Lückenbericht mit Manifest-Hash; ersetzte Versionen bleiben sichtbar
+- **Prüferzugang**: reine Leseberechtigung für die prüfende Stelle
 - **CSV-Import** für vorhandene Projektdaten
 
 ## Klare Grenzen
 
-- Der Export ist ein sauberes Paket für den Zuwendungsgeber — er ersetzt weder dessen Prüfung noch Rechtsberatung.
-- Die Vorlagen zielen auf deutsche öffentliche Förderung — ein Deutschland-Domain-App.
+- Der Export ist ein sauberes Paket für den Zuwendungsgeber. Er ersetzt weder dessen Prüfung noch Rechtsberatung.
+- Die Vorlagen zielen auf deutsche öffentliche Förderung. Eine App mit Deutschland-Fokus.
 - Deklarierte Datenbanken: MySQL und PostgreSQL.
 
 ## Feedback willkommen
@@ -80,7 +84,7 @@ Eine Kante stört oder eine Förderregel fehlt? Öffnen Sie ein GitHub Issue (ht
 - PHP 8.2–8.5
 - MySQL oder PostgreSQL
 	]]></description>
-	<version>0.4.2</version>
+	<version>0.4.3</version>
 	<licence>agpl</licence>
 	<author>Software by Design</author>
 	<namespace>NachweisCheck</namespace>

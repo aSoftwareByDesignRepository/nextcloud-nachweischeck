@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.4.3 - 2026-11-24
+
+### Fixed
+
+- Include all six public screenshots in the new App Store release metadata.
+
+- drop no-op ReflectionMethod::setAccessible in uninstall repair test
+- use the store-supported MySQL identifier for MariaDB
+- restore color-scheme pins in synced check-shell tokens
+- de license-signature cell to formal register (donor sync)
+- pl Missing-attachment cell + tr pluralForm header arity
+- normalize sibling catalog key order to en.json (atlas intake nachweischeck-intake-20261121T152902Z)
+- heal plural-arity + register drift, resync transfer pack
+- re-sync config-transfer pack; register n() plural msgids in l10n catalogs
+- re-sync license-page pack — [hidden] display guard
+- heal license-page pack drift + canonical n() plural catalogs — seat display names
+- promote mobile sheet override to [open] specificity — pack resync
+- close untranslated gaps — license-page pack propagation, hand-translated headers, sbdlicenseops zh_TW catalog
+- directory pickers — visible states + display-name merge
+- pack dialog sheet beats app dialog chrome — :not(:modal) + body> scope
+- margin:auto on pack dialog — NC core reset uncenters top-layer dialogs
+- overlay close-button armor + %d sprintf + transfer l10n catalog
+- sync config-transfer pack — schema cache, file-input specificity, sheet clip
+- sync config-transfer pack — positional t() interpolation
+- zh_CN — drop 31 phantom transfer keys
+- tr percent strings — single % for JS-rendered catalog values
+- restore field rhythm in dialogs/settings + switch hint
+
+### Added
+
+- add Russian (ru) catalog
+- adopt shared license-page pack + seat admin API
+- config & data transfer — encrypted test→prod pack
+
+### Changed
+
+- rewrite store description and refresh screenshots
+- define --nw-mono + muted-on-tint tokens (check-shell sync)
+- re-sync shared packs (config-transfer, view-components) + l10n catalog regen
+- l10n: formal register + identical-gap cleanup, zh_TW vocabulary flip
+- allow reflection invoke of dropAllTablesAndMetadata
+- rendered-surface contract — cover /settings/transfer section
+- pack re-sync — replace-confirm token width (cramped_form_controls)
+- l10n: zh-Hant/zh_TW catalog + locale wiring
+- l10n: add zh_CN catalog
+- l10n: complete translations across the app language set
+
 ## Unreleased
 
 ### Fixed
