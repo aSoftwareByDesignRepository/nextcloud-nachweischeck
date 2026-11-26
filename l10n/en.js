@@ -848,6 +848,8 @@ OC.L10N.register(
 	"—" : "—",
 	"— choose —" : "— choose —",
 	"— none —" : "— none —",
-	"…or paste CSV" : "…or paste CSV"
+	"…or paste CSV" : "…or paste CSV",
+	"Connect an AI assistant with a scoped token. The token works only inside this app — never for your files, mail, or other apps." : "Connect an AI assistant with a scoped token. The token works only inside this app — never for your files, mail, or other apps.",
+	"AI access (MCP)" : "AI access (MCP)"
 	}
 );

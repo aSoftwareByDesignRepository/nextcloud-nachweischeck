@@ -33,7 +33,9 @@ use OCA\NachweisCheck\Service\UpgradeBackupService;
 use OCA\NachweisCheck\Support\NavGate;
 use OCA\NachweisCheck\Repair\BackupBeforeUpdate;
 use OCA\NachweisCheck\Middleware\ApiExceptionMiddleware;
+use OCA\NachweisCheck\Repair\EnsureAgentTables;
 use OCA\NachweisCheck\Repair\EnsureNachweisCheckSchema;
+use OCA\NachweisCheck\Repair\UninstallAgentTables;
 use OCA\NachweisCheck\Repair\UninstallDropTables;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -63,6 +65,40 @@ class Application extends App implements IBootstrap
 		// I-10: render deadline notifications pushed by DeadlineReminderJob.
 		$context->registerNotifierService(\OCA\NachweisCheck\Notification\Notifier::class);
 
+		// _shared/agent-auth pack — scoped AI-agent tokens (suite MCP contract)
+		$context->registerService(\OCA\NachweisCheck\Agent\AgentManifest::class, function ($c) {
+			return new \OCA\NachweisCheck\Agent\AgentManifest(
+				'nachweischeck',
+				\dirname(__DIR__, 2) . '/appinfo/agent-manifest.json'
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\Agent\AgentSeatGate::class, function ($c) {
+			return new \OCA\NachweisCheck\Agent\NachweisCheckAgentSeatGate(
+				$c->query(\OCA\NachweisCheck\Service\MobileSeatService::class)
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\Agent\AgentAccessGate::class, function ($c) {
+			return new \OCA\NachweisCheck\Agent\NachweisCheckAgentAccessGate(
+				$c->query(\OCA\NachweisCheck\Service\AccessDoorService::class),
+				$c->query(\OCP\IUserManager::class)
+			);
+		});
+		$context->registerService(\OCA\NachweisCheck\Middleware\AgentAuthMiddleware::class, function ($c) {
+			return new \OCA\NachweisCheck\Middleware\AgentAuthMiddleware(
+				$c->query(\OCP\IRequest::class),
+				$c->query(\OCA\NachweisCheck\Agent\AgentContext::class),
+				$c->query(\OCA\NachweisCheck\Agent\AgentTokenService::class),
+				$c->query(\OCA\NachweisCheck\Agent\AgentManifest::class),
+				$c->query(\OCA\NachweisCheck\Agent\AgentSeatGate::class),
+				$c->query(\OCA\NachweisCheck\Agent\AgentAuditMapper::class),
+				$c->query(\Psr\Log\LoggerInterface::class),
+				'nachweischeck'
+			);
+		});
+		$context->registerMiddleware(\OCA\NachweisCheck\Middleware\AgentAuthMiddleware::class);
+
+		$context->registerEventListener(\OCP\User\Events\UserDeletedEvent::class, \OCA\NachweisCheck\Listener\AgentUserDeletedListener::class);
+
 		// Repair steps MUST be registered with their full constructor args —
 		// autowiring guesswork here stalls occ upgrade (repair-step-DI rule).
 		$context->registerService(EnsureNachweisCheckSchema::class, function ($c): EnsureNachweisCheckSchema {
@@ -70,6 +106,12 @@ class Application extends App implements IBootstrap
 				$c->get(IDBConnection::class),
 				$c->get(IAppConfig::class),
 			);
+		});
+		$context->registerService(EnsureAgentTables::class, function ($c): EnsureAgentTables {
+			return new EnsureAgentTables($c->get(IDBConnection::class));
+		});
+		$context->registerService(UninstallAgentTables::class, function ($c): UninstallAgentTables {
+			return new UninstallAgentTables($c->get(IDBConnection::class));
 		});
 		$context->registerService(UninstallDropTables::class, function ($c): UninstallDropTables {
 			return new UninstallDropTables(

@@ -138,6 +138,7 @@ final class Chrome
 			'templates' => $l10n->t('Funder templates'),
 			'notifications' => $l10n->t('Notifications'),
 			'license' => $l10n->t('License'),
+			'agent' => $l10n->t('AI access (MCP)'),
 			'transfer' => $l10n->t('Transfer'),
 			default => $s,
 		};

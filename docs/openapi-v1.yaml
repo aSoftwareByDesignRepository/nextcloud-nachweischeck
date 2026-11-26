@@ -212,6 +212,20 @@ paths:
     post: {tags: [admin], summary: 'Queue the reviewed apply job; merge for app admins, replace requires system admin + REPLACE confirmation'}
   /api/admin/transfer/reconcile:
     post: {tags: [admin], summary: 'Re-run the mirrored-key writer (access door / platform mirror) after a raw occ config:import'}
+  # ---- Agent API (OUTSIDE the /api/v1 prefix) ------------------------------
+  /agent/v1/manifest:
+    get: {tags: [agent], summary: 'Public agent tool manifest (declared routes, scopes, risk classes)'}
+  /agent/v1/tokens:
+    get: {tags: [agent], summary: 'List the caller agent tokens (app admin, session+CSRF only)'}
+    post: {tags: [agent], summary: 'Mint a scoped agent token; secret returned exactly once (app admin)'}
+  /agent/v1/audit:
+    get: {tags: [agent], summary: 'Paginated agent-call audit log (app admin)'}
+  /agent/v1/policy:
+    post: {tags: [agent], summary: 'Update app-wide agent policy: enabled flag and per-scope allowlist (app admin)'}
+  /agent/v1/tokens/{id}/revoke:
+    post: {tags: [agent], summary: 'Revoke an agent token (app admin)'}
+  /agent/v1/tokens/{id}/rotate:
+    post: {tags: [agent], summary: 'Rotate an agent token secret; old secret dies immediately (app admin)'}
 components:
   securitySchemes:
     basicAuth: {type: http, scheme: basic}

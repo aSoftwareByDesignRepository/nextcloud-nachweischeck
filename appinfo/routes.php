@@ -162,5 +162,17 @@ return [
 		['name' => 'mobileApi#receipts', 'url' => '/api/v1/mobile/projects/{projectId}/receipts', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'mobileApi#bookReceipt', 'url' => '/api/v1/mobile/projects/{projectId}/receipts', 'verb' => 'POST', 'requirements' => ['projectId' => '\d+']],
 		['name' => 'mobileApi#timesheets', 'url' => '/api/v1/mobile/projects/{projectId}/timesheets', 'verb' => 'GET', 'requirements' => ['projectId' => '\d+']],
+
+		// _shared/agent-auth pack — scoped AI-agent tokens (suite MCP
+		// contract). The manifest is public; the token admin surface is
+		// session+CSRF only — AgentAuthMiddleware denies agent credentials
+		// on these paths.
+		['name' => 'agent_manifest#show', 'url' => '/agent/v1/manifest', 'verb' => 'GET'],
+		['name' => 'agent_token#index', 'url' => '/agent/v1/tokens', 'verb' => 'GET'],
+		['name' => 'agent_token#mint', 'url' => '/agent/v1/tokens', 'verb' => 'POST'],
+		['name' => 'agent_token#audit', 'url' => '/agent/v1/audit', 'verb' => 'GET'],
+		['name' => 'agent_token#updatePolicy', 'url' => '/agent/v1/policy', 'verb' => 'POST'],
+		['name' => 'agent_token#revoke', 'url' => '/agent/v1/tokens/{id}/revoke', 'verb' => 'POST', 'requirements' => ['id' => '\d+']],
+		['name' => 'agent_token#rotate', 'url' => '/agent/v1/tokens/{id}/rotate', 'verb' => 'POST', 'requirements' => ['id' => '\d+']],
 	],
 ];

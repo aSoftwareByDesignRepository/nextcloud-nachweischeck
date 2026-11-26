@@ -17,6 +17,13 @@ $section = (string)($_['settingsSection'] ?? 'access');
 	<div class="nw-page-stack">
 		<?php include __DIR__ . '/parts/settings/transfer.php'; ?>
 	</div>
+<?php elseif ($section === 'agent'): ?>
+	<!-- Server-rendered synced page (apps/_shared/agent-auth) — the
+	     settings SPA renderer does not run on this section. -->
+	<?php $agentAccess = is_array($agentAccess ?? null) ? $agentAccess : ($_['agentAccess'] ?? null); ?>
+	<div class="nw-page-stack">
+		<?php include __DIR__ . '/parts/settings/agent.php'; ?>
+	</div>
 <?php else: ?>
 	<div id="nw-settings" class="nw-page-stack" data-nw-settings="<?php p($section); ?>">
 		<div class="nw-empty-state" aria-busy="true">

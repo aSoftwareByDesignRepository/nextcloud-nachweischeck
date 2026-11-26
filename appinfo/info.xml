@@ -119,6 +119,7 @@ Eine Kante stört oder eine Förderregel fehlt? Öffnen Sie ein GitHub Issue (ht
 	<repair-steps>
 		<install>
 			<step>OCA\NachweisCheck\Repair\EnsureNachweisCheckSchema</step>
+			<step>OCA\NachweisCheck\Repair\EnsureAgentTables</step>
 		</install>
 		<pre-migration>
 			<step>OCA\NachweisCheck\Repair\BackupBeforeUpdate</step>
@@ -126,9 +127,11 @@ Eine Kante stört oder eine Förderregel fehlt? Öffnen Sie ein GitHub Issue (ht
 
 		<post-migration>
 			<step>OCA\NachweisCheck\Repair\EnsureNachweisCheckSchema</step>
+			<step>OCA\NachweisCheck\Repair\EnsureAgentTables</step>
 		</post-migration>
 		<uninstall>
 			<step>OCA\NachweisCheck\Repair\UninstallDropTables</step>
+			<step>OCA\NachweisCheck\Repair\UninstallAgentTables</step>
 		</uninstall>
 	</repair-steps>
 	<background-jobs>

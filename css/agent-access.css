@@ -1,0 +1,239 @@
+/* "AI access (MCP)" section — pack styles.
+ * Token scales only (design-system mandate): spacing/type/radii come from
+ * the app's nw-token block; colors are NC --color-* vars + color-mix.
+ * Mobile-first: token list renders as labelled cards, becoming a real
+ * table at ≥768px.
+ */
+
+.nw-agent {
+	margin-bottom: var(--nw-space-6, 32px);
+}
+
+.nw-agent-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--nw-space-3, 12px);
+	padding: var(--nw-space-5, 24px);
+	border: 1px dashed var(--color-border-maxcontrast, var(--nw-border));
+	border-radius: var(--nw-radius-md, 8px);
+	background: color-mix(in srgb, var(--color-main-background) 96%, var(--color-primary-element));
+}
+.nw-agent-empty__text {
+	margin: 0;
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+}
+
+/* Token table — cards by default (mobile), real table ≥768px. */
+.nw-agent-tablewrap { overflow: visible; }
+.nw-agent-table { width: 100%; border-collapse: collapse; }
+.nw-agent-table thead {
+	position: absolute;
+	width: 1px; height: 1px;
+	margin: -1px; padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap; border: 0;
+}
+.nw-agent-table,
+.nw-agent-table tbody,
+.nw-agent-table tr,
+.nw-agent-table td { display: block; width: 100%; }
+.nw-agent-table tbody tr {
+	display: grid;
+	gap: var(--nw-space-1, 4px);
+	padding: var(--nw-space-3, 12px) var(--nw-space-4, 16px);
+	margin-bottom: var(--nw-space-3, 12px);
+	border: 1px solid var(--color-border-dark, var(--nw-border));
+	border-radius: var(--nw-radius-md, 8px);
+	background: var(--color-main-background, var(--nw-bg-card));
+}
+.nw-agent-table td { border: 0; padding: 0; }
+.nw-agent-table td[data-cell]::before {
+	content: attr(data-cell);
+	display: block;
+	font-size: var(--nw-fs-xs, 0.75rem);
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+	margin-bottom: 2px;
+}
+.nw-agent-table .nw-row-actions {
+	display: flex;
+	gap: var(--nw-space-2, 8px);
+	flex-wrap: wrap;
+	padding-top: var(--nw-space-2, 8px);
+}
+.nw-agent-row--inactive .nw-agent-label,
+.nw-agent-row--inactive .nw-agent-owner {
+	opacity: 0.6;
+}
+
+@media (min-width: 768px) {
+	.nw-agent-table thead {
+		position: static;
+		width: auto; height: auto;
+		margin: 0;
+		overflow: visible;
+		clip: auto;
+		white-space: normal;
+	}
+	.nw-agent-table { display: table; }
+	.nw-agent-table thead { display: table-header-group; }
+	.nw-agent-table tbody { display: table-row-group; }
+	.nw-agent-table tr { display: table-row; }
+	.nw-agent-table tbody tr {
+		display: table-row;
+		padding: 0;
+		margin-bottom: 0;
+		border: 0;
+		border-bottom: 1px solid var(--color-border-dark, var(--nw-border));
+		border-radius: 0;
+		background: transparent;
+	}
+	.nw-agent-table td,
+	.nw-agent-table th {
+		display: table-cell;
+		padding: var(--nw-space-2, 8px) var(--nw-space-3, 12px);
+		vertical-align: top;
+		text-align: left;
+	}
+	.nw-agent-table td[data-cell]::before { content: none; }
+	.nw-agent-table .nw-row-actions { justify-content: flex-end; padding-top: var(--nw-space-2, 8px); }
+}
+
+.nw-agent-label { font-weight: 600; margin-right: var(--nw-space-2, 8px); }
+.nw-agent-owner {
+	margin-left: var(--nw-space-2, 8px);
+	font-size: var(--nw-fs-xs, 0.75rem);
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+}
+.nw-agent-scopes {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-1, 4px);
+}
+.nw-agent-never {
+	color: var(--color-text-maxcontrast, var(--nw-muted));
+	font-style: italic;
+}
+
+/* Badge fallback — apps whose shell lacks a pill+dot badge get the recipe
+ * locally so scope badges never render as bare text (no color-only state). */
+.nw-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-1, 4px);
+	padding: 1px var(--nw-space-2, 8px);
+	margin: 0 var(--nw-space-1, 4px) var(--nw-space-1, 4px) 0;
+	border-radius: 999px;
+	font-size: var(--nw-fs-xs, 0.75rem);
+	font-weight: 600;
+	line-height: 1.6;
+	border: 1px solid transparent;
+}
+.nw-badge::before {
+	content: '';
+	width: 6px; height: 6px;
+	border-radius: 50%;
+	background: currentColor;
+	flex-shrink: 0;
+}
+.nw-badge--neutral {
+	color: var(--color-text-maxcontrast);
+	background: color-mix(in srgb, var(--color-main-background) 85%, var(--color-text-maxcontrast));
+	border-color: color-mix(in srgb, var(--color-main-background) 70%, var(--color-text-maxcontrast));
+}
+.nw-badge--info {
+	color: var(--color-primary-element-text);
+	background: var(--color-primary-element);
+}
+
+/* Scope chips (custom preset) — multi-select per design-system chips recipe. */
+.nw-agent-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--nw-space-2, 8px);
+}
+.nw-agent-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--nw-space-1, 4px);
+	padding: var(--nw-space-1, 4px) var(--nw-space-3, 12px);
+	border: 1px solid var(--color-border-dark, var(--nw-border));
+	border-radius: 999px;
+	cursor: pointer;
+	font-size: var(--nw-fs-s, 0.875rem);
+	min-height: 44px;
+	background: var(--color-main-background);
+}
+.nw-agent-chip:has(:checked) {
+	border-color: var(--color-primary-element);
+	background: color-mix(in srgb, var(--color-main-background) 88%, var(--color-primary-element));
+}
+.nw-agent-chip input { accent-color: var(--color-primary-element); }
+.nw-agent-chip:focus-within {
+	outline: 2px solid var(--color-primary-element);
+	outline-offset: 2px;
+}
+
+/* One-time secret + config block */
+.nw-agent-secret-dialog { max-width: min(92vw, 560px); }
+.nw-agent-config {
+	width: 100%;
+	font-family: var(--nw-font-mono, monospace);
+	font-size: var(--nw-fs-s, 0.8125rem);
+	padding: var(--nw-space-2, 8px);
+	border: 1px solid var(--color-border-dark, var(--nw-border));
+	border-radius: var(--nw-radius-md, 8px);
+	background: color-mix(in srgb, var(--color-main-background) 94%, var(--color-text-maxcontrast));
+	color: var(--color-main-text);
+	resize: vertical;
+}
+#nw-agent-secret {
+	font-family: var(--nw-font-mono, monospace);
+}
+
+.nw-agent-actions {
+	margin-top: var(--nw-space-3, 12px);
+}
+
+.nw-agent-selfmint {
+	margin-top: var(--nw-space-5, 24px);
+}
+.nw-checkbox-label {
+	display: flex;
+	align-items: center;
+	gap: var(--nw-space-2, 8px);
+	min-height: 44px;
+	cursor: pointer;
+}
+
+.nw-visually-hidden {
+	position: absolute;
+	width: 1px; height: 1px;
+	margin: -1px; padding: 0;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nw-agent *,
+	.nw-agent *::before,
+	.nw-agent *::after {
+		transition: none !important;
+		animation: none !important;
+	}
+}
+
+@media (forced-colors: active) {
+	.nw-badge,
+	.nw-agent-chip {
+		border: 1px solid CanvasText;
+	}
+	.nw-badge::before {
+		background: CanvasText;
+	}
+}

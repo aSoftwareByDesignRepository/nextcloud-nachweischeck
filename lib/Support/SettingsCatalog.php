@@ -12,7 +12,7 @@ namespace OCA\NachweisCheck\Support;
 
 final class SettingsCatalog
 {
-	public const SECTIONS = ['access', 'templates', 'notifications', 'license', 'transfer'];
+	public const SECTIONS = ['access', 'templates', 'notifications', 'license', 'agent', 'transfer'];
 
 	public static function isSection(string $s): bool
 	{
@@ -26,6 +26,7 @@ final class SettingsCatalog
 			'templates' => 'layout-grid',
 			'notifications' => 'bell',
 			'license' => 'shield',
+			'agent' => 'handshake',
 			'transfer' => 'upload',
 			default => 'settings',
 		};

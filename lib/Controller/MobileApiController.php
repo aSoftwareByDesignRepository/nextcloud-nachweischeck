@@ -29,6 +29,7 @@ use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\IRequest;
 use OCP\IUserSession;
+use OCP\AppFramework\Http\Attribute\PublicPage;
 
 class MobileApiController extends NwApiController
 {
@@ -46,6 +47,7 @@ class MobileApiController extends NwApiController
 		private readonly ReceiptSplitMapper $splitMapper,
 		private readonly TimesheetMapper $timesheetMapper,
 		private readonly FinplanService $finplan,
+		private readonly ?\OCA\NachweisCheck\Agent\AgentContext $agentContext = null,
 	) {
 		parent::__construct($appName, $request, $userSession, $door, $perm);
 	}
@@ -67,6 +69,7 @@ class MobileApiController extends NwApiController
 	}
 
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function myEntries(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -88,6 +91,7 @@ class MobileApiController extends NwApiController
 	}
 
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function book(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -104,6 +108,7 @@ class MobileApiController extends NwApiController
 
 	/** Active-plan positions — the split picker source for receipt booking. */
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function positions(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -123,6 +128,7 @@ class MobileApiController extends NwApiController
 	}
 
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function receipts(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -152,6 +158,7 @@ class MobileApiController extends NwApiController
 	 * queue retries idempotent.
 	 */
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function bookReceipt(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -175,6 +182,7 @@ class MobileApiController extends NwApiController
 
 	/** Own Stundenzettel — the companion shows state, never rates. */
 	#[NoAdminRequired]
+	#[PublicPage]
 	public function timesheets(int $projectId): JSONResponse
 	{
 		$uid = $this->uid();
@@ -201,5 +209,19 @@ class MobileApiController extends NwApiController
 		if (!$this->seats->hasSeat($uid)) {
 			throw new \OCA\NachweisCheck\Exception\LicenseException(LicenseService::FEATURE_MOBILE_SEATS);
 		}
+	}
+
+	/**
+	 * Scoped agent token requests carry no session: the armed request-scoped
+	 * principal wins over the session user (explicit credential beats a
+	 * foreign cookie — same posture as the other Check apps' requireUid).
+	 * The seat + project-permission gates below still apply to the uid.
+	 */
+	protected function uid(): string
+	{
+		if ($this->agentContext !== null && $this->agentContext->isArmed()) {
+			return (string)$this->agentContext->uid();
+		}
+		return parent::uid();
 	}
 }

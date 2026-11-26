@@ -48,6 +48,7 @@ class PageController extends Controller
 		private readonly \OCA\NachweisCheck\Db\MobileSeatMapper $seatMapper,
 		private readonly IGroupManager $groupManager,
 		private readonly \OCP\IUserManager $userManager,
+		private readonly \OCA\NachweisCheck\Agent\AgentSettingsPayload $agentSettings,
 	) {
 		parent::__construct($appName, $request);
 	}
@@ -144,7 +145,7 @@ class PageController extends Controller
 			'view' => 'settings',
 			'section' => $section,
 		]);
-		AssetRegistrar::register(($section === 'transfer' || $section === 'license') ? '' : 'settings');
+		AssetRegistrar::register(($section === 'transfer' || $section === 'license' || $section === 'agent') ? '' : 'settings');
 		if ($section === 'license') {
 			// Shared license page (synced pack): server-rendered partial, its
 			// own stylesheet + script — the settings SPA is not involved.
@@ -185,6 +186,15 @@ class PageController extends Controller
 			$params['isSystemAdmin'] = $this->groupManager->isAdmin($user->getUID());
 			$params['transferLastReceipt'] = $this->transferReceipts->lastReceipt();
 			$params['pageHelp'] = $this->l10n->t('Export all settings and data as one encrypted file, then import it on your production instance. Review the preview before confirming.');
+		}
+		if ($section === 'agent') {
+			// Synced agent-auth page (test → scoped AI tokens): server-rendered
+			// partial, its own stylesheet + script — the settings SPA is not
+			// involved (same wiring shape as license/transfer).
+			Util::addStyle('nachweischeck', 'agent-access');
+			Util::addScript('nachweischeck', 'agent-access');
+			$params['agentAccess'] = $this->agentSettings->payload($user->getUID());
+			$params['pageHelp'] = $this->l10n->t('Connect an AI assistant with a scoped token. The token works only inside this app — never for your files, mail, or other apps.');
 		}
 		Chrome::apply($params, 'settings-' . $section, $projects, null);
 		return new TemplateResponse('nachweischeck', 'settings', $params);

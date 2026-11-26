@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "appId": "nachweischeck",
+  "agentExposure": "declared",
+  "tools": [
+    {
+      "name": "nw_list_my_entries",
+      "kind": "read",
+      "riskClass": 0,
+      "route": "mobileApi#myEntries",
+      "method": "GET",
+      "path": "/api/v1/mobile/projects/{projectId}/entries",
+      "scope": "nachweischeck:entries:read",
+      "label": "List my time entries",
+      "description": "List the token owner's time entries on a project for a date period. Rate fields are only present when the owner may see salaries.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        },
+        "from": {
+          "type": "string",
+          "required": false,
+          "description": "Start date YYYY-MM-DD (default 1900-01-01)."
+        },
+        "to": {
+          "type": "string",
+          "required": false,
+          "description": "End date YYYY-MM-DD (default 2100-12-31)."
+        }
+      }
+    },
+    {
+      "name": "nw_list_positions",
+      "kind": "read",
+      "riskClass": 0,
+      "route": "mobileApi#positions",
+      "method": "GET",
+      "path": "/api/v1/mobile/projects/{projectId}/positions",
+      "scope": "nachweischeck:positions:read",
+      "label": "List budget positions",
+      "description": "List the active financial plan's positions for a project — the split picker source for receipt booking.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "nw_list_receipts",
+      "kind": "read",
+      "riskClass": 0,
+      "route": "mobileApi#receipts",
+      "method": "GET",
+      "path": "/api/v1/mobile/projects/{projectId}/receipts",
+      "scope": "nachweischeck:receipts:read",
+      "label": "List receipts",
+      "description": "List receipts on a project for a date period, including their budget-position splits.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        },
+        "from": {
+          "type": "string",
+          "required": false,
+          "description": "Start date YYYY-MM-DD (default 1900-01-01)."
+        },
+        "to": {
+          "type": "string",
+          "required": false,
+          "description": "End date YYYY-MM-DD (default 2100-12-31)."
+        }
+      }
+    },
+    {
+      "name": "nw_list_timesheets",
+      "kind": "read",
+      "riskClass": 0,
+      "route": "mobileApi#timesheets",
+      "method": "GET",
+      "path": "/api/v1/mobile/projects/{projectId}/timesheets",
+      "scope": "nachweischeck:timesheets:read",
+      "label": "List my timesheets",
+      "description": "List the token owner's Stundenzettel (timesheets) on a project with their workflow state. Never contains rates.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        }
+      }
+    },
+    {
+      "name": "nw_book_entry",
+      "kind": "write",
+      "riskClass": 1,
+      "route": "mobileApi#book",
+      "method": "POST",
+      "path": "/api/v1/mobile/projects/{projectId}/entries",
+      "idempotency": "natural",
+      "scope": "nachweischeck:entries:write",
+      "label": "Book a time entry",
+      "description": "Create a time entry on a project for the token owner. Supply external_ref as a natural idempotency key so retries never double-book.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        },
+        "ap_id": {
+          "type": "integer",
+          "required": false,
+          "description": "Work-package (AP) id, 0 for none."
+        },
+        "entry_date": {
+          "type": "string",
+          "required": true,
+          "description": "Entry date YYYY-MM-DD."
+        },
+        "minutes": {
+          "type": "integer",
+          "required": true,
+          "description": "Duration in minutes."
+        },
+        "note": {
+          "type": "string",
+          "required": false
+        },
+        "external_ref": {
+          "type": "string",
+          "required": false,
+          "description": "Client-supplied dedup key — pass a stable value so a retried call returns the already-booked entry instead of duplicating it."
+        }
+      }
+    },
+    {
+      "name": "nw_book_receipt",
+      "kind": "write",
+      "riskClass": 2,
+      "route": "mobileApi#bookReceipt",
+      "method": "POST",
+      "path": "/api/v1/mobile/projects/{projectId}/receipts",
+      "confirm": "required",
+      "idempotency": "natural",
+      "scope": "nachweischeck:receipts:write",
+      "label": "Book a receipt",
+      "description": "Create a receipt (expense) on a project with budget-position splits that must sum to the total — money-adjacent, confirm required. Supply external_ref as a natural idempotency key.",
+      "params": {
+        "projectId": {
+          "type": "integer",
+          "required": true
+        },
+        "vendor": {
+          "type": "string",
+          "required": true
+        },
+        "invoice_no": {
+          "type": "string",
+          "required": false
+        },
+        "invoice_date": {
+          "type": "string",
+          "required": true,
+          "description": "YYYY-MM-DD."
+        },
+        "payment_date": {
+          "type": "string",
+          "required": false,
+          "description": "YYYY-MM-DD."
+        },
+        "currency": {
+          "type": "string",
+          "required": false,
+          "description": "ISO code, default EUR."
+        },
+        "fx_rate_milli": {
+          "type": "integer",
+          "required": false,
+          "description": "FX rate in milli-units when currency differs from the project currency."
+        },
+        "total_minor": {
+          "type": "integer",
+          "required": true,
+          "description": "Total amount in minor currency units. Splits must sum to this."
+        },
+        "tax_minor": {
+          "type": "integer",
+          "required": false,
+          "description": "Included tax in minor units."
+        },
+        "purpose": {
+          "type": "string",
+          "required": false
+        },
+        "file_id": {
+          "type": "integer",
+          "required": false,
+          "description": "Nextcloud file id of the receipt document."
+        },
+        "kind": {
+          "type": "string",
+          "required": false,
+          "description": "Receipt kind, default 'receipt'."
+        },
+        "splits": {
+          "type": "array",
+          "required": true,
+          "description": "List of {position_id, ap_id, amount_minor} — must sum to total_minor."
+        },
+        "external_ref": {
+          "type": "string",
+          "required": false,
+          "description": "Client-supplied dedup key — pass a stable value so a retried call returns the already-booked receipt instead of duplicating it."
+        },
+        "dup_ack": {
+          "type": "boolean",
+          "required": false,
+          "description": "Acknowledge a duplicate warning and book anyway."
+        }
+      }
+    }
+  ],
+  "deny": [
+    "mobileApi#status"
+  ]
+}

@@ -136,7 +136,7 @@ OC.L10N.register(
 	"Carryover recorded." : "Mittelübertrag erfasst.",
 	"Carryovers" : "Mittelüberträge",
 	"Cash" : "Liquide Mittel",
-	"Check Partner" : "Check Partner",
+	"Check Partner" : "Partner-Check",
 	"Check preview" : "Vorschau prüfen",
 	"Choose a CSV file or paste its contents." : "CSV-Datei wählen oder Inhalt einfügen.",
 	"Choose a passphrase of at least 12 characters." : "Eine Passphrase mit mindestens 12 Zeichen wählen.",
@@ -277,7 +277,7 @@ OC.L10N.register(
 	"File receipt" : "Beleg erfassen",
 	"filed" : "abgelegt",
 	"Filename" : "Dateiname",
-	"Filter" : "Filter",
+	"Filter" : "Filtern",
 	"Filter options" : "Filteroptionen",
 	"Filter receipts" : "Belege filtern",
 	"Filter time entries" : "Zeiteinträge filtern",
@@ -562,7 +562,7 @@ OC.L10N.register(
 	"Positions saved." : "Ansätze gespeichert.",
 	"Possible duplicate — flagged for review (vendor + date + amount match an existing receipt)." : "Mögliches Duplikat — zur Prüfung markiert (Empfänger + Datum + Betrag treffen vorhandenen Beleg).",
 	"Pre-flight checks" : "Vorabprüfungen",
-	"Preset" : "Preset",
+	"Preset" : "Voreinstellung",
 	"Principal" : "Kapitalbetrag",
 	"Principal (EUR)" : "Grundbetrag (EUR)",
 	"Pro features and mobile seats stop working immediately. Your data stays untouched." : "Pro-Funktionen und mobile Plätze funktionieren sofort nicht mehr. Ihre Daten bleiben unverändert.",
@@ -785,7 +785,7 @@ OC.L10N.register(
 	"Too short — at least 12 characters." : "Zu kurz — mindestens 12 Zeichen.",
 	"Total" : "Summe",
 	"Total (EUR)" : "Summe (EUR)",
-	"Transfer" : "Transfer",
+	"Transfer" : "Übertragung",
 	"Transfer file" : "Transferdatei",
 	"Transfer file downloaded — store it and the passphrase safely." : "Transferdatei heruntergeladen — Datei und Passphrase sicher aufbewahren.",
 	"Travel" : "Reisekosten",
@@ -848,6 +848,8 @@ OC.L10N.register(
 	"—" : "—",
 	"— choose —" : "— wählen —",
 	"— none —" : "— keiner —",
-	"…or paste CSV" : "…oder CSV einfügen"
+	"…or paste CSV" : "…oder CSV einfügen",
+	"Connect an AI assistant with a scoped token. The token works only inside this app — never for your files, mail, or other apps." : "Verbinde einen KI-Assistenten mit einem begrenzten Token. Das Token funktioniert nur innerhalb dieser App — niemals für deine Dateien, E-Mails oder andere Apps.",
+	"AI access (MCP)" : "KI-Zugang (MCP)"
 	}
 );
