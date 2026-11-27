@@ -102,6 +102,25 @@ $nw_tokens = is_array($nw_state['tokens']) ? $nw_state['tokens'] : [];
 	</div>
 	<?php endif; ?>
 
+	<div class="nw-agent-webhooks" id="nw-agent-webhooks">
+		<h3 class="nw-agent-sub-h" id="nw-agent-webhooks-h"><?php p($l->t('Webhook endpoints')); ?></h3>
+		<p class="nw-form-row__hint"><?php p($l->t('Your AI assistant can register endpoints that receive a signed notification whenever it changes something here. They belong to you — test or revoke them any time.')); ?></p>
+		<div class="nw-table-wrap nw-agent-tablewrap" tabindex="0" role="region" aria-labelledby="nw-agent-webhooks-h">
+			<table class="nw-table nw-table--cards nw-agent-table" id="nw-agent-webhook-table">
+				<thead>
+					<tr>
+						<th scope="col"><?php p($l->t('Endpoint')); ?></th>
+						<th scope="col"><?php p($l->t('Events')); ?></th>
+						<th scope="col"><?php p($l->t('State')); ?></th>
+						<th scope="col"><?php p($l->t('Last delivery')); ?></th>
+						<th scope="col"><span class="nw-visually-hidden"><?php p($l->t('Actions')); ?></span></th>
+					</tr>
+				</thead>
+				<tbody id="nw-agent-webhook-tbody"></tbody>
+			</table>
+		</div>
+	</div>
+
 	<?php if ($nw_state['isAdmin']): ?>
 	<div class="nw-form-row nw-agent-selfmint">
 		<input type="hidden" name="agent_self_mint" value="0">
