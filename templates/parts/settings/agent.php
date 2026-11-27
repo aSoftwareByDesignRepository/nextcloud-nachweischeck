@@ -63,8 +63,7 @@ $nw_tokens = is_array($nw_state['tokens']) ? $nw_state['tokens'] : [];
 			<tbody id="nw-agent-tbody">
 				<?php foreach ($nw_tokens as $nw_tok): ?>
 				<tr data-token-id="<?php p((string)($nw_tok['id'] ?? '')); ?>" data-token-label="<?php p((string)($nw_tok['label'] ?? '')); ?>"<?php if (($nw_tok['state'] ?? '') !== 'active'): ?> class="nw-agent-row--inactive"<?php endif; ?>>
-					<td data-cell="<?php p($l->t('Label')); ?>">
-						<span class="nw-agent-label"><?php p((string)($nw_tok['label'] ?? '')); ?></span>
+					<td data-cell="<?php p($l->t('Label')); ?>" class="nw-agent-label-cell"><span class="nw-agent-labelcell"><span class="nw-agent-label" title="<?php p((string)($nw_tok['label'] ?? '')); ?>"><?php p((string)($nw_tok['label'] ?? '')); ?></span>
 						<?php if (($nw_tok['state'] ?? '') === 'revoked'): ?>
 							<span class="nw-badge nw-badge--neutral"><?php p($l->t('Revoked')); ?></span>
 						<?php elseif (($nw_tok['state'] ?? '') === 'expired'): ?>
@@ -74,9 +73,8 @@ $nw_tokens = is_array($nw_state['tokens']) ? $nw_state['tokens'] : [];
 						<?php endif; ?>
 						<?php if ($nw_state['isAdmin'] && ($nw_tok['userId'] ?? '') !== ''): ?>
 							<span class="nw-agent-owner"><?php p((string)$nw_tok['userId']); ?></span>
-						<?php endif; ?>
-					</td>
-					<td data-cell="<?php p($l->t('Scopes')); ?>">
+						<?php endif; ?></span></td>
+					<td data-cell="<?php p($l->t('Scopes')); ?>" class="nw-agent-scopes-cell">
 						<span class="nw-agent-scopes">
 						<?php foreach (($nw_tok['scopes'] ?? []) as $nw_scope): ?>
 							<span class="nw-badge nw-badge--neutral nw-agent-scope" title="<?php p((string)$nw_scope); ?>"><?php p((string)($nw_state['scopeLabels'][$nw_scope] ?? $nw_scope)); ?></span>
