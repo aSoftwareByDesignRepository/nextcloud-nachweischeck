@@ -92,7 +92,8 @@ class Application extends App implements IBootstrap
 				$c->query(\OCA\NachweisCheck\Agent\AgentSeatGate::class),
 				$c->query(\OCA\NachweisCheck\Agent\AgentAuditMapper::class),
 				$c->query(\Psr\Log\LoggerInterface::class),
-				'nachweischeck'
+				'nachweischeck',
+				$c->query(\OCA\NachweisCheck\Agent\AgentWebhookDispatcher::class)
 			);
 		});
 		$context->registerMiddleware(\OCA\NachweisCheck\Middleware\AgentAuthMiddleware::class);
