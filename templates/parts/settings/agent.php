@@ -118,7 +118,7 @@ $nw_tokens = is_array($nw_state['tokens']) ? $nw_state['tokens'] : [];
 	<dialog id="nw-agent-mint-dialog" class="nw-dialog nw-agent-mint-dialog" aria-labelledby="nw-agent-mint-h">
 		<div class="nw-dialog__body">
 			<h3 id="nw-agent-mint-h"><?php p($l->t('Connect your AI')); ?></h3>
-			<form id="nw-agent-mint-form" novalidate>
+			<form id="nw-agent-mint-form" class="nw-form-stack" novalidate>
 				<div class="nw-form-row">
 					<label for="nw-agent-label"><?php p($l->t('Label')); ?></label>
 					<input type="text" id="nw-agent-label" name="label" maxlength="190" required autocomplete="off" placeholder="<?php p($l->t('Claude on my laptop')); ?>">
