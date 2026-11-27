@@ -654,7 +654,7 @@ dialog.nw-dialog .button:not(.primary, .error, .warning, .success, .danger) {
 	border: 0;
 }
 
-@media (max-width: 768.98px) {
+@media (max-width: 767.98px) {
 	.nw-support-us__options {
 		grid-template-columns: 1fr;
 	}
